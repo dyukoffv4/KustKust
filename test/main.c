@@ -3,102 +3,144 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#define P_LEN 200
+#define S_LEN 300
+#define P_LEN 300
 #define G_LEN 100
+#define CUT " \n"
 
-int IND = 0;
+typedef struct A {
+	A* next;
+	char* str;
+} part;
 
-int MinoFind(char*** result, char* goal, char* path) {
-	
-	int lenFile, i = 0;
-	char fgoal[G_LEN];
-	char fpath[P_LEN];
-	char* fpgoal;
+int pr_goal(char* path, part* element, char*** goals) {
+
+	FILE* file;
+	char source[S_LEN];
+	char* tok;
+	int i = 0;
+
+	file = fopen(path, "r");
+	fgets(source, S_LEN, file);
+	fclose(file);
+
+	if (!strcmp(source, "Deadlock")) return -1;
+
+	if (!strcmp(source, "Minotaur")) {
+
+		element = malloc(sizeof(part));
+		element->next = NULL;
+		element->str = calloc(P_LEN, sizeof(char));
+		strcpy(element->str, path);
+		return 0;
+	}
+
+	*goals = malloc(sizeof(char*));
+
+	tok = strtok(source, CUT);
+	do {
+
+		tok = strtok(NULL, CUT);
+		*goals = realloc(*goals, (i + 1) * sizeof(char*));
+		*goals[i] = calloc(G_LEN, sizeof(char));
+		i++;
+
+	} while (tok = strtok(NULL, CUT));
+
+	return i;
+}
+
+part* MinoFind(char* goal, char* path) {
+
+	part* element;
 	FILE* file;
 	DIR* dir = opendir(path);
 	struct dirent* cur;
-	
+	int path_len, flag;
+	char* f_path;
+	char** goals;
+
 	while (cur = readdir(dir)) {
-		
-		lenFile = strlen(path);
-			
-		if (!strcmp(cur->d_name, "add")) {
-			
-			strcat(path, "/");
-			strcat(path, cur->d_name);
-			if (MinoFind(result, goal, path)) return 1;
-			path[lenFile] = '\0';
-		}
-		
+
+		path_len = strlen(path);
+
 		if (!strcmp(cur->d_name, goal)) {
-			
+
 			strcat(path, "/");
 			strcat(path, cur->d_name);
-			file = fopen(path, "r");
-			
-			while (fscanf(file, "%c", &fgoal[i]) != EOF) i++;
-			fgoal[i - 1] = '\0';
-			fclose(file);
-			
-			if (!strcmp(fgoal, "Deadlock")) {
-				
-				closedir(dir);
-				return 0;
+
+			switch (flag = pr_goal(path, element, &goals)) {
+
+			case 0:
+				return element;
+
+			case -1:
+				return NULL;
+
+			default:
+				break;
 			}
-			
-			if (!strcmp(fgoal, "Minotaur")) {
-				
-				(*result)[IND] = calloc(P_LEN, sizeof(char));
-				strcpy((*result)[IND], path);
-				IND++;
-				*result = realloc(*result, (IND + 1) * sizeof(char*));
-				closedir(dir);
-				return 1;
-			}
-			
-			fpgoal = strtok(fgoal, " \n");
-			do {
-				
-				strcpy(fpath, "./root");
-				fpgoal = strtok(NULL, " \n");
-				
-				if (MinoFind(result, fpgoal, fpath)) {
+
+			f_path = calloc(P_LEN, sizeof(char));
+			element = malloc(sizeof(part));
+
+			for (int i = 0; i < flag; i++) {
+
+				strcpy(f_path, "./root");
+
+				if (element->next = MinoFind(goals[i], f_path)) {
+
+					element->str = calloc(P_LEN, sizeof(char));
+					strcpy(element->str, path);
 					
-					(*result)[IND] = calloc(P_LEN, sizeof(char));
-					strcpy((*result)[IND], path);
-					IND++;
-					*result = realloc(*result, (IND + 1) * sizeof(char*));
-					return 1;
+					for (int j = 0; j < flag; j++) free(goals[j]);
+					free(goals);
+					free(f_path);
+					closedir(dir);
+					return element;
 				}
-				fpgoal = strtok(NULL, " \n");
-				
-			} while(fpgoal);
-			
-			path[lenFile] = '\0';
+			}
+
+			for (int j = 0; j < flag; j++) free(goals[j]);
+			free(goals);
+			free(f_path);
+			free(element);
 		}
+		else if ((cur->d_type == DT_DIR) && (strcmp(cur->d_name, ".")) && (strcmp(cur->d_name, ".."))) {
+
+			strcat(path, "/");
+			strcat(path, cur->d_name);
+			return MinoFind(goal, path);
+		}
+
+		path[path_len] = '\0';
 	}
-	
+
 	closedir(dir);
-	return 0;
+	return NULL;
 }
 
+int main() {
 
-int main(){
-	
+	FILE* file;
 	char path[P_LEN] = "./root";
-	char** result = calloc(1, sizeof(char*));
 	char goal[G_LEN] = "file.txt";
-	
-	if (MinoFind(&result, goal, path)) {
-	
-		FILE *resFile = fopen("result.txt", "w");
-		
-		for(int i = IND - 1; i > -1; i--) fprintf(resFile, "%s\n", result[i]);
-		fclose(resFile);
-		
-		for(int i = 0; i < IND; i++) free(result[i]);
-		free(result);
+	part* head = MinoFind(goal, path);
+	part* cur;
+
+	if (head) {
+
+		cur = head;
+		file = fopen("result.txt", "w");
+
+		while (cur) {
+
+			fprintf(file, "%s\n", cur->str);
+			cur = cur->next;
+		}
+
+		fclose(file);
 	}
-	
-    return 0;
+
+	return 0;
 }
