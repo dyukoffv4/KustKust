@@ -8,8 +8,9 @@
 #define G_LEN 100
 #define CUT " \n"
 
-typedef struct A {
-	A* next;
+typedef struct part {
+
+	struct part* next;
 	char* str;
 } part;
 
@@ -86,7 +87,7 @@ part* MinoFind(char* goal, char* path) {
 
 			for (int i = 0; i < flag; i++) {
 
-				strcpy(f_path, "./root");
+				strcpy(f_path, "./new");
 
 				if (element->next = MinoFind(goals[i], f_path)) {
 
@@ -123,24 +124,27 @@ part* MinoFind(char* goal, char* path) {
 int main() {
 
 	FILE* file;
-	char path[P_LEN] = "./root";
+	char path[P_LEN] = "./new";
 	char goal[G_LEN] = "file.txt";
 	part* head = MinoFind(goal, path);
 	part* cur;
 
 	if (head) {
 
-		cur = head;
 		file = fopen("result.txt", "w");
 
-		while (cur) {
+		while (head) {
 
 			fprintf(file, "%s\n", cur->str);
-			cur = cur->next;
+			cur = head;
+			head = head->next;
+			free(cur->str);
+			free(cur);
 		}
 
 		fclose(file);
 	}
+	else puts("Error");
 
 	return 0;
 }
