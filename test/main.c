@@ -8,33 +8,38 @@
 #define G_LEN 100
 #define CUT " \n"
 
-typedef struct A {
-	A* next;
+typedef struct part {
+
+	struct part* next;
 	char* str;
 } part;
 
-int pr_goal(char* path, part* element, char*** goals) {
+int pr_goal(char* path, part** element, char*** goals) {
 
+	part* f_element;
 	FILE* file;
 	char source[S_LEN];
 	char* tok;
 	int i = 0;
 
 	file = fopen(path, "r");
-	fgets(source, S_LEN, file);
+	while (fscanf(file, "%c", &source[i]) != EOF) i++;
+	source[i - 1] = '\0';
 	fclose(file);
 
 	if (!strcmp(source, "Deadlock")) return -1;
 
 	if (!strcmp(source, "Minotaur")) {
 
-		element = malloc(sizeof(part));
-		element->next = NULL;
-		element->str = calloc(P_LEN, sizeof(char));
-		strcpy(element->str, path);
+		f_element = malloc(sizeof(part));
+		f_element->next = NULL;
+		f_element->str = calloc(P_LEN, sizeof(char));
+		strcpy(f_element->str, path);
+		*element = f_element;
 		return 0;
 	}
-
+	
+	i = 0;
 	*goals = malloc(sizeof(char*));
 
 	tok = strtok(source, CUT);
@@ -51,9 +56,10 @@ int pr_goal(char* path, part* element, char*** goals) {
 }
 
 part* MinoFind(char* goal, char* path) {
-
-	part* element;
-	FILE* file;
+	
+	puts(path);
+	
+	part* element = NULL;
 	DIR* dir = opendir(path);
 	struct dirent* cur;
 	int path_len, flag;
@@ -68,8 +74,9 @@ part* MinoFind(char* goal, char* path) {
 
 			strcat(path, "/");
 			strcat(path, cur->d_name);
+			flag = pr_goal(path, &element, &goals);
 
-			switch (flag = pr_goal(path, element, &goals)) {
+			switch (flag) {
 
 			case 0:
 				return element;
@@ -110,7 +117,7 @@ part* MinoFind(char* goal, char* path) {
 
 			strcat(path, "/");
 			strcat(path, cur->d_name);
-			return MinoFind(goal, path);
+			if (element = MinoFind(goal, path)) return element;
 		}
 
 		path[path_len] = '\0';
@@ -129,18 +136,23 @@ int main() {
 	part* cur;
 
 	if (head) {
+	
+		puts("ok");
 
-		cur = head;
 		file = fopen("result.txt", "w");
 
-		while (cur) {
+		while (head) {
 
-			fprintf(file, "%s\n", cur->str);
-			cur = cur->next;
+			fprintf(file, "%s\n", head->str);
+			cur = head;
+			head = head->next;
+			free(cur->str);
+			free(cur);
 		}
 
 		fclose(file);
 	}
+	else puts("Error");
 
 	return 0;
 }
