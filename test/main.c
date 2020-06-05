@@ -14,28 +14,32 @@ typedef struct part {
 	char* str;
 } part;
 
-int pr_goal(char* path, part* element, char*** goals) {
+int pr_goal(char* path, part** element, char*** goals) {
 
+	part* f_element;
 	FILE* file;
 	char source[S_LEN];
 	char* tok;
 	int i = 0;
 
 	file = fopen(path, "r");
-	fgets(source, S_LEN, file);
+	while (fscanf(file, "%c", &source[i]) != EOF) i++;
+	source[i - 1] = '\0';
 	fclose(file);
 
 	if (!strcmp(source, "Deadlock")) return -1;
 
 	if (!strcmp(source, "Minotaur")) {
 
-		element = malloc(sizeof(part));
-		element->next = NULL;
-		element->str = calloc(P_LEN, sizeof(char));
-		strcpy(element->str, path);
+		f_element = malloc(sizeof(part));
+		f_element->next = NULL;
+		f_element->str = calloc(P_LEN, sizeof(char));
+		strcpy(f_element->str, path);
+		*element = f_element;
 		return 0;
 	}
-
+	
+	i = 0;
 	*goals = malloc(sizeof(char*));
 
 	tok = strtok(source, CUT);
@@ -52,9 +56,10 @@ int pr_goal(char* path, part* element, char*** goals) {
 }
 
 part* MinoFind(char* goal, char* path) {
-
-	part* element;
-	FILE* file;
+	
+	puts(path);
+	
+	part* element = NULL;
 	DIR* dir = opendir(path);
 	struct dirent* cur;
 	int path_len, flag;
@@ -69,8 +74,9 @@ part* MinoFind(char* goal, char* path) {
 
 			strcat(path, "/");
 			strcat(path, cur->d_name);
+			flag = pr_goal(path, &element, &goals);
 
-			switch (flag = pr_goal(path, element, &goals)) {
+			switch (flag) {
 
 			case 0:
 				return element;
@@ -87,7 +93,7 @@ part* MinoFind(char* goal, char* path) {
 
 			for (int i = 0; i < flag; i++) {
 
-				strcpy(f_path, "./new");
+				strcpy(f_path, "./root");
 
 				if (element->next = MinoFind(goals[i], f_path)) {
 
@@ -111,7 +117,7 @@ part* MinoFind(char* goal, char* path) {
 
 			strcat(path, "/");
 			strcat(path, cur->d_name);
-			return MinoFind(goal, path);
+			if (element = MinoFind(goal, path)) return element;
 		}
 
 		path[path_len] = '\0';
@@ -124,18 +130,20 @@ part* MinoFind(char* goal, char* path) {
 int main() {
 
 	FILE* file;
-	char path[P_LEN] = "./new";
+	char path[P_LEN] = "./root";
 	char goal[G_LEN] = "file.txt";
 	part* head = MinoFind(goal, path);
 	part* cur;
 
 	if (head) {
+	
+		puts("ok");
 
 		file = fopen("result.txt", "w");
 
 		while (head) {
 
-			fprintf(file, "%s\n", cur->str);
+			fprintf(file, "%s\n", head->str);
 			cur = head;
 			head = head->next;
 			free(cur->str);
