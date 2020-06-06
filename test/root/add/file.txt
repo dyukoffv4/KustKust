@@ -1,2 +1,0 @@
-inc a.txt
-inc b.txt
