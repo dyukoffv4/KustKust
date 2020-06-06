@@ -9,7 +9,6 @@
 #define CUT " \n"
 
 typedef struct part {
-
 	struct part* next;
 	char* str;
 } part;
@@ -17,6 +16,7 @@ typedef struct part {
 int pr_goal(char* path, part** element, char*** goals) {
 
 	part* f_element;
+	char ** f_goals;
 	FILE* file;
 	char source[S_LEN];
 	char* tok;
@@ -24,9 +24,10 @@ int pr_goal(char* path, part** element, char*** goals) {
 
 	file = fopen(path, "r");
 	while (fscanf(file, "%c", &source[i]) != EOF) i++;
-	source[i - 1] = '\0';
+	if (source[i - 1] == '\n') source[i - 1] = '\0';
+	else source[i] = '\0';
 	fclose(file);
-
+	
 	if (!strcmp(source, "Deadlock")) return -1;
 
 	if (!strcmp(source, "Minotaur")) {
@@ -40,24 +41,24 @@ int pr_goal(char* path, part** element, char*** goals) {
 	}
 	
 	i = 0;
-	*goals = malloc(sizeof(char*));
-
+	f_goals = malloc(sizeof(char*));
 	tok = strtok(source, CUT);
 	do {
 
 		tok = strtok(NULL, CUT);
-		*goals = realloc(*goals, (i + 1) * sizeof(char*));
-		*goals[i] = calloc(G_LEN, sizeof(char));
+		f_goals = realloc(f_goals, (i + 1) * sizeof(char*));
+		f_goals[i] = calloc(G_LEN, sizeof(char));
+		strcpy(f_goals[i], tok);
 		i++;
 
 	} while (tok = strtok(NULL, CUT));
+	
+	*goals = f_goals;
 
 	return i;
 }
 
 part* MinoFind(char* goal, char* path) {
-	
-	puts(path);
 	
 	part* element = NULL;
 	DIR* dir = opendir(path);
@@ -93,7 +94,7 @@ part* MinoFind(char* goal, char* path) {
 
 			for (int i = 0; i < flag; i++) {
 
-				strcpy(f_path, "./root");
+				strcpy(f_path, "./r3");
 
 				if (element->next = MinoFind(goals[i], f_path)) {
 
@@ -124,20 +125,19 @@ part* MinoFind(char* goal, char* path) {
 	}
 
 	closedir(dir);
+	
 	return NULL;
 }
 
 int main() {
 
 	FILE* file;
-	char path[P_LEN] = "./root";
+	char path[P_LEN] = "./r3";
 	char goal[G_LEN] = "file.txt";
 	part* head = MinoFind(goal, path);
 	part* cur;
 
 	if (head) {
-	
-		puts("ok");
 
 		file = fopen("result.txt", "w");
 
@@ -152,7 +152,6 @@ int main() {
 
 		fclose(file);
 	}
-	else puts("Error");
 
 	return 0;
 }
