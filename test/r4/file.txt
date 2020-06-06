@@ -1,0 +1,3 @@
+#include inc_1.txt
+#include dead.txt
+#include inc_5.txt
