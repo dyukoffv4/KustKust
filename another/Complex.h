@@ -39,7 +39,6 @@ public:
 	complex operator/ (complex div);
 
 	complex operator^ (int inc);
-	complex operator^ (double inc);
 
 	bool operator== (complex var);
 	bool operator!= (complex var);
@@ -48,7 +47,7 @@ public:
 
 	operator bool() const;
 
-	void print();
+	friend std::ostream& operator<< (std::ostream& out, const complex& point);
 
 private:
 

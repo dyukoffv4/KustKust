@@ -113,13 +113,6 @@ complex complex::operator^ (int inc) {
 	return result;
 }
 
-complex complex::operator^ (double inc) {
-
-	complex result = *this;
-
-	return result;
-}
-
 
 bool complex::operator== (complex var) {
 	
@@ -146,8 +139,10 @@ complex::operator bool() const {
 }
 
 
-void complex::print() {
-	
-	if (self.imag < 0) printf("%Lg - %Lgi\n", self.real, abs(self.imag));
-	if (self.imag >= 0) printf("%Lg + %Lgi\n", self.real, abs(self.imag));
+std::ostream& operator<< (std::ostream& out, const complex& val) {
+
+	if (val.self.imag < 0) out << val.self.real << " - " << -1 * val.self.imag << "i";
+	if (val.self.imag >= 0) out << val.self.real << " + " << val.self.imag << "i";
+
+	return out;
 }
