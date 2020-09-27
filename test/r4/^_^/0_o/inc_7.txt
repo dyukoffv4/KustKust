@@ -1,3 +1,0 @@
-#include dead.txt
-#include inc_6.txt
-#include last.txt

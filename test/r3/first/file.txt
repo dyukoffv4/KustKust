@@ -1,2 +1,0 @@
-#include dead.txt
-#include mino.txt

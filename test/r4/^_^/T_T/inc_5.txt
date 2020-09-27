@@ -1,2 +1,0 @@
-#include inc_6.txt
-#include inc_7.txt
