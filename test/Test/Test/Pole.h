@@ -2,6 +2,9 @@
 
 #include "Defenition.h"
 
+#define ITER_BEGIN -2
+#define ITER_END -3
+
 class Pole_Dest {
 
 private:
@@ -33,7 +36,8 @@ private:
 	Pole& operator = (const Pole&);
 
 	void destr();
-	void PoleRead(const char*);
+	bool get_HW(const char*);
+	bool Read_Pole(const char*);
 
 protected:
 
@@ -46,6 +50,11 @@ public:
 
 	Pole(Pole&&) noexcept;
 	Pole& operator = (Pole&&) noexcept;
+
+	//-------------------------
+
+	Pole_Iter get_Iter_Begin();
+	Pole_Iter get_Iter_End();
 };
 
 class Pole_Iter {
@@ -58,10 +67,14 @@ private:
 
 public:
 
-	Pole_Iter();
+	Pole_Iter(Pole*, short h, short w);
 
-	void next();
+	Pole_Iter& operator++();
+	Pole_Iter& operator--();
+
 	bool Line_End();
-	bool Iter_End();
+	bool is_End();
+	bool is_Begin();
+
 	Cell& get_Cell();
 };
