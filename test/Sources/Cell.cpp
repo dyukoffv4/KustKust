@@ -14,16 +14,16 @@ std::ostream& operator<< (std::ostream& out, const Cell& cell) {
 
 	switch (cell.condition) {
 	case 0:
-		out << ' ';
+		out << ".";
 		break;
 	case 1:
-		out << '#';
+		out << char(254);
 		break;
 	case 2:
-		out << 'S';
+		out << 'O';
 		break;
 	case 3:
-		out << 'E';
+		out << 'X';
 		break;
 	}
 

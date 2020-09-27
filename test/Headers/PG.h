@@ -50,6 +50,8 @@ public:
 
 	//-------------------------
 
+	friend std::ostream& operator<< (std::ostream&, const PlayGround&);
+
 	PG_Iter get_Iter_Begin();
 	PG_Iter get_Iter_End();
 };

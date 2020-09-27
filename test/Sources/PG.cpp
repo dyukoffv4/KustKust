@@ -160,6 +160,23 @@ PG_Iter PlayGround::get_Iter_End() {
 	return iterator;
 }
 
+std::ostream& operator<< (std::ostream& out, const PlayGround& PG) {
+
+	for (int i = 0; i < PG.height; i++) {
+
+		for (int j = 0; j < PG.width; j++)
+			if (PG.data[i][j].ifWall()) out << char(220) << char(254);
+			else out << "  ";
+		out << '\n';
+		for (int j = 0; j < PG.width; j++)
+			if (PG.data[i][j].ifWall()) out << char(220) << PG.data[i][j];
+			else out << " " << PG.data[i][j];
+		out << '\n';
+	}
+
+	return out;
+}
+
 // -------- Pole_Dest defenition
 
 PG_Dest::~PG_Dest() {

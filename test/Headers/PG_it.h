@@ -24,5 +24,5 @@ public:
 	bool is_End();
 	bool is_Begin();
 
-	Cell& get_Cell();
+	Cell& get_Curent();
 };

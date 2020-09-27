@@ -57,7 +57,7 @@ bool PG_Iter::is_Begin() {
 	return ((!ptr_pole->data) || (w_counter == ITER_BEGIN));
 }
 
-Cell& PG_Iter::get_Cell() {
+Cell& PG_Iter::get_Curent() {
 
 	if (!is_End()) return ptr_pole->data[h_counter][w_counter];
 	return ptr_pole->data[h_counter][w_counter + ptr_pole->width];
