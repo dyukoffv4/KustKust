@@ -17,7 +17,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& cell) {
 		out << ".";
 		break;
 	case 1:
-		out << char(254);
+		out << "#";
 		break;
 	case 2:
 		out << 'O';
