@@ -2,24 +2,24 @@
 
 #include "Defenition.h"
 
-class Pole_Dest {
+class PG_Dest {
 
 private:
 
-	Pole* ptr_pole;
+	PlayGround* ptr_pole;
 
 public:
 
-	~Pole_Dest();
-	void Initial(Pole*);
+	~PG_Dest();
+	void Initial(PlayGround*);
 };
 
-class Pole {
+class PlayGround {
 
 private:
 
-	static Pole* ptr_pole;
-	static Pole_Dest destroyer;
+	static PlayGround* ptr_pole;
+	static PG_Dest destroyer;
 
 	Cell** data;
 	short width;
@@ -27,10 +27,10 @@ private:
 
 	//-------------------------
 
-	Pole(const char*);
+	PlayGround(const char*);
 
-	Pole(const Pole&);
-	Pole& operator = (const Pole&);
+	PlayGround(const PlayGround&);
+	PlayGround& operator = (const PlayGround&);
 
 	void destr();
 	bool get_HW(const char*);
@@ -38,18 +38,18 @@ private:
 
 protected:
 
-	friend class Pole_Dest;
-	friend class Pole_Iter;
+	friend class PG_Dest;
+	friend class PG_Iter;
 
 public:
 
-	static Pole* get_Pole(const char*);
+	static PlayGround* get_Pole(const char*);
 
-	Pole(Pole&&) noexcept;
-	Pole& operator = (Pole&&) noexcept;
+	PlayGround(PlayGround&&) noexcept;
+	PlayGround& operator = (PlayGround&&) noexcept;
 
 	//-------------------------
 
-	Pole_Iter get_Iter_Begin();
-	Pole_Iter get_Iter_End();
+	PG_Iter get_Iter_Begin();
+	PG_Iter get_Iter_End();
 };

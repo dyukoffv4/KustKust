@@ -5,20 +5,20 @@
 #define ITER_BEGIN -2
 #define ITER_END -3
 
-class Pole_Iter {
+class PG_Iter {
 
 private:
 
 	int h_counter;
 	int w_counter;
-	Pole* ptr_pole;
+	PlayGround* ptr_pole;
 
 public:
 
-	Pole_Iter(Pole*, short h, short w);
+	PG_Iter(PlayGround*, short h, short w);
 
-	Pole_Iter& operator++();
-	Pole_Iter& operator--();
+	PG_Iter& operator++();
+	PG_Iter& operator--();
 
 	bool Line_End();
 	bool is_End();

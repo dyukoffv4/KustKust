@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-class Pole;
+class PlayGround;
 class Cell;
 class Pole_Dstr;
-class Pole_Iter;
+class PG_Iter;

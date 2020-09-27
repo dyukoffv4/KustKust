@@ -4,19 +4,19 @@
 #include "Cell.h"
 #include "Pole_Iter.h"
 
-Pole* Pole::ptr_pole = nullptr;
-Pole_Dest Pole::destroyer;
+PlayGround* PlayGround::ptr_pole = nullptr;
+PG_Dest PlayGround::destroyer;
 
 // -------- Pole defenition
 
-Pole::Pole(const char* path) : width(0), height(0), data(nullptr) {
+PlayGround::PlayGround(const char* path) : width(0), height(0), data(nullptr) {
 
 	if (get_HW(path)) return;
 
 	if (Read_Pole(path)) data = nullptr;
 }
 
-bool Pole::get_HW(const char* path) {
+bool PlayGround::get_HW(const char* path) {
 
 	FILE* file = fopen(path, "r");
 	if (!file) return true;
@@ -40,7 +40,7 @@ bool Pole::get_HW(const char* path) {
 	return false;
 }
 
-bool Pole::Read_Pole(const char* path) {
+bool PlayGround::Read_Pole(const char* path) {
 
 	if (!(data = new Cell * [height])) return true;
 	for (int i = 0; i < height; i++) if (!(data[i] = new Cell[width])) return true;
@@ -76,17 +76,17 @@ bool Pole::Read_Pole(const char* path) {
 	return false;
 }
 
-Pole* Pole::get_Pole(const char* path) {
+PlayGround* PlayGround::get_Pole(const char* path) {
 
 	if (!ptr_pole) {
 
-		ptr_pole = new Pole(path);
+		ptr_pole = new PlayGround(path);
 		destroyer.Initial(ptr_pole);
 	}
 	return ptr_pole;
 }
 
-void Pole::destr() {
+void PlayGround::destr() {
 
 	if (!data) return;
 
@@ -95,7 +95,7 @@ void Pole::destr() {
 	delete data;
 }
 
-Pole::Pole(const Pole& init) : width(init.width), height(init.height) {
+PlayGround::PlayGround(const PlayGround& init) : width(init.width), height(init.height) {
 
 	data = new Cell * [height];
 	for (int i = 0; i < height; i++) data[i] = new Cell[width];
@@ -104,7 +104,7 @@ Pole::Pole(const Pole& init) : width(init.width), height(init.height) {
 		for (int j = 0; j < width; j++) data[i][j] = init.data[i][j];
 }
 
-Pole::Pole(Pole&& init) noexcept : width(init.width), height(init.height) {
+PlayGround::PlayGround(PlayGround&& init) noexcept : width(init.width), height(init.height) {
 
 	init.ptr_pole = this;
 
@@ -112,7 +112,7 @@ Pole::Pole(Pole&& init) noexcept : width(init.width), height(init.height) {
 	init.data = nullptr;
 }
 
-Pole& Pole::operator = (const Pole& init) {
+PlayGround& PlayGround::operator = (const PlayGround& init) {
 
 	if (this == &init) return *this;
 
@@ -131,7 +131,7 @@ Pole& Pole::operator = (const Pole& init) {
 	return *this;
 }
 
-Pole& Pole::operator = (Pole&& init) noexcept {
+PlayGround& PlayGround::operator = (PlayGround&& init) noexcept {
 
 	if (this == &init) return *this;
 
@@ -148,27 +148,27 @@ Pole& Pole::operator = (Pole&& init) noexcept {
 	return *this;
 }
 
-Pole_Iter Pole::get_Iter_Begin() {
+PG_Iter PlayGround::get_Iter_Begin() {
 
-	Pole_Iter iterator(this, 0, 0);
+	PG_Iter iterator(this, 0, 0);
 	return iterator;
 }
 
-Pole_Iter Pole::get_Iter_End() {
+PG_Iter PlayGround::get_Iter_End() {
 
-	Pole_Iter iterator(this, height - 1, width - 1);
+	PG_Iter iterator(this, height - 1, width - 1);
 	return iterator;
 }
 
 // -------- Pole_Dest defenition
 
-Pole_Dest::~Pole_Dest() {
+PG_Dest::~PG_Dest() {
 
 	ptr_pole->destr();
 	delete[] ptr_pole;
 }
 
-void Pole_Dest::Initial(Pole* ptr) {
+void PG_Dest::Initial(PlayGround* ptr) {
 
 	ptr_pole = ptr;
 }
