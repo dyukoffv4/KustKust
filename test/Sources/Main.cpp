@@ -2,18 +2,18 @@
 #include "../Headers/PG.h"
 #include "../Headers/PG_it.h"
 
-int main(int argc, char* argv[]) {
+int main() {
 
-	PlayGround* ptr = PlayGround::get_Pole(argv[1]);
-	/*
+	PlayGround* ptr = PlayGround::get_Pole("C:\\Games\\hello.txt");
+	
 	puts("\n");
 	
 	for (PG_Iter i = ptr->get_Iter_Begin(); !i.is_End(); ++i) {
 
-		std::cout << i.get_Curent();
+		std::cout << i.get_Current();
 		if (i.Line_End()) std::cout << '\n';
 	}
-	*/
+	
 	puts("\n");
 	
 	std::cout << *ptr;

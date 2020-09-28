@@ -6,7 +6,7 @@ class PG_Dest {
 
 private:
 
-	PlayGround* ptr_pole;
+	PlayGround* ptr_PG;
 
 public:
 
@@ -18,7 +18,7 @@ class PlayGround {
 
 private:
 
-	static PlayGround* ptr_pole;
+	static PlayGround* ptr_PG;
 	static PG_Dest destroyer;
 
 	Cell** data;

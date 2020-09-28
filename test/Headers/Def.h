@@ -4,5 +4,5 @@
 
 class PlayGround;
 class Cell;
-class Pole_Dstr;
+class PG_Dstr;
 class PG_Iter;

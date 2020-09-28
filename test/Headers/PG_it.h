@@ -9,9 +9,9 @@ class PG_Iter {
 
 private:
 
-	int h_counter;
-	int w_counter;
-	PlayGround* ptr_pole;
+	short h_counter;
+	short w_counter;
+	PlayGround* ptr_PG;
 
 public:
 
@@ -24,5 +24,5 @@ public:
 	bool is_End();
 	bool is_Begin();
 
-	Cell& get_Curent();
+	Cell& get_Current();
 };

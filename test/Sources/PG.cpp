@@ -4,7 +4,7 @@
 #include "../Headers/Cell.h"
 #include "../Headers/PG_it.h"
 
-PlayGround* PlayGround::ptr_pole = nullptr;
+PlayGround* PlayGround::ptr_PG = nullptr;
 PG_Dest PlayGround::destroyer;
 
 // -------- Pole defenition
@@ -78,12 +78,12 @@ bool PlayGround::Read_Pole(const char* path) {
 
 PlayGround* PlayGround::get_Pole(const char* path) {
 
-	if (!ptr_pole) {
+	if (!ptr_PG) {
 
-		ptr_pole = new PlayGround(path);
-		destroyer.Initial(ptr_pole);
+		ptr_PG = new PlayGround(path);
+		destroyer.Initial(ptr_PG);
 	}
-	return ptr_pole;
+	return ptr_PG;
 }
 
 void PlayGround::destr() {
@@ -106,7 +106,7 @@ PlayGround::PlayGround(const PlayGround& init) : width(init.width), height(init.
 
 PlayGround::PlayGround(PlayGround&& init) noexcept : width(init.width), height(init.height) {
 
-	init.ptr_pole = this;
+	init.ptr_PG = this;
 
 	data = init.data;
 	init.data = nullptr;
@@ -140,7 +140,7 @@ PlayGround& PlayGround::operator = (PlayGround&& init) noexcept {
 	
 	width = init.width;
 	height = init.height;
-	init.ptr_pole = this;
+	init.ptr_PG = this;
 
 	data = init.data;
 	init.data = nullptr;
@@ -181,11 +181,11 @@ std::ostream& operator<< (std::ostream& out, const PlayGround& PG) {
 
 PG_Dest::~PG_Dest() {
 
-	ptr_pole->destr();
-	delete[] ptr_pole;
+	ptr_PG->destr();
+	delete[] ptr_PG;
 }
 
 void PG_Dest::Initial(PlayGround* ptr) {
 
-	ptr_pole = ptr;
+	ptr_PG = ptr;
 }
