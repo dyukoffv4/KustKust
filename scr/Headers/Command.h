@@ -1,6 +1,11 @@
 #pragma once
 
-#include "Def.h"
+#include "Defines.h"
+
+class Player;
+
+///	---------------------//
+//	Interface Command	///
 
 class Command {
 
@@ -8,12 +13,16 @@ public:
 	virtual void execute() = 0;
 };
 
-class PlrMove_C : public Command {
+///	---------------------//
+//	Concrete Commands	///
+
+class PlayerMove_C : public Command {
 
 private:
 	Player* receiver;
+	char direct;
 
 public:
-	PlrMove_C(Player* _receiver);
+	PlayerMove_C(Player* _receiver, char _direct);
 	virtual void execute();
 };

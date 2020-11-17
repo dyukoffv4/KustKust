@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Def.h"
+class Title;
+
+///	---------------------//
+//	Concrete Iterator	///
 
 class IteratorPG {
 

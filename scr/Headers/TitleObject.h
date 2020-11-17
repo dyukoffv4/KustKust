@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Def.h"
+#include "Defines.h"
+
+///	---------------------//
+//	Interface Object	///
 
 class Object {
 
@@ -9,19 +12,22 @@ public:
 	virtual char getName() = 0;
 };
 
+///	---------------------//
+//	Concrete Objects	///
+
 class Apple_O : public Object {
 
 public:
 	virtual char getName();
 };
 
-class Rock_O : public Object {
+class Key_O : public Object {
 
 public:
 	virtual char getName();
 };
 
-class Plate_O : public Object {
+class Pie_O : public Object {
 
 public:
 	virtual char getName();

@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Def.h"
+class Object;
+
+///	---------------------//
+//	Interface Factory	///
 
 class Factory {
 
@@ -8,19 +11,22 @@ public:
 	virtual Object* getObject() = 0;
 };
 
+///	---------------------//
+//	Concrete Factorys	///
+
 class Apple_F : Factory {
 
 public:
 	virtual Object* getObject();
 };
 
-class Rock_F : Factory {
+class Key_F : Factory {
 
 public:
 	virtual Object* getObject();
 };
 
-class Plate_F : Factory {
+class Pie_F : Factory {
 
 public:
 	virtual Object* getObject();

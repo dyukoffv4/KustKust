@@ -7,11 +7,13 @@
 #include "../Headers/TitleObject.h"
 #include "../Headers/Command.h"
 
-Game::Game(const char* path) {
+Game::Game(std::string title, std::string path, std::string sprites) : sf::RenderWindow() {
 
 	ground = &PlayGround::getPG(path);
+	texture.loadFromFile(sprites);
 	player = new Player(ground->getStartX(), ground->getStartY());
 	context = new Context(player);
+	this->create(sf::VideoMode(TIT_W * ground->getWidth() - TIT_W + SPR_W, TIT_H * ground->getHeight() - TIT_H + SPR_H), title);
 }
 
 Game::~Game() {
@@ -20,17 +22,76 @@ Game::~Game() {
 	delete context;
 }
 
-void Game::loop() {
+void Game::Draw() {
 
-	while (ground->isGood()) {
+	sf::Sprite sprite(texture);
+	int x_curr = 0, y_curr = 0;
+	this->clear(sf::Color::White);
 
-		system("cls");
-		std::cout << player->getX() << ' ' << player->getY() << '\n';
-		std::cout << (int)player->getApple() << ' ' << (int)player->getPie() << ' ' << (int)player->getKey() << '\n';
+	for (IteratorPG i = ground->getIterator(); !i.iterEnd(); i++) {
 
-		commands.push_back(new PlrMove_C(player));
+		if (i.lineEnd()) {
 
-		if (context->mainWork()) break;
+			x_curr = 0;
+			y_curr += TIT_H;
+		}
+
+		if (player->getX() == i.getX() && player->getY() == i.getY()) {
+
+			sprite.setTextureRect(sf::Rect<int>(SPR_W * 6, 0, SPR_W, SPR_H));
+		}
+		else if (i.getCurr().getObj()) {
+
+			switch (i.getCurr().getObj()->getName()) {
+			case APPLE:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 3, 0, SPR_W, SPR_H));
+				break;
+			case PIE:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 4, 0, SPR_W, SPR_H));
+				break;
+			case KEY:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 5, 0, SPR_W, SPR_H));
+				break;
+			case WALL:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 2, 0, SPR_W, SPR_H));
+				break;
+			case START:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 0, 0, SPR_W, SPR_H));
+				break;
+			case EXIT:
+				sprite.setTextureRect(sf::Rect<int>(SPR_W * 1, 0, SPR_W, SPR_H));
+				break;
+			}
+		}
+		else sprite.setTextureRect(sf::Rect<int>(SPR_W * 8, 0, SPR_W, SPR_H));
+
+		sprite.setPosition(x_curr, y_curr);
+
+		this->draw(sprite);
+
+		x_curr += TIT_W;
+	}
+
+	this->display();
+}
+
+void Game::Loop() {
+
+	while (ground->isGood() && this->isOpen()) {
+
+		sf::Event event;
+		while (this->pollEvent(event)) {
+		
+			if (event.type == sf::Event::Closed) this->close();
+			if (event.type == sf::Event::KeyPressed) {
+
+				if (event.key.code == sf::Keyboard::Up) commands.push_back(new PlayerMove_C(player, UP));
+				if (event.key.code == sf::Keyboard::Down) commands.push_back(new PlayerMove_C(player, DOWN));
+				if (event.key.code == sf::Keyboard::Left) commands.push_back(new PlayerMove_C(player, LEFT));
+				if (event.key.code == sf::Keyboard::Right) commands.push_back(new PlayerMove_C(player, RIGHT));
+				if (event.key.code == sf::Keyboard::Escape) this->close();
+			}
+		}
 
 		std::list<Command*>::iterator it = commands.begin();
 		while (it != commands.end()) {
@@ -40,10 +101,12 @@ void Game::loop() {
 			it++;
 		}
 		commands.clear();
+
+		if (context->mainWork()) break;
+
+		this->Draw();
 	}
 
 	if (ground->isGood()) std::cout << "\nGame Complete\n";
 	else std::cout << "\nGame level file error\n";
-
-	system("pause");
 }

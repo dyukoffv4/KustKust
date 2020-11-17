@@ -6,14 +6,14 @@ Object* Apple_F::getObject() {
 	return new Apple_O;
 }
 
-Object* Rock_F::getObject() {
+Object* Key_F::getObject() {
 
-	return new Rock_O;
+	return new Key_O;
 }
 
-Object* Plate_F::getObject() {
+Object* Pie_F::getObject() {
 
-	return new Plate_O;
+	return new Pie_O;
 }
 
 Object* Wall_F::getObject() {

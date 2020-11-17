@@ -1,6 +1,11 @@
 #pragma once
 
-#include "Def.h"
+#include "Defines.h"
+#include <iostream>
+class Object;
+
+///	-----------------//
+//	Concrete Player	///
 
 class Player{
 

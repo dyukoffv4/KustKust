@@ -1,7 +1,5 @@
 #include "../Headers/Player.h"
-#include "../Headers/PlayGround.h"
 #include "../Headers/TitleObject.h"
-#include "../Headers/Strategy.h"
 
 void operator+= (Player& plr, Object* obj) {
 
