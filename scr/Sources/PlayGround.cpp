@@ -1,11 +1,9 @@
 #include "../Headers/PlayGround.h"
-#include "../Headers/Title.h"
 #include "../Headers/Iterator.h"
+#include "../Headers/Title.h"
 #include "../Headers/TitleFactory.h"
 
-// -------- Pole defenition
-
-PlayGround::PlayGround(const char* path) : x_start(0), y_start(0), width(0), height(0), data(nullptr) {
+PlayGround::PlayGround(std::string path) : x_start(0), y_start(0), width(0), height(0), data(nullptr) {
 
 	if (path == "") return;
 	std::ifstream file(path);
@@ -70,8 +68,8 @@ std::istream& operator>>(std::istream& in, PlayGround& data) {
 				factory = (Factory*)new Start_F;
 			}
 			if (sym == APPLE) factory = (Factory*)new Apple_F;
-			if (sym == PIE) factory = (Factory*)new Plate_F;
-			if (sym == KEY) factory = (Factory*)new Rock_F;
+			if (sym == PIE) factory = (Factory*)new Pie_F;
+			if (sym == KEY) factory = (Factory*)new Key_F;
 
 			if (factory) {
 
@@ -84,7 +82,7 @@ std::istream& operator>>(std::istream& in, PlayGround& data) {
 	return in;
 }
 
-PlayGround& PlayGround::getPG(const char* path) {
+PlayGround& PlayGround::getPG(std::string path) {
 
 	static PlayGround instance(path);
 	return instance;

@@ -2,8 +2,8 @@
 
 int main() {
 
-	Game game("C:/JigSawResurce/ground.txt");
-	game.loop();
+	Game game("Game", "C:/GameRes/ground.txt", "C:/GameRes/sprites.png");
+	game.Loop();
 
 	return 0;
 }

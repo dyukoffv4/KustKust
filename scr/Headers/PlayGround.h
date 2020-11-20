@@ -1,6 +1,10 @@
 #pragma once
 
-#include "Def.h"
+#include "Defines.h"
+#include <fstream>
+#include <string>
+class IteratorPG;
+class Title;
 
 class PlayGround {
 
@@ -14,7 +18,7 @@ private:
 
 	//-------------------------
 
-	PlayGround(const char*);
+	PlayGround(std::string);
 	~PlayGround();
 
 	PlayGround(const PlayGround&);
@@ -23,7 +27,7 @@ private:
 	friend std::istream& operator>> (std::istream&, PlayGround&);
 
 public:
-	static PlayGround& getPG(const char* path = "");
+	static PlayGround& getPG(std::string path = "");
 
 	PlayGround(PlayGround&&) noexcept;
 	PlayGround& operator = (PlayGround&&) noexcept;

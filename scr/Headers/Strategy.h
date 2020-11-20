@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Def.h"
+#include "Defines.h"
+class Player;
+class Title;
 
 class Strategy {
 

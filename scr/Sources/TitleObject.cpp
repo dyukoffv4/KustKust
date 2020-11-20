@@ -5,12 +5,12 @@ char Apple_O::getName() {
 	return APPLE;
 }
 
-char Rock_O::getName() {
+char Key_O::getName() {
 
 	return KEY;
 }
 
-char Plate_O::getName() {
+char Pie_O::getName() {
 
 	return PIE;
 }
