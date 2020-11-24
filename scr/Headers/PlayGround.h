@@ -6,6 +6,9 @@
 class IteratorPG;
 class Title;
 
+///	---------------------//
+//	Concrete PlayGround	///
+
 class PlayGround {
 
 private:
@@ -21,16 +24,10 @@ private:
 	PlayGround(std::string);
 	~PlayGround();
 
-	PlayGround(const PlayGround&);
-	PlayGround& operator = (const PlayGround&);
-
 	friend std::istream& operator>> (std::istream&, PlayGround&);
 
 public:
 	static PlayGround& getPG(std::string path = "");
-
-	PlayGround(PlayGround&&) noexcept;
-	PlayGround& operator = (PlayGround&&) noexcept;
 
 	//-------------------------
 

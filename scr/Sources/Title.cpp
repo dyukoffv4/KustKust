@@ -21,28 +21,28 @@ Object* Title::getObj() {
 
 std::ostream& operator<<(std::ostream& out, Title* title) {
 
-	out << "Title at x: " << title->x_coord << " y: " << title->y_coord << " is ";
-	if (!title->getObj()) out << "Free now\n";
+	if (!title->getObj()) out << "Free";
 	else
 		switch (title->getObj()->getName()) {
 		case START:
-			out << "Start title\n";
+			out << "Start";
 			break;
 		case WALL:
-			out << "Wall title\n";
+			out << "Wall";
 			break;
 		case EXIT:
-			out << "Exit title\n";
+			out << "Exit";
 			break;
 		case APPLE:
-			out << "Apple title\n";
+			out << "Apple";
 			break;
 		case PIE:
-			out << "Plate title\n";
+			out << "Plate";
 			break;
 		case KEY:
-			out << "Rock title\n";
+			out << "Rock";
 			break;
 		}
+	out << " title at x: " << title->x_coord << " y: " << title->y_coord << " is";
 	return out;
 }

@@ -1,9 +1,9 @@
 #include "../Headers/Game.h"
 
-int main() {
+int WinMain() {
 
 	Game game("Game", "C:/GameRes/ground.txt", "C:/GameRes/sprites.png");
-	game.Loop();
+	game.loop();
 
 	return 0;
 }

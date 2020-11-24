@@ -1,5 +1,6 @@
 #include "../Headers/Player.h"
 #include "../Headers/TitleObject.h"
+#include "../Headers/PlayGround.h"
 
 void operator+= (Player& plr, Object* obj) {
 
@@ -10,70 +11,54 @@ void operator+= (Player& plr, Object* obj) {
 
 Player::Player(short x, short y) {
 
-    x_pos = x;
-    y_pos = y;
-    x_prepos = x;
-    y_prepos = y;
-    apple = 0;
-    pie = 0;
-	key = 0;
+	this->x_pos = x;
+	this->y_pos = y;
+	this->x_prepos = x;
+	this->y_prepos = y;
+	this->apple = 0;
+	this->pie = 0;
+	this->key = 0;
 }
 
 short Player::getX() {
 
-    return x_pos;
+    return this->x_pos;
 }
 
 short Player::getY() {
 
-    return y_pos;
+    return this->y_pos;
 }
 
 unsigned char Player::getApple() {
 
-    return apple;
+    return this->apple;
 }
 
 unsigned char Player::getPie() {
 
-    return pie;
+    return this->pie;
 }
 
 unsigned char Player::getKey() {
 
-	return key;
+	return this->key;
 }
 
-void Player::Move(char direct) {
+void Player::Move(short x, short y) {
 
-    x_prepos = x_pos;
-    y_prepos = y_pos;
+	this->x_prepos = this->x_pos;
+	this->y_prepos = this->y_pos;
 
-	switch (direct) {
-	case UP:
-		y_pos--;
-		break;
-	case DOWN:
-		y_pos++;
-		break;
-	case LEFT:
-		x_pos--;
-		break;
-	case RIGHT:
-		x_pos++;
-		break;
-	}
+	y_pos = y;
+	x_pos = x;
+
+	if (this->x_pos < 0 || this->x_pos > PlayGround::getPG().getWidth() - 1) this->moveBack();
+	if (this->y_pos < 0 || this->y_pos > PlayGround::getPG().getHeight() - 1) this->moveBack();
 }
 
 void Player::moveBack() {
 
-	x_pos = x_prepos;
-	y_pos = y_prepos;
-}
-
-std::ostream& operator<<(std::ostream& out, Player* player) {
-
-	out << "Player now at x: " << player->getX() << " y: " << player->getY() << " ";
-	out << "Score: " << (int)player->getApple() << " Super: " << (int)player->getPie() << '\n';
-	return out;
+	this->x_pos = this->x_prepos;
+	this->y_pos = this->y_prepos;
 }

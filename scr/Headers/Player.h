@@ -7,7 +7,7 @@ class Object;
 ///	-----------------//
 //	Concrete Player	///
 
-class Player{
+class Player {
 
 private:
 	short x_pos;
@@ -26,10 +26,8 @@ public:
 	unsigned char getApple();
 	unsigned char getPie();
 	unsigned char getKey();
-	void Move(char);
+	void Move(short x, short y);
 	void moveBack();
 
 	friend void operator+=(Player&, Object*);
-
-	friend std::ostream& operator<<(std::ostream&, Player*);
 };

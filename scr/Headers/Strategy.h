@@ -3,6 +3,10 @@
 #include "Defines.h"
 class Player;
 class Title;
+class Game;
+
+///	---------------------//
+//	Interface Strategy	///
 
 class Strategy {
 
@@ -10,6 +14,9 @@ public:
     virtual ~Strategy() {}
     virtual bool doWork(Player*, Title*) = 0;
 };
+
+///	-----------------//
+//	Cocrete Context	///
 
 class Context {
 
@@ -25,6 +32,9 @@ public:
     void setStrategy(Strategy* strategy);
     bool mainWork();
 };
+
+///	---------------------//
+//	Concrete Strategys	///
 
 class Apple_S : public Strategy {
 

@@ -17,4 +17,6 @@
 #define TIT_H 48
 #define TIT_W 48
 
+#define SLEEP 500
+
 #endif

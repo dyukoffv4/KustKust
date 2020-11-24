@@ -3,15 +3,17 @@
 #include "../Headers/Title.h"
 #include "../Headers/TitleFactory.h"
 
-PlayGround::PlayGround(std::string path) : x_start(0), y_start(0), width(0), height(0), data(nullptr) {
+PlayGround::PlayGround(std::string path) : x_start(-1), y_start(-1), width(0), height(0), data(nullptr) {
 
 	if (path == "") return;
 	std::ifstream file(path);
 	if (!file.fail()) {
 
 		file >> *this;
-		good = true;
 		file.close();
+
+		if (x_start == -1) good = false;
+		else good = true;
 	}
 	else good = false;
 }
@@ -24,120 +26,10 @@ PlayGround::~PlayGround() {
 	delete data;
 }
 
-std::istream& operator>>(std::istream& in, PlayGround& data) {
-
-	std::string str;
-	std::getline(in, str);
-	data.width = (short)str.length();
-	in.seekg(0, in.beg);
-
-	while (!in.eof()) {
-
-		std::getline(in, str);
-		if (str != "\n") {
-
-			data.height++;
-			if (str.length() != data.width) {
-
-				data.height = 0;
-				data.width = 0;
-				return in;
-			}
-		}
-	}
-	
-	in.seekg(0, in.beg);
-	data.data = new Title*[data.height];
-	for (int i = 0; i < data.height; i++) {
-
-		data.data[i] = new Title[data.width];
-		for (int j = 0; j < data.width; j++) {
-
-			Title title(j, i);
-			data.data[i][j] = title;
-			char sym = in.get();
-			if (sym == '\n') sym = in.get();
-			Factory* factory = nullptr;
-
-			if (sym == WALL) factory = (Factory*)new Wall_F;
-			if (sym == EXIT) factory = (Factory*)new Exit_F;
-			if (sym == START) {
-
-				data.x_start = j;
-				data.y_start = i;
-				factory = (Factory*)new Start_F;
-			}
-			if (sym == APPLE) factory = (Factory*)new Apple_F;
-			if (sym == PIE) factory = (Factory*)new Pie_F;
-			if (sym == KEY) factory = (Factory*)new Key_F;
-
-			if (factory) {
-
-				data.data[i][j].setObj(factory->getObject());
-				delete factory;
-			}
-		}
-	}
-
-	return in;
-}
-
 PlayGround& PlayGround::getPG(std::string path) {
 
 	static PlayGround instance(path);
 	return instance;
-}
-
-PlayGround::PlayGround(const PlayGround& init) : x_start(init.x_start), y_start(init.y_start), width(init.width), height(init.height) {
-
-	good = init.good;
-	data = new Title * [height];
-	for (int i = 0; i < height; i++) data[i] = new Title[width];
-
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++) data[i][j] = init.data[i][j];
-}
-
-PlayGround::PlayGround(PlayGround&& init) noexcept : x_start(init.x_start), y_start(init.y_start), width(init.width), height(init.height) {
-
-	good = init.good;
-	data = init.data;
-	init.data = nullptr;
-}
-
-PlayGround& PlayGround::operator = (const PlayGround& init) {
-
-	if (this == &init) return *this;
-
-	for (int i = 0; i < height; i++) delete[] data[i];
-	delete[] data;
-
-	width = init.width;
-	height = init.height;
-
-	data = new Title * [height];
-	for (int i = 0; i < height; i++) data[i] = new Title[width];
-
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++) data[i][j] = init.data[i][j];
-
-	return *this;
-}
-
-PlayGround& PlayGround::operator = (PlayGround&& init) noexcept {
-
-	if (this == &init) return *this;
-
-	for (int i = 0; i < height; i++) delete[] data[i];
-	delete[] data;
-	
-	width = init.width;
-	height = init.height;
-
-	data = init.data;
-	init.data = nullptr;
-
-	return *this;
 }
 
 
@@ -175,4 +67,69 @@ short PlayGround::getStartX() {
 short PlayGround::getStartY() {
 
 	return y_start;
+}
+ 
+
+std::istream& operator>>(std::istream& in, PlayGround& data) {
+
+	in >> data.width >> data.height;
+
+	if (data.width < 5 || data.height < 5) return in;
+
+	data.data = new Title * [data.height];
+	for (int i = 0; i < data.height; i++) {
+
+		data.data[i] = new Title[data.width];
+		for (int j = 0; j < data.width; j++)
+			data.data[i][j] = Title(j, i);
+	}
+
+	while (!in.eof()) {
+
+		char id, buff;
+		short x0, x1, y0, y1;
+
+		in >> buff;
+		if (buff != '(') continue;
+		in >> id >> buff;
+		if (buff != ',') continue;
+		in >> x0 >> buff;
+		if (buff == '-') in >> x1 >> buff;
+		else x1 = x0;
+		if (buff != ',') continue;
+		in >> y0 >> buff;
+		if (buff == '-') in >> y1 >> buff;
+		else y1 = y0;
+		if (buff != ')') continue;
+		y0--;
+		x0--;
+
+		if (x0 < 0 || y0 < 0) continue;
+		if (x1 > data.width || y1 > data.height) continue;
+
+		Factory* factory = nullptr;
+
+		if (id == APPLE) factory = (Factory*)new Apple_F;
+		if (id == PIE) factory = (Factory*)new Pie_F;
+		if (id == KEY) factory = (Factory*)new Key_F;
+		if (id == WALL) factory = (Factory*)new Wall_F;
+		if (id == EXIT) factory = (Factory*)new Exit_F;
+		if (id == START && data.x_start == -1) {
+
+			factory = (Factory*)new Start_F;
+			data.x_start = x0;
+			data.y_start = y0;
+		}
+
+		if (factory) {
+
+			for (int i = y0; i < y1; i++)
+				for (int j = x0; j < x1; j++)
+					data.data[i][j].setObj(factory->getObject());
+
+			delete factory;
+		}
+	}
+
+	return in;
 }

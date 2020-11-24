@@ -1,31 +1,30 @@
 #pragma once
 
-#include <list>
+#include "Defines.h"
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-class PlayGround;
-class Player;
-class Context;
 class Command;
+class Wrapper;
 
-
+///	-----------------//
+//	Concrete Game	///
 
 class Game : public sf::RenderWindow {
 
 private:
-	PlayGround* ground;
-	Player* player;
-	Context* context;
+	Wrapper* wrapper;
+	Command* command;
 	sf::Texture texture;
-	std::list<Command*> commands;
+	bool key_used;
 
 public:
 	Game(std::string title, std::string path, std::string sprites);
 	~Game();
 
-	void Draw();
+	void draw();
+	void doWork();
 
-	void Loop();
+	void loop();
 };

@@ -2,7 +2,7 @@
 
 #include "Defines.h"
 
-class Player;
+class Wrapper;
 
 ///	---------------------//
 //	Interface Command	///
@@ -19,10 +19,20 @@ public:
 class PlayerMove_C : public Command {
 
 private:
-	Player* receiver;
+	Wrapper* receiver;
 	char direct;
 
 public:
-	PlayerMove_C(Player* _receiver, char _direct);
+	PlayerMove_C(Wrapper*, char);
+	virtual void execute();
+};
+
+class GamePause_C : public Command {
+
+private:
+	Wrapper* receiver;
+
+public:
+	GamePause_C(Wrapper*);
 	virtual void execute();
 };

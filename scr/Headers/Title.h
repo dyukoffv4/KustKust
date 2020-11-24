@@ -4,7 +4,7 @@
 #include <iostream>
 class Object;
 
-class Title {
+class Title{
 
 private:
 	Object* object;
