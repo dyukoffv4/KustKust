@@ -7,7 +7,7 @@ Model::Model(std::string a_path, std::string l_path)  {
 
 	this->game_end = false;
 	this->game_pause = false;
-	this->area = &Area::getPG(a_path);
+	this->area = &Area::getArea(a_path);
 	if (!this->area->isGood()) this->game_end = true;
 	this->player = new Player(area->getStartX(), area->getStartY());
 	this->context = new Context(player);
@@ -61,4 +61,9 @@ Player* Model::getPlayer() {
 Area* Model::getArea() {
 
 	return area;
+}
+
+bool Model::isPause() {
+
+	return game_pause;
 }

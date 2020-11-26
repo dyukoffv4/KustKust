@@ -4,8 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-class Player;
-class Area;
+class Model;
 
 ///	-----------------//
 //	Concrete Game	///
@@ -18,5 +17,5 @@ private:
 public:
 	View(std::string = WINDOW_TITLE, std::string = SPRITE_PATH);
 
-	void winDraw(Player*, Area*);
+	void winDraw(Model*);
 };

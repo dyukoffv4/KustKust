@@ -9,11 +9,15 @@ class Tile {
 
 private:
 	CommonObject* object;
+	short x;
+	short y;
 
 public:
-	Tile();
-	~Tile();
+	Tile(short = 0, short = 0);
 
 	void setObj(CommonObject*);
 	CommonObject* getObj();
+	int getNum();
+
+	bool operator==(Tile&);
 };

@@ -53,8 +53,8 @@ void Player::Move(short x, short y) {
 	y_pos = y;
 	x_pos = x;
 
-	if (this->x_pos < 0 || this->x_pos > Area::getPG().getWidth() - 1) this->moveBack();
-	if (this->y_pos < 0 || this->y_pos > Area::getPG().getHeight() - 1) this->moveBack();
+	if (this->x_pos < 0 || this->x_pos > Area::getArea().getWidth() - 1) this->moveBack();
+	if (this->y_pos < 0 || this->y_pos > Area::getArea().getHeight() - 1) this->moveBack();
 }
 
 void Player::moveBack() {

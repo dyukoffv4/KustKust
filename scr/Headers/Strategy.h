@@ -21,8 +21,8 @@ public:
 class Context {
 
 private:
-    Player* _player;
-    Strategy* _strategy;
+    Player* player;
+    Strategy* strategy;
 
 public:
     Context(Player* player);

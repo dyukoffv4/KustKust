@@ -4,6 +4,7 @@
 #include "../Headers/Iterator.h"
 #include "../Headers/Player.h"
 #include "../Headers/TileObject.h"
+#include "../Headers/Model.h"
 
 View::View(std::string title, std::string sprites) : sf::RenderWindow() {
 
@@ -11,13 +12,13 @@ View::View(std::string title, std::string sprites) : sf::RenderWindow() {
 	this->create(sf::VideoMode(1280, 960), title);
 }
 
-void View::winDraw(Player* player, Area* area) {
+void View::winDraw(Model* model) {
 
 	sf::Sprite sprite(texture);
 	int x_curr = 0, y_curr = 0;
 	this->clear(sf::Color::Cyan);
 
-	for (Iterator i = area->getIterator(); !i.iterEnd(); i++) {
+	for (DrawIterator i = model->getArea()->getIterator(); !i.iterEnd(); i++) {
 
 		if (i.lineEnd()) {
 
@@ -25,13 +26,13 @@ void View::winDraw(Player* player, Area* area) {
 			y_curr += TIT_H;
 		}
 
-		if (player->getX() == i.getX() && player->getY() == i.getY()) {
+		if (model->getPlayer()->getX() == i.getX() && model->getPlayer()->getY() == i.getY()) {
 
 			sprite.setTextureRect(sf::Rect<int>(SPR_W * 8, 0, SPR_W, SPR_H));
 		}
-		else if (i.getCurr().getObj()) {
+		else if (i.getCurr() && i.getCurr()->getObj()) {
 
-			switch (i.getCurr().getObj()->getName()) {
+			switch (i.getCurr()->getObj()->getName()) {
 			case APPLE:
 				sprite.setTextureRect(sf::Rect<int>(SPR_W * 5, 0, SPR_W, SPR_H));
 				break;
@@ -62,13 +63,13 @@ void View::winDraw(Player* player, Area* area) {
 	}
 	/*
 	sf::Text text;
-	if (wrapper->game_pause) {
+	if (model->isPause()) {
 		
 		text.setString("Pause");
 		text.setScale(sf::Vector2f(4, 4));
 		text.setStyle(sf::Text::Bold);
 		text.setFillColor(sf::Color::Red);
-		text.setPosition(sf::Vector2f(PlayGround::getPG().getWidth() * TIT_W / 2, PlayGround::getPG().getHeight() * TIT_H / 2));
+		text.setPosition(sf::Vector2f(Area::getArea().getWidth() * TIT_W / 2, Area::getArea().getHeight() * TIT_H / 2));
 		sf::RenderWindow::draw(text);
 	}
 	*/

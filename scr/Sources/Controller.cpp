@@ -48,6 +48,6 @@ void Controller::looping() {
 	while (view->isOpen() && !model->game_end) {
 
 		this->getEvent();
-		view->winDraw(model->getPlayer(), model->getArea());
+		view->winDraw(model);
 	}
 }

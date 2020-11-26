@@ -4,7 +4,7 @@
 #include "../Headers/TileFactory.h"
 #include "../Headers/TileObject.h"
 
-Area::Area(std::string path) : width(0), height(0), data(nullptr) {
+Area::Area(std::string path) : data_len(0), width(0), height(0), data(nullptr) {
 
 	if (path == "") return;
 	std::ifstream file(path);
@@ -17,21 +17,13 @@ Area::Area(std::string path) : width(0), height(0), data(nullptr) {
 
 Area::~Area() {
 
-	if (!data) return;
-	for (int i = 0; i < height; i++)
-		delete[] data[i];
-	delete data;
+	if (data) delete[] data;
 }
 
-Area& Area::getPG(std::string path) {
+Area& Area::getArea(std::string path) {
 
 	static Area instance(path);
 	return instance;
-}
-
-std::list<CommonObject*> Area::getObjects() {
-
-	return this->objects;
 }
 
 bool Area::isGood() {
@@ -49,30 +41,35 @@ short Area::getHeight() {
 	return height;
 }
 
-Iterator Area::getIterator() {
+DrawIterator Area::getIterator() {
 
-	Iterator iterator(data, height, width);
+	DrawIterator iterator(data, height, width, data_len);
 	return iterator;
 }
 
-Tile& Area::getTitle(short x, short y) {
+Tile* Area::getTile(short x, short y) {
 
-	return data[y][x];
+	Tile tile(x, y);
+	for (int i = 0; i < data_len; i++) {
+
+		if (data[i] == tile) return &data[i];
+	}
+	return nullptr;
 }
 
 short Area::getStartX() {
 
-	for (std::list<CommonObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+	for (int i = 0; i < data_len; i++) {
 
-		if ((*i)->getName() == START) return (*i)->getX();
+		if (data[i].getObj()->getName() == START) return data[i].getObj()->getX();
 	}
 }
 
 short Area::getStartY() {
 
-	for (std::list<CommonObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+	for (int i = 0; i < data_len; i++) {
 
-		if ((*i)->getName() == START) return (*i)->getY();
+		if (data[i].getObj()->getName() == START) return data[i].getObj()->getY();
 	}
 }
 
@@ -84,10 +81,6 @@ void Area::read(std::istream& in) {
 	in >> width >> height;
 
 	if (width < 5 || height < 5) return;
-	
-	data = new Tile * [height];
-	for (int i = 0; i < height; i++)
-		data[i] = new Tile[width];
 
 	while (!in.eof()) {
 
@@ -126,20 +119,75 @@ void Area::read(std::istream& in) {
 			for (int i = y0; i < y1; i++)
 				for (int j = x0; j < x1; j++) {
 
-					data[i][j].setObj(factory->getObject(j, i));
-					if (data[i][j].getObj()->getName() == START) start = true;
-					objects.push_back(data[i][j].getObj());
+					Tile tile(j, i);
+					tile.setObj(factory->getObject(j, i));
+					if (tile.getObj()->getName() == START) start = true;
+					this->pushTile(tile);
 				}
-
 			delete factory;
 		}
 	}
 
 	if (!start) {
 
-		for (int i = 0; i < height; i++)
-			delete[] data[i];
 		delete data;
 		data = nullptr;
+	}
+}
+
+void Area::pushTile(Tile p_tile) {
+
+	bool similar = false;
+	for (int i = 0; i < data_len; i++) {
+
+		if (p_tile == data[i]) {
+
+			similar = true;
+			break;
+		}
+	}
+	if (!similar) {
+
+		int push_i = data_len;
+
+		Tile* n_data = new Tile[data_len + 1];
+		for (int i = 0; i < data_len; i++) {
+
+			if (data[i].getNum() < p_tile.getNum()) n_data[i] = data[i];
+			if (data[i].getNum() >= p_tile.getNum()) {
+
+				if (data_len == push_i) push_i = i;
+				n_data[i + 1] = data[i];
+			}
+		}
+		n_data[push_i] = p_tile;
+		delete[] this->data;
+		this->data = n_data;
+		data_len++;
+	}
+}
+
+void Area::popTile(Tile p_tile) {
+
+	bool pop_i = false;
+	for (int i = 0; i < data_len; i++) {
+
+		if (p_tile == data[i]) {
+
+			data[i].setObj(nullptr);
+			pop_i = true;
+		}
+		if (pop_i && i != data_len - 1) data[i] = data[i + 1];
+	}
+	if (pop_i) {
+
+		this->data_len--;
+		Tile* n_data = new Tile[data_len];
+
+		for (int i = 0; i < data_len; i++)
+			n_data[i] = data[i];
+
+		delete[] this->data;
+		this->data = n_data;
 	}
 }

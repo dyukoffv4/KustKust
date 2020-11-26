@@ -3,9 +3,8 @@
 #include "Defines.h"
 #include <fstream>
 #include <string>
-#include <list>
 
-class Iterator;
+class DrawIterator;
 class CommonObject;
 class Tile;
 
@@ -15,10 +14,10 @@ class Tile;
 class Area {
 
 private:
-	Tile** data;
+	Tile* data;
+	int data_len;
 	short width;
 	short height;
-	std::list<CommonObject*> objects;
 
 	//-------------------------
 
@@ -28,16 +27,18 @@ private:
 	void read(std::istream&);
 
 public:
-	static Area& getPG(std::string path = "");
+	static Area& getArea(std::string path = "");
 
 	//-------------------------
 
-	std::list<CommonObject*> getObjects();
+	void pushTile(Tile);
+	void popTile(Tile);
+
 	bool isGood();
 	short getWidth();
 	short getHeight();
-	Iterator getIterator();
-	Tile& getTitle(short, short);
+	DrawIterator getIterator();
+	Tile* getTile(short, short);
 	short getStartX();
 	short getStartY();
 };

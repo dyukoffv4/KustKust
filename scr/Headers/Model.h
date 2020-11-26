@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #include "Defines.h"
 #include <string>
@@ -28,4 +28,5 @@ public:
 
 	Player* getPlayer();
 	Area* getArea();
+	bool isPause();
 };
