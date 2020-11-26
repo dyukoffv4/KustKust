@@ -2,8 +2,8 @@
 
 #include "Defines.h"
 class Player;
-class Title;
-class Game;
+class Tile;
+class View;
 
 ///	---------------------//
 //	Interface Strategy	///
@@ -12,7 +12,7 @@ class Strategy {
 
 public:
     virtual ~Strategy() {}
-    virtual bool doWork(Player*, Title*) = 0;
+    virtual bool doWork(Player*, Tile*) = 0;
 };
 
 ///	-----------------//
@@ -39,29 +39,29 @@ public:
 class Apple_S : public Strategy {
 
 public:
-    bool doWork(Player*, Title*);
+    bool doWork(Player*, Tile*);
 };
 
 class Pie_S : public Strategy {
 
 public:
-    bool doWork(Player*, Title*);
+    bool doWork(Player*, Tile*);
 };
 
 class Key_S : public Strategy {
 
 public:
-    bool doWork(Player*, Title*);
+    bool doWork(Player*, Tile*);
 };
 
 class Wall_S : public Strategy {
 
 public:
-    bool doWork(Player*, Title*);
+    bool doWork(Player*, Tile*);
 };
 
 class Exit_S : public Strategy {
 
 public:
-    bool doWork(Player*, Title*);
+    bool doWork(Player*, Tile*);
 };

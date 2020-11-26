@@ -2,7 +2,8 @@
 
 #include "Defines.h"
 #include <iostream>
-class Object;
+
+class CommonObject;
 
 ///	-----------------//
 //	Concrete Player	///
@@ -29,5 +30,5 @@ public:
 	void Move(short x, short y);
 	void moveBack();
 
-	friend void operator+=(Player&, Object*);
+	friend void operator+=(Player&, CommonObject*);
 };

@@ -1,9 +1,14 @@
-#include "../Headers/Game.h"
+#include "../Headers/Controller.h"
+#include "../Headers/Model.h"
+#include "../Headers/View.h"
 
 int WinMain() {
 
-	Game game("Game", "C:/GameRes/ground.txt", "C:/GameRes/sprites.png");
-	game.loop();
+	Model model;
+	View view;
+	Controller control(&model, &view);
+
+	control.looping();
 
 	return 0;
 }

@@ -3,39 +3,41 @@
 #include "Defines.h"
 #include <fstream>
 #include <string>
-class IteratorPG;
-class Title;
+#include <list>
+
+class Iterator;
+class CommonObject;
+class Tile;
 
 ///	---------------------//
 //	Concrete PlayGround	///
 
-class PlayGround {
+class Area {
 
 private:
-	Title** data;
+	Tile** data;
 	short width;
 	short height;
-	short x_start;
-	short y_start;
-	bool good;
+	std::list<CommonObject*> objects;
 
 	//-------------------------
 
-	PlayGround(std::string);
-	~PlayGround();
+	Area(std::string);
+	~Area();
 
-	friend std::istream& operator>> (std::istream&, PlayGround&);
+	void read(std::istream&);
 
 public:
-	static PlayGround& getPG(std::string path = "");
+	static Area& getPG(std::string path = "");
 
 	//-------------------------
 
+	std::list<CommonObject*> getObjects();
 	bool isGood();
 	short getWidth();
 	short getHeight();
-	IteratorPG getIterator();
-	Title& getTitle(short, short);
+	Iterator getIterator();
+	Tile& getTitle(short, short);
 	short getStartX();
 	short getStartY();
 };

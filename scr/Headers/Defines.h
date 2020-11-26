@@ -17,6 +17,9 @@
 #define TIT_H 48
 #define TIT_W 48
 
-#define SLEEP 500
+#define GROUND_PATH "C:\\GameRes\\ground.txt"
+#define SPRITE_PATH "C:\\GameRes\\sprites.png"
+#define WINDOW_TITLE "Thiefs"
+#define LOG_PATH "C:\\GameRes\\logs.txt"
 
 #endif

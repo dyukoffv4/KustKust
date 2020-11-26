@@ -1,27 +1,31 @@
 #pragma once
 
 #include "Defines.h"
+#include <string>
 
-class PlayGround;
+class Area;
 class Player;
 class Context;
 
-class Wrapper {
+class Model {
 
 private:
-	PlayGround* ground;
+	Area* area;
 	Player* player;
 	Context* context;
 
-public:
 	bool game_pause;
+
+public:
+
 	bool game_end;
 
-	Wrapper(PlayGround*, Player*, Context*);
-	~Wrapper();
+	Model(std::string = GROUND_PATH, std::string = LOG_PATH);
+	~Model();
 
 	void movePlayer(char);
-	void gameLogic();
+	void swapPause();
 
 	Player* getPlayer();
+	Area* getArea();
 };
