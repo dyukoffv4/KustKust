@@ -1,8 +1,8 @@
 #include "../Headers/Strategy.h"
-#include "../Headers/PlayGround.h"
+#include "../Headers/Area.h"
 #include "../Headers/Player.h"
-#include "../Headers/Title.h"
-#include "../Headers/TitleObject.h"
+#include "../Headers/Tile.h"
+#include "../Headers/TileObject.h"
 
 Context::Context(Player* player) : _player(player), _strategy(nullptr) {}
 
@@ -24,7 +24,7 @@ void Context::setStrategy(Strategy* strategy) {
 
 bool Context::mainWork() {
     
-    Title& title = PlayGround::getPG().getTitle(_player->getX(), _player->getY());
+    Tile& title = Area::getPG().getTitle(_player->getX(), _player->getY());
     if (!title.getObj()) return false;
     this->setStrategy(nullptr);
     if (title.getObj()->getName() == APPLE) this->setStrategy(new Apple_S);
@@ -36,14 +36,14 @@ bool Context::mainWork() {
     return false;
 }
 
-bool Apple_S::doWork(Player* _player, Title* _title) {
+bool Apple_S::doWork(Player* _player, Tile* _title) {
 
     *_player += _title->getObj();
     _title->setObj(nullptr);
     return false;
 }
 
-bool Pie_S::doWork(Player* _player, Title* _title) {
+bool Pie_S::doWork(Player* _player, Tile* _title) {
 
     if (_player->getApple() >= 3 * (1 + _player->getPie())) {
 
@@ -53,7 +53,7 @@ bool Pie_S::doWork(Player* _player, Title* _title) {
     return false;
 }
 
-bool Key_S::doWork(Player* _player, Title* _title) {
+bool Key_S::doWork(Player* _player, Tile* _title) {
 
     if (_player->getPie() >= 3) {
 
@@ -63,13 +63,13 @@ bool Key_S::doWork(Player* _player, Title* _title) {
     return false;
 }
 
-bool Wall_S::doWork(Player* _player, Title* _title) {
+bool Wall_S::doWork(Player* _player, Tile* _title) {
 
     _player->moveBack();
     return false;
 }
 
-bool Exit_S::doWork(Player* _player, Title* _title) {
+bool Exit_S::doWork(Player* _player, Tile* _title) {
 
     if (_player->getKey() > 0) return true;
     return false;

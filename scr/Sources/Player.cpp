@@ -1,8 +1,8 @@
 #include "../Headers/Player.h"
-#include "../Headers/TitleObject.h"
-#include "../Headers/PlayGround.h"
+#include "../Headers/TileObject.h"
+#include "../Headers/Area.h"
 
-void operator+= (Player& plr, Object* obj) {
+void operator+= (Player& plr, CommonObject* obj) {
 
 	if (obj->getName() == APPLE) plr.apple++;
 	if (obj->getName() == PIE) plr.pie++;
@@ -53,8 +53,8 @@ void Player::Move(short x, short y) {
 	y_pos = y;
 	x_pos = x;
 
-	if (this->x_pos < 0 || this->x_pos > PlayGround::getPG().getWidth() - 1) this->moveBack();
-	if (this->y_pos < 0 || this->y_pos > PlayGround::getPG().getHeight() - 1) this->moveBack();
+	if (this->x_pos < 0 || this->x_pos > Area::getPG().getWidth() - 1) this->moveBack();
+	if (this->y_pos < 0 || this->y_pos > Area::getPG().getHeight() - 1) this->moveBack();
 }
 
 void Player::moveBack() {

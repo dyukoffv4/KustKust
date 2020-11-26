@@ -2,7 +2,7 @@
 
 #include "Defines.h"
 
-class Object;
+class CommonObject;
 
 ///	---------------------//
 //	Interface Factory	///
@@ -10,7 +10,7 @@ class Object;
 class Factory {
 
 public:
-	virtual Object* getObject() = 0;
+	virtual CommonObject* getObject(short, short) = 0;
 };
 
 ///	---------------------//
@@ -19,35 +19,35 @@ public:
 class Apple_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
 
 class Key_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
 
 class Pie_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
 
 class Wall_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
 
 class Start_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
 
 class Exit_F : Factory {
 
 public:
-	virtual Object* getObject();
+	virtual CommonObject* getObject(short, short);
 };
