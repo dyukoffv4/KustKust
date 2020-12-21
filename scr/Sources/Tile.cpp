@@ -1,26 +1,79 @@
+#include "../Headers/Bridge.h"
 #include "../Headers/Tile.h"
 #include "../Headers/TileObject.h"
-#include "../Headers/Area.h"
 
-Tile::Tile(short _x, short _y) : object(nullptr), x(_x), y(_y) {}
+Tile::Tile(short _x, short _y) : x(_x), y(_y) {}
 
-void Tile::setObj(CommonObject* _object) {
+Tile::~Tile() {
 
-	if (object) delete object;
-	object = _object;
+	for (std::list<Bridge*>::iterator i = observers.begin(); i != observers.end(); i++)
+		delete (*i);
+
+	for (int i = 0; objects[i] != nullptr; i++)
+		delete objects.pop(objects[i]);
 }
 
-CommonObject* Tile::getObj() {
+List& Tile::getObjs() {
 
-	return this->object;
+	return objects;
 }
 
-int Tile::getNum() {
+short Tile::getx() {
 
-	return y * Area::getArea().getHeight() + x;
+	return x;
 }
 
-bool Tile::operator==(Tile& tile) {
+short Tile::gety() {
 
-	return (this->x == tile.x) && (this->y == tile.y);
+	return y;
+}
+
+void Tile::attach(Bridge* _observer) {
+
+	observers.push_back(_observer);
+}
+
+void Tile::detach(Bridge* _observer) {
+
+	observers.remove(_observer);
+}
+
+void Tile::notify(std::string message) {
+
+	for (std::list<Bridge*>::iterator i = observers.begin(); i != observers.end(); i++)
+		(*i)->transUpdate(this, message);
+}
+
+std::ostream& operator<<(std::ostream& out, Tile* tile) {
+
+	if (tile->getObjs().empty()) out << "empty" << " [" << tile->x << " " << tile->y << "]";
+	else
+		for (int i = 0; tile->getObjs()[i] != nullptr; i++) {
+			switch (tile->getObjs()[i]->getName()) {
+
+			case PLR:
+				out << "player";
+				break;
+			case COIN:
+				out << "coin";
+				break;
+			case BAG:
+				out << "bag";
+				break;
+			case KEY:
+				out << "key";
+				break;
+			case WALL:
+				out << "wall";
+				break;
+			case START:
+				out << "start";
+				break;
+			case EXIT:
+				out << "exit";
+				break;
+			}
+			out << " [" << tile->x << " " << tile->y << "]";
+		}
+	return out;
 }

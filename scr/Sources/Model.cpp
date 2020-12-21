@@ -1,7 +1,11 @@
 #include "../Headers/Model.h"
-#include "../Headers/Player.h"
 #include "../Headers/Strategy.h"
 #include "../Headers/Area.h"
+#include "../Headers/Iterator.h"
+#include "../Headers/Tile.h"
+#include "../Headers/Observer.h"
+#include "../Headers/Bridge.h"
+#include "../Headers/State.h"
 
 Model::Model(std::string a_path, std::string l_path)  {
 
@@ -9,43 +13,35 @@ Model::Model(std::string a_path, std::string l_path)  {
 	this->game_pause = false;
 	this->area = &Area::getArea(a_path);
 	if (!this->area->isGood()) this->game_end = true;
-	this->player = new Player(area->getStartX(), area->getStartY());
-	this->context = new Context(player);
+	this->player = area->getPlr();
+
+	this->context = new Context(this);
+	this->observer = (Observer*)new TileObs(LOG_PATH);
+	this->bridge = new Bridge(observer);
+	this->state = nullptr;
+
+	for (Iterator i = area->getIterator(); !i.iterEnd(); i++)
+		i.getCurr().attach(bridge);
 }
 
 Model::~Model() {
 
-	delete player;
+	for (Iterator i = area->getIterator(); !i.iterEnd(); i++)
+		i.getCurr().detach(bridge);
+
 	delete context;
+	delete observer;
+	delete bridge;
+	if (state) delete state;
 }
 
-void Model::movePlayer(char direct) {
+void Model::moveAll(char direct) {
 
 	if (game_pause) return;
 
-	short x = player->getX();
-	short y = player->getY();
+	if (state) state->MakeStep(direct);
 
-	switch (direct) {
-
-	case UP:
-		player->Move(x, --y);
-		break;
-
-	case DOWN:
-		player->Move(x, ++y);
-		break;
-
-	case LEFT:
-		player->Move(--x, y);
-		break;
-
-	case RIGHT:
-		player->Move(++x, y);
-		break;
-	}
-
-	if (context->mainWork()) game_end = true;
+	if (context->playerWork()) game_end = true;
 }
 
 void Model::swapPause() {
@@ -53,7 +49,13 @@ void Model::swapPause() {
 	game_pause = !game_pause;
 }
 
-Player* Model::getPlayer() {
+void Model::setState(State* _state) {
+
+	if (state) delete state;
+	state = _state;
+}
+
+Object* Model::getPlayer() {
 
 	return player;
 }

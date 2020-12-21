@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Defines.h"
-
 class Tile;
 
 ///	---------------------//
 //	Concrete Iterator	///
 
-class DrawIterator {
+class Iterator {
 
 private:
 	bool line_end;
@@ -16,17 +15,16 @@ private:
 	const short i_width;
 	short h_count;
 	short w_count;
-	Tile* container;
-	int length;
+	Tile** container;
 
 public:
-	DrawIterator(Tile*, short, short, int);
+	Iterator(Tile**, short, short);
 
-	DrawIterator& operator++();
-	DrawIterator& operator--();
+	Iterator& operator++();
+	Iterator& operator--();
 
-	DrawIterator operator++(int);
-	DrawIterator operator--(int);
+	Iterator operator++(int);
+	Iterator operator--(int);
 
 	void setBegin();
 	void setEnd();
@@ -40,5 +38,5 @@ public:
 	short getX();
 	short getY();
 
-	Tile* getCurr();
+	Tile& getCurr();
 };

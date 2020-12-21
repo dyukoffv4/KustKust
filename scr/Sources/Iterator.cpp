@@ -1,17 +1,16 @@
 #include "../Headers/Iterator.h"
 #include "../Headers/Tile.h"
 
-DrawIterator::DrawIterator(Tile* data, short height, short width, int data_len) : i_height(height), i_width(width) {
+Iterator::Iterator(Tile** data, short height, short width) : i_height(height), i_width(width) {
 
 	h_count = 0;
 	w_count = 0;
 	container = data;
-	length = data_len;
 	iter_end = false;
 	line_end = false;
 }
 
-DrawIterator& DrawIterator::operator++() {
+Iterator& Iterator::operator++() {
 
 	iter_end = false;
 	line_end = false;
@@ -30,7 +29,7 @@ DrawIterator& DrawIterator::operator++() {
 	return *this;
 }
 
-DrawIterator& DrawIterator::operator--() {
+Iterator& Iterator::operator--() {
 
 	iter_end = false;
 	line_end = false;
@@ -49,9 +48,9 @@ DrawIterator& DrawIterator::operator--() {
 	return *this;
 }
 
-DrawIterator DrawIterator::operator++(int) {
+Iterator Iterator::operator++(int) {
 
-	DrawIterator iter = *this;
+	Iterator iter = *this;
 
 	iter_end = false;
 	line_end = false;
@@ -70,9 +69,9 @@ DrawIterator DrawIterator::operator++(int) {
 	return iter;
 }
 
-DrawIterator DrawIterator::operator--(int) {
+Iterator Iterator::operator--(int) {
 
-	DrawIterator iter = *this;
+	Iterator iter = *this;
 
 	iter_end = false;
 	line_end = false;
@@ -91,58 +90,53 @@ DrawIterator DrawIterator::operator--(int) {
 	return iter;
 }
 
-void DrawIterator::setX(short x) {
+void Iterator::setX(short x) {
 
 	x < 0 ? x = 0 : x;
 	x >= i_width ? x = i_width - 1 : x;
 	w_count = x;
 }
 
-void DrawIterator::setY(short y) {
+void Iterator::setY(short y) {
 
 	y < 0 ? y = 0 : y;
 	y >= i_width ? y = i_height - 1 : y;
 	h_count = y;
 }
 
-void DrawIterator::setBegin() {
+void Iterator::setBegin() {
 	
 	h_count = 0;
 	w_count = 0;
 }
 
-void DrawIterator::setEnd() {
+void Iterator::setEnd() {
 
 	h_count = i_height - 1;
 	w_count = i_width - 1;
 }
 
-bool DrawIterator::iterEnd() {
+bool Iterator::iterEnd() {
 
 	return iter_end;
 }
 
-bool DrawIterator::lineEnd() {
+bool Iterator::lineEnd() {
 
 	return line_end;
 }
 
-short DrawIterator::getX() {
+short Iterator::getX() {
 
 	return w_count;
 }
 
-short DrawIterator::getY() {
+short Iterator::getY() {
 
 	return h_count;
 }
 
-Tile* DrawIterator::getCurr() {
+Tile& Iterator::getCurr() {
 
-	Tile tile(w_count, h_count);
-	for (int i = 0; i < length; i++) {
-
-		if (container[i] == tile) return &container[i];
-	}
-	return nullptr;
+	return container[h_count][w_count];
 }

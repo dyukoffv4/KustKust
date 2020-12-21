@@ -1,68 +1,98 @@
 #pragma once
 
 #include "Defines.h"
+#include "List.h"
+
+class Tile;
 
 ///	---------------------//
 //	Interface Object	///
 
-class CommonObject {
+class Object {
 
 protected:
-	short x_pos;
-	short y_pos;
-	short x_prepos;
-	short y_prepos;
+	Tile* tile;
+	Tile* etile;
 
 public:
-	CommonObject(short, short);
+	Object(Tile*);
 
-	virtual short getX();
-	virtual short getY();
+	virtual Tile* getTile();
+	virtual void move(Tile*);
+	virtual void mback();
+	virtual List* getInvent();
 
 	virtual char getName() = 0;
+	virtual void operator+=(Object*) = 0;
+	virtual void operator-=(Object*) = 0;
 };
 
 ///	---------------------//
 //	Concrete Objects	///
 
-class Apple_CO : public CommonObject {
+class Player_O : public Object {
+
+protected:
+	List list;
+
+public:
+	Player_O(Tile* _tile) : Object(_tile) {};
+	virtual List* getInvent();
+	virtual char getName();
+	virtual void operator+=(Object*);
+	virtual void operator-=(Object*);
+};
+
+class Coin_O : public Object {
 	 
 public:
-	Apple_CO(short x, short y) : CommonObject(x, y) {};
+	Coin_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };
 
-class Key_CO : public CommonObject {
+class Key_O : public Object {
 
 public:
-	Key_CO(short x, short y) : CommonObject(x, y) {};
+	Key_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };
 
-class Pie_CO : public CommonObject {
+class Bag_O : public Object {
 
 public:
-	Pie_CO(short x, short y) : CommonObject(x, y) {};
+	Bag_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };
 
-class Wall_CO : public CommonObject {
+class Wall_O : public Object {
 
 public:
-	Wall_CO(short x, short y) : CommonObject(x, y) {};
+	Wall_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };
 
-class Start_CO : public CommonObject {
+class Start_O : public Object {
 
 public:
-	Start_CO(short x, short y) : CommonObject(x, y) {};
+	Start_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };
 
-class Exit_CO : public CommonObject {
+class Exit_O : public Object {
 
 public:
-	Exit_CO(short x, short y) : CommonObject(x, y) {};
+	Exit_O(Tile* _tile) : Object(_tile) {};
 	virtual char getName();
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
 };

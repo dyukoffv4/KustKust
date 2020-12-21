@@ -5,8 +5,9 @@
 #define LEFT 'L'
 #define RIGHT 'R'
 
-#define APPLE 'a'
-#define PIE 'p'
+#define PLR 'p'
+#define COIN 'c'
+#define BAG 'b'
 #define KEY 'k'
 #define WALL 'w'
 #define START 's'
@@ -17,9 +18,11 @@
 #define TIT_H 48
 #define TIT_W 48
 
-#define GROUND_PATH "C:\\GameRes\\ground.txt"
-#define SPRITE_PATH "C:\\GameRes\\sprites.png"
+#define GROUND_PATH "C:\\GameRes\\levels\\ground.txt"
+#define LOOT_T_PATH "C:\\GameRes\\textures\\loot_t.png"
+#define BASE_T_PATH "C:\\GameRes\\textures\\base_t.png"
 #define WINDOW_TITLE "Thiefs"
 #define LOG_PATH "C:\\GameRes\\logs.txt"
+#define FONT_PATH "C:\\GameRes\\fonts\\comic.ttf"
 
 #endif

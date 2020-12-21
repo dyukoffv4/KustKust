@@ -4,8 +4,8 @@
 #include <fstream>
 #include <string>
 
-class DrawIterator;
-class CommonObject;
+class Iterator;
+class Object;
 class Tile;
 
 ///	---------------------//
@@ -14,8 +14,7 @@ class Tile;
 class Area {
 
 private:
-	Tile* data;
-	int data_len;
+	Tile** data;
 	short width;
 	short height;
 
@@ -31,14 +30,10 @@ public:
 
 	//-------------------------
 
-	void pushTile(Tile);
-	void popTile(Tile);
-
 	bool isGood();
 	short getWidth();
 	short getHeight();
-	DrawIterator getIterator();
+	Iterator getIterator();
 	Tile* getTile(short, short);
-	short getStartX();
-	short getStartY();
+	Object* getPlr();
 };

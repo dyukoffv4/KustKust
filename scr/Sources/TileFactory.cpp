@@ -1,32 +1,38 @@
 #include "../Headers/TileFactory.h"
 #include "../Headers/TileObject.h"
 
-CommonObject* Apple_F::getObject(short x, short y) {
 
-	return new Apple_CO(x, y);
+Object* Player_F::getObject(Tile* tile) {
+
+	return new Player_O(tile);
 }
 
-CommonObject* Key_F::getObject(short x, short y) {
+Object* Apple_F::getObject(Tile* tile) {
 
-	return new Key_CO(x, y);
+	return new Coin_O(tile);
 }
 
-CommonObject* Pie_F::getObject(short x, short y) {
+Object* Key_F::getObject(Tile* tile) {
 
-	return new Pie_CO(x, y);
+	return new Key_O(tile);
 }
 
-CommonObject* Wall_F::getObject(short x, short y) {
+Object* Pie_F::getObject(Tile* tile) {
 
-	return new Wall_CO(x, y);
+	return new Bag_O(tile);
 }
 
-CommonObject* Start_F::getObject(short x, short y) {
+Object* Wall_F::getObject(Tile* tile) {
 
-	return new Start_CO(x, y);
+	return new Wall_O(tile);
 }
 
-CommonObject* Exit_F::getObject(short x, short y) {
+Object* Start_F::getObject(Tile* tile) {
 
-	return new Exit_CO(x, y);
+	return new Start_O(tile);
+}
+
+Object* Exit_F::getObject(Tile* tile) {
+
+	return new Exit_O(tile);
 }

@@ -5,13 +5,14 @@
 
 class Model;
 class View;
+class Command;
 
 class Controller {
 
 private:
 	Model* model;
 	View* view;
-	bool key_p;
+	Command* command;
 
 	void getEvent();
 

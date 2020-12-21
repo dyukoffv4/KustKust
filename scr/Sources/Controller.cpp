@@ -1,27 +1,31 @@
 #include "../Headers/Controller.h"
-#include "../Headers/Player.h"
 #include "../Headers/Area.h"
 #include "../Headers/Strategy.h"
 #include "../Headers/View.h"
 #include "../Headers/Model.h"
 #include "../Headers/Command.h"
+#include "../Headers/State.h"
 
 Controller::Controller(Model* _model, View* _view) {
 
 	this->model = _model;
 	this->view = _view;
-	this->key_p = false;
+	this->command = nullptr;
 }
 
 void Controller::getEvent() {
 
 	sf::Event event;
-	Command* command = nullptr;
+	if (command) {
+
+		delete command;
+		command = nullptr;
+	}
 
 	while (view->pollEvent(event)) {
 
 		if (event.type == sf::Event::Closed) view->close();
-		if (event.type == sf::Event::KeyPressed && !key_p) {
+		if (event.type == sf::Event::KeyPressed) {
 
 			if (event.key.code == sf::Keyboard::W) command = new PlayerMove_C(model, UP);
 			if (event.key.code == sf::Keyboard::S) command = new PlayerMove_C(model, DOWN);
@@ -29,25 +33,24 @@ void Controller::getEvent() {
 			if (event.key.code == sf::Keyboard::D) command = new PlayerMove_C(model, RIGHT);
 
 			if (event.key.code == sf::Keyboard::Escape) command = new GamePause_C(model);
-
-			key_p = true;
-		}
-		if (event.type == sf::Event::KeyReleased) key_p = false;
-
-		if (command) {
-
-			command->execute();
-			delete command;
-			command = nullptr;
 		}
 	}
 }
 
 void Controller::looping() {
 
+	view->resize(model);
+	model->setState(new PlrStepState(model));
+
 	while (view->isOpen() && !model->game_end) {
 
 		this->getEvent();
-		view->winDraw(model);
+
+		if (command) command->execute();
+
+		view->areaDraw(model);
+		view->statDraw(model);
+		if (model->isPause()) view->pauseDraw(model);
+		view->display();
 	}
 }

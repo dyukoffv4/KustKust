@@ -7,7 +7,7 @@ PlayerMove_C::PlayerMove_C(Model* _receiver, char _direct) : receiver(_receiver)
 
 void PlayerMove_C::execute() {
 
-	receiver->movePlayer(direct);
+	receiver->moveAll(direct);
 }
 
 // Wripper's command handler //

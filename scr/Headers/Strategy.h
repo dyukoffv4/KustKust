@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Defines.h"
-class Player;
+class Model;
 class Tile;
 class View;
 
@@ -12,7 +12,7 @@ class Strategy {
 
 public:
     virtual ~Strategy() {}
-    virtual bool doWork(Player*, Tile*) = 0;
+    virtual bool doWork(Model*, Tile*) = 0;
 };
 
 ///	-----------------//
@@ -21,47 +21,60 @@ public:
 class Context {
 
 private:
-    Player* player;
+    Model* model;
     Strategy* strategy;
 
 public:
-    Context(Player* player);
+    Context(Model*);
     ~Context();
 
-    void setPlayer(Player* player);
-    void setStrategy(Strategy* strategy);
-    bool mainWork();
+    void setModel(Model*);
+    void setStrategy(Strategy*);
+    bool playerWork();
+    bool warriorWork();
 };
 
 ///	---------------------//
 //	Concrete Strategys	///
 
-class Apple_S : public Strategy {
+class WarrAtt_S : public Strategy {
 
 public:
-    bool doWork(Player*, Tile*);
+    bool doWork(Model*, Tile*);
 };
 
-class Pie_S : public Strategy {
+class WarrWall_S : public Strategy {
 
 public:
-    bool doWork(Player*, Tile*);
+    bool doWork(Model*, Tile*);
+};
+
+class Coin_S : public Strategy {
+
+public:
+    bool doWork(Model*, Tile*);
+};
+
+class Bag_S : public Strategy {
+
+public:
+    bool doWork(Model*, Tile*);
 };
 
 class Key_S : public Strategy {
 
 public:
-    bool doWork(Player*, Tile*);
+    bool doWork(Model*, Tile*);
 };
 
 class Wall_S : public Strategy {
 
 public:
-    bool doWork(Player*, Tile*);
+    bool doWork(Model*, Tile*);
 };
 
 class Exit_S : public Strategy {
 
 public:
-    bool doWork(Player*, Tile*);
+    bool doWork(Model*, Tile*);
 };
