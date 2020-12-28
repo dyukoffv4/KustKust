@@ -3,6 +3,7 @@
 #include "../Headers/Tile.h"
 #include "../Headers/TileFactory.h"
 #include "../Headers/TileObject.h"
+#include "../Headers/List.h"
 
 Area::Area(std::string path) : width(0), height(0), data(nullptr) {
 
@@ -20,18 +21,13 @@ Area::~Area() {
 	if (!data) return;
 	for (int i = 0; i < height; i++)
 		delete[] data[i];
-	delete data;
+	delete[] data;
 }
 
-Area& Area::getPG(std::string path) {
+Area& Area::getArea(std::string path) {
 
 	static Area instance(path);
 	return instance;
-}
-
-std::list<CommonObject*> Area::getObjects() {
-
-	return this->objects;
 }
 
 bool Area::isGood() {
@@ -55,27 +51,37 @@ Iterator Area::getIterator() {
 	return iterator;
 }
 
-Tile& Area::getTitle(short x, short y) {
+Tile* Area::getTile(short x, short y) {
 
-	return data[y][x];
+	if (x >= width || y >= height || x < 0 || y < 0) return nullptr;
+	return &data[y][x];
 }
 
-short Area::getStartX() {
+Object* Area::getPlr() {
 
-	for (std::list<CommonObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
-
-		if ((*i)->getName() == START) return (*i)->getX();
-	}
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			for (int k = 0; data[i][j].getObjs()[k] != nullptr; k++)
+				if (data[i][j].getObjs()[k]->getName() == PLR)
+					return data[i][j].getObjs()[k];
+	return nullptr;
 }
 
-short Area::getStartY() {
+List* Area::getWarr() {
 
-	for (std::list<CommonObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+	List* list = new List;
 
-		if ((*i)->getName() == START) return (*i)->getY();
-	}
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			for (int k = 0; data[i][j].getObjs()[k] != nullptr; k++) {
+
+				if (data[i][j].getObjs()[k]->getName() == SWAR) list->push(data[i][j].getObjs()[k]);
+				if (data[i][j].getObjs()[k]->getName() == RWAR) list->push(data[i][j].getObjs()[k]);
+				if (data[i][j].getObjs()[k]->getName() == TWAR) list->push(data[i][j].getObjs()[k]);
+			}
+
+	return list;
 }
-
 
 void Area::read(std::istream& in) {
 
@@ -86,8 +92,11 @@ void Area::read(std::istream& in) {
 	if (width < 5 || height < 5) return;
 	
 	data = new Tile * [height];
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < height; i++) {
+
 		data[i] = new Tile[width];
+		for (int j = 0; j < width; j++) data[i][j] = Tile(j, i);
+	}
 
 	while (!in.eof()) {
 
@@ -114,23 +123,29 @@ void Area::read(std::istream& in) {
 
 		Factory* factory = nullptr;
 
-		if (id == APPLE) factory = (Factory*)new Apple_F;
-		if (id == PIE) factory = (Factory*)new Pie_F;
+		if (id == COIN) factory = (Factory*)new Coin_F;
+		if (id == BAG) factory = (Factory*)new Bag_F;
 		if (id == KEY) factory = (Factory*)new Key_F;
 		if (id == WALL) factory = (Factory*)new Wall_F;
 		if (id == EXIT) factory = (Factory*)new Exit_F;
 		if (id == START && !start) factory = (Factory*)new Start_F;
+		if (id == SWAR) factory = (Factory*)new Warrior_F<stan>;
+		if (id == RWAR) factory = (Factory*)new Warrior_F<rndm>;
+		if (id == TWAR) factory = (Factory*)new Warrior_F<towr>;
 
 		if (factory) {
 
 			for (int i = y0; i < y1; i++)
 				for (int j = x0; j < x1; j++) {
 
-					data[i][j].setObj(factory->getObject(j, i));
-					if (data[i][j].getObj()->getName() == START) start = true;
-					objects.push_back(data[i][j].getObj());
-				}
+					data[i][j].getObjs().push(factory->getObject(&data[i][j]));
+					if (data[i][j].getObjs().isin(START) && !start) {
 
+						factory = (Factory*)new Player_F;
+						data[i][j].getObjs().push(factory->getObject(&data[i][j]));
+						start = true;
+					}
+				}
 			delete factory;
 		}
 	}

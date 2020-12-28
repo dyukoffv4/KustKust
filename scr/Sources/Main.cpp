@@ -2,7 +2,7 @@
 #include "../Headers/Model.h"
 #include "../Headers/View.h"
 
-int WinMain() {
+int main() {
 
 	Model model;
 	View view;

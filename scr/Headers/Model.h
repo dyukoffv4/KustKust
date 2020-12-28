@@ -4,15 +4,23 @@
 #include <string>
 
 class Area;
-class Player;
 class Context;
+class Observer;
+class Bridge;
+class State;
+class Object;
+class List;
 
 class Model {
 
 private:
 	Area* area;
-	Player* player;
+	Object* player;
+	List* warriors;
 	Context* context;
+	Observer* observer;
+	Bridge* bridge;
+	State* state;
 
 	bool game_pause;
 
@@ -23,9 +31,12 @@ public:
 	Model(std::string = GROUND_PATH, std::string = LOG_PATH);
 	~Model();
 
-	void movePlayer(char);
+	void moveAll(char);
 	void swapPause();
 
-	Player* getPlayer();
+	void setState(State*);
+	Object* getPlayer();
+	List* getWarrs();
 	Area* getArea();
+	bool isPause();
 };

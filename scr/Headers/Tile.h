@@ -1,19 +1,49 @@
 #pragma once
 
 #include "Defines.h"
+#include "List.h"
 #include <iostream>
+#include <list>
+#include <string>
 
-class CommonObject;
+class Bridge;
+class Object;
 
-class Tile {
+///	---------------------//
+//	Interface Publisher	///
 
-private:
-	CommonObject* object;
+class Publisher {
+
+protected:
+	std::list<Bridge*> observers;
 
 public:
-	Tile();
+	virtual void attach(Bridge*) = 0;
+	virtual void detach(Bridge*) = 0;
+	virtual void notify(std::string = "") = 0;
+};
+
+///	---------------------//
+//	Concrete Publisher	///
+
+class Tile : public Publisher {
+
+private:
+	List objects;
+	short x;
+	short y;
+
+public:
+	Tile(short = 0, short = 0);
 	~Tile();
 
-	void setObj(CommonObject*);
-	CommonObject* getObj();
+	List& getObjs();
+	short getx();
+	short gety();
+
+	virtual void attach(Bridge*);
+	virtual void detach(Bridge*);
+	virtual void notify(std::string = "");
+
+	friend std::ostream& operator<<(std::ostream&, Tile*);
 };

@@ -1,49 +1,99 @@
 #include "../Headers/TileObject.h"
+#include "../Headers/Tile.h"
 
-CommonObject::CommonObject(short x, short y) {
+Object::Object(Tile* _tile) {
 
-	this->x_pos = x;
-	this->y_pos = y;
-	this->x_prepos = x;
-	this->y_prepos = y;
+	this->tile = _tile;
+	this->etile = _tile;
 }
 
-short CommonObject::getX() {
+Tile* Object::getTile() {
 
-	return x_pos;
+	return tile;
 }
 
-short CommonObject::getY() {
+void Object::move(Tile* _tile) {
 
-	return y_pos;
+	etile = tile;
+	tile = _tile;
+	etile->getObjs().pop(this);
+	tile->getObjs().push(this);
 }
 
-char Apple_CO::getName() {
+void Object::mback() {
 
-	return APPLE;
+	Tile* _tile = tile;
+	tile = etile;
+	etile = _tile;
+	etile->getObjs().pop(this);
+	tile->getObjs().push(this);
 }
 
-char Key_CO::getName() {
+List* Object::getInvent() {
+
+	return nullptr;
+}
+
+//
+
+List* Player_O::getInvent() {
+
+	return &list;
+}
+
+char Player_O::getName() {
+
+	return PLR;
+}
+
+void Player_O::operator+=(Object* obj) {
+
+	list.push(obj);
+}
+
+void Player_O::operator-=(Object* obj) {
+
+	delete list.pop(obj);
+}
+
+//
+
+char Coin_O::getName() {
+
+	return COIN;
+}
+
+//
+
+char Key_O::getName() {
 
 	return KEY;
 }
 
-char Pie_CO::getName() {
+//
 
-	return PIE;
+char Bag_O::getName() {
+
+	return BAG;
 }
 
-char Wall_CO::getName() {
+//
+
+char Wall_O::getName() {
 
 	return WALL;
 }
 
-char Start_CO::getName() {
+//
+
+char Start_O::getName() {
 
 	return START;
 }
 
-char Exit_CO::getName() {
+//
+
+char Exit_O::getName() {
 
 	return EXIT;
 }
