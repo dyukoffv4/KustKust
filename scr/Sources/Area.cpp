@@ -3,6 +3,7 @@
 #include "../Headers/Tile.h"
 #include "../Headers/TileFactory.h"
 #include "../Headers/TileObject.h"
+#include "../Headers/List.h"
 
 Area::Area(std::string path) : width(0), height(0), data(nullptr) {
 
@@ -20,7 +21,7 @@ Area::~Area() {
 	if (!data) return;
 	for (int i = 0; i < height; i++)
 		delete[] data[i];
-	delete data;
+	delete[] data;
 }
 
 Area& Area::getArea(std::string path) {
@@ -60,13 +61,26 @@ Object* Area::getPlr() {
 
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
-			if (data[i][j].getObjs().isin(PLR)) {
-
-				int k;
-				for (k = 0; data[i][j].getObjs()[k]->getName() != PLR; k++);
-				return data[i][j].getObjs()[k];
-			}
+			for (int k = 0; data[i][j].getObjs()[k] != nullptr; k++)
+				if (data[i][j].getObjs()[k]->getName() == PLR)
+					return data[i][j].getObjs()[k];
 	return nullptr;
+}
+
+List* Area::getWarr() {
+
+	List* list = new List;
+
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			for (int k = 0; data[i][j].getObjs()[k] != nullptr; k++) {
+
+				if (data[i][j].getObjs()[k]->getName() == SWAR) list->push(data[i][j].getObjs()[k]);
+				if (data[i][j].getObjs()[k]->getName() == RWAR) list->push(data[i][j].getObjs()[k]);
+				if (data[i][j].getObjs()[k]->getName() == TWAR) list->push(data[i][j].getObjs()[k]);
+			}
+
+	return list;
 }
 
 void Area::read(std::istream& in) {
@@ -109,30 +123,29 @@ void Area::read(std::istream& in) {
 
 		Factory* factory = nullptr;
 
-		if (id == COIN) factory = (Factory*)new Apple_F;
-		if (id == BAG) factory = (Factory*)new Pie_F;
+		if (id == COIN) factory = (Factory*)new Coin_F;
+		if (id == BAG) factory = (Factory*)new Bag_F;
 		if (id == KEY) factory = (Factory*)new Key_F;
 		if (id == WALL) factory = (Factory*)new Wall_F;
 		if (id == EXIT) factory = (Factory*)new Exit_F;
 		if (id == START && !start) factory = (Factory*)new Start_F;
+		if (id == SWAR) factory = (Factory*)new Warrior_F<stan>;
+		if (id == RWAR) factory = (Factory*)new Warrior_F<rndm>;
+		if (id == TWAR) factory = (Factory*)new Warrior_F<towr>;
 
 		if (factory) {
-
-			Object* obj;
 
 			for (int i = y0; i < y1; i++)
 				for (int j = x0; j < x1; j++) {
 
-					obj = factory->getObject(&data[i][j]);
-					data[i][j].getObjs().push(obj);
-					if (obj->getName() == START) {
+					data[i][j].getObjs().push(factory->getObject(&data[i][j]));
+					if (data[i][j].getObjs().isin(START) && !start) {
 
 						factory = (Factory*)new Player_F;
 						data[i][j].getObjs().push(factory->getObject(&data[i][j]));
 						start = true;
 					}
 				}
-
 			delete factory;
 		}
 	}

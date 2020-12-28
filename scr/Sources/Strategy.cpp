@@ -22,96 +22,127 @@ void Context::setStrategy(Strategy* _strategy) {
     this->strategy = _strategy;
 }
 
+//
+
 bool Context::playerWork() {
 
     Tile* tile = model->getPlayer()->getTile();
     tile->notify("visited by player");
     this->setStrategy(nullptr);
-    if (tile->getObjs().isin(COIN)) this->setStrategy(new Coin_S);
-    if (tile->getObjs().isin(BAG)) this->setStrategy(new Bag_S);
-    if (tile->getObjs().isin(KEY)) this->setStrategy(new Key_S);
-    if (tile->getObjs().isin(WALL)) this->setStrategy(new Wall_S);
-    if (tile->getObjs().isin(EXIT)) this->setStrategy(new Exit_S);
+    if (tile->getObjs().isin(COIN)) this->setStrategy(new Coin_PS);
+    if (tile->getObjs().isin(BAG)) this->setStrategy(new Bag_PS);
+    if (tile->getObjs().isin(KEY)) this->setStrategy(new Key_PS);
+    if (tile->getObjs().isin(WALL)) this->setStrategy(new Wall_PS);
+    if (tile->getObjs().isin(EXIT)) this->setStrategy(new Exit_PS);
     if (strategy) return this->strategy->doWork(model, tile);
     return false;
 }
 
-//
+bool Coin_PS::doWork(Model* _model, Tile* _tile) {
 
-bool Coin_S::doWork(Model* _model, Tile* _tile) {
+    List& list_t = _tile->getObjs();
+    for (int i = 0; list_t[i] != nullptr; i++)
+        if (list_t[i]->getName() == COIN) {
 
-    List& list = _tile->getObjs();
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == COIN) {
-
-            *_model->getPlayer() += list[i];
-            _tile->getObjs().pop(list[i]);
+            *_model->getPlayer() += _tile->getObjs().pop(list_t[i]);
             break;
         }
     return false;
 }
 
-bool Bag_S::doWork(Model* _model, Tile* _tile) {
+bool Bag_PS::doWork(Model* _model, Tile* _tile) {
 
-    List& list = _tile->getObjs();
+    List* list_p = _model->getPlayer()->getInvent();
     int num = 0;
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == COIN) num++;
+    for (int i = 0; (*list_p)[i] != nullptr; i++)
+        if ((*list_p)[i]->getName() == COIN) num++;
 
     if (num >= 3) {
 
-        for (int i = 0; list[i] != nullptr; i++)
-            if (list[i]->getName() == COIN)
-                *_model->getPlayer() -= list[i];
+        int del = 3;
+        for (int i = 0; (*list_p)[i] != nullptr && del; i++)
+            if ((*list_p)[i]->getName() == COIN) {
+
+                *_model->getPlayer() -= (*list_p)[i];
+                i--;
+                del--;
+            }
     }
+    else return false;
 
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == BAG) {
+    List& list_t = _tile->getObjs();
+    for (int i = 0; list_t[i] != nullptr; i++)
+        if (list_t[i]->getName() == BAG) {
 
-            *_model->getPlayer() += list[i];
-            _tile->getObjs().pop(list[i]);
+            *_model->getPlayer() += _tile->getObjs().pop(list_t[i]);
             break;
         }
     return false;
 }
 
-bool Key_S::doWork(Model* _model, Tile* _tile) {
+bool Key_PS::doWork(Model* _model, Tile* _tile) {
 
-    List& list = _tile->getObjs();
+    List* list_p = _model->getPlayer()->getInvent();
     int num = 0;
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == BAG) num++;
+    for (int i = 0; (*list_p)[i] != nullptr; i++)
+        if ((*list_p)[i]->getName() == BAG) num++;
 
     if (num >= 3) {
 
-        for (int i = 0; list[i] != nullptr; i++)
-            if (list[i]->getName() == BAG)
-                *_model->getPlayer() -= list[i];
+        int del = 3;
+        for (int i = 0; (*list_p)[i] != nullptr && del; i++)
+            if ((*list_p)[i]->getName() == BAG) {
+
+                *_model->getPlayer() -= (*list_p)[i];
+                i--;
+                del--;
+            }
     }
+    else return false;
 
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == KEY) {
+    List& list_t = _tile->getObjs();
+    for (int i = 0; list_t[i] != nullptr; i++)
+        if (list_t[i]->getName() == KEY) {
 
-            *_model->getPlayer() += list[i];
-            _tile->getObjs().pop(list[i]);
+            *_model->getPlayer() += _tile->getObjs().pop(list_t[i]);
             break;
         }
     return false;
 }
 
-bool Wall_S::doWork(Model* _model, Tile* _tile) {
+bool Wall_PS::doWork(Model* _model, Tile* _tile) {
 
     _model->getPlayer()->mback();
     return false;
 }
 
-bool Exit_S::doWork(Model* _model, Tile* _tile) {
+bool Exit_PS::doWork(Model* _model, Tile* _tile) {
 
-    List& list = _tile->getObjs();
-    int num = 0;
-    for (int i = 0; list[i] != nullptr; i++)
-        if (list[i]->getName() == KEY) num++;
+    List* list_p = _model->getPlayer()->getInvent();
+    if (list_p->isin(KEY)) return true;
+    return false;
+}
 
-    if (num >= 1) return true;
+//
+
+bool Context::warriorWork() {
+
+    Tile* tile;
+    for (int i = 0; (*model->getWarrs())[i] != nullptr; i++) {
+
+        tile = (*model->getWarrs())[i]->getTile();
+        tile->notify("visited by warrior");
+        this->setStrategy(nullptr);
+        if (tile->getObjs().isin(WALL)) this->setStrategy(new Wall_WS);
+        if (strategy) this->strategy->doWork(model, tile);
+    }
+    return false;
+}
+
+bool Wall_WS::doWork(Model* _model, Tile* _tile) {
+
+    for (int i = 0; _tile->getObjs()[i] != nullptr; i++)
+        if (_tile->getObjs()[i]->getName() == SWAR || _tile->getObjs()[i]->getName() == RWAR)
+            _tile->getObjs()[i]->mback();
     return false;
 }

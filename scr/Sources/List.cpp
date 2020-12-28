@@ -17,8 +17,9 @@ List::~List() {
 
 void List::push(Object* obj) {
 
+	if (!obj) return;
 	head = new Node(nullptr, obj, head);
-	head->next->prev = head;
+	if (head->next) head->next->prev = head;
 }
 
 Object* List::pop(Object* obj) {
@@ -27,7 +28,7 @@ Object* List::pop(Object* obj) {
 
 	Object* data = nullptr;
 
-	for (Node* node = head; node != nullptr; node = node->next) 
+	for (Node* node = head; node != nullptr; node = node->next)
 		if (node->data->getName() == obj->getName()) {
 
 			if (node->next) node->next->prev = node->prev;
@@ -37,7 +38,6 @@ Object* List::pop(Object* obj) {
 			delete node;
 			break;
 		}
-
 	return data;
 }
 
@@ -48,8 +48,7 @@ bool List::empty() {
 
 bool List::isin(char sym) {
 
-	Node* node = head;
-	for (node; node; node = node->next)
+	for (Node* node = head; node != nullptr; node = node->next)
 		if (node->data->getName() == sym) return true;
 
 	return false;
@@ -57,17 +56,13 @@ bool List::isin(char sym) {
 
 Object* List::operator[] (int col) {
 
-	if (!head) return nullptr;
-
 	Node* node = head;
+	for (int i = 0; i < col; i++) {
 
-	for (int i = 0; i <= col; i++) {
-
-		node = node->next;
 		if (!node) break;
+		node = node->next;
 	}
-	if (node)
-		return node->data;
+	if (node) return node->data;
 
 	return nullptr;
 }

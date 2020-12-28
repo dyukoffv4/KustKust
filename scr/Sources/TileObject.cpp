@@ -16,6 +16,8 @@ void Object::move(Tile* _tile) {
 
 	etile = tile;
 	tile = _tile;
+	etile->getObjs().pop(this);
+	tile->getObjs().push(this);
 }
 
 void Object::mback() {
@@ -23,6 +25,8 @@ void Object::mback() {
 	Tile* _tile = tile;
 	tile = etile;
 	etile = _tile;
+	etile->getObjs().pop(this);
+	tile->getObjs().push(this);
 }
 
 List* Object::getInvent() {

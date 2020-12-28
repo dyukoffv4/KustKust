@@ -43,6 +43,62 @@ public:
 	virtual void operator-=(Object*);
 };
 
+//
+
+struct stan {
+
+public:
+	char state;
+	stan() { state = 1; }
+};
+
+struct rndm {
+
+public:
+	char state;
+	rndm() { state = 2; }
+};
+
+struct towr {
+
+public:
+	char state;
+	towr() { state = 3; }
+};
+
+class Warrior_OI : public Object {
+
+public:
+	Warrior_OI(Tile* _tile) : Object(_tile) {};
+	virtual char getName() = 0;
+	virtual int getAtt() = 0;
+};
+
+template<class T>
+class Warrior_O : Warrior_OI {
+
+public:
+	Warrior_O(Tile* _tile) : Warrior_OI(_tile) {};
+	virtual int getAtt() {
+
+		T t;
+		if (t.state == 1) return 1;
+		if (t.state == 2) return 2;
+		if (t.state == 3) return 3;
+	}
+	virtual char getName() {
+
+		T t;
+		if (t.state == 1) return SWAR;
+		if (t.state == 2) return RWAR;
+		if (t.state == 3) return TWAR;
+	}
+	virtual void operator+=(Object*) {};
+	virtual void operator-=(Object*) {};
+};
+
+//
+
 class Coin_O : public Object {
 	 
 public:

@@ -37,43 +37,37 @@ public:
 ///	---------------------//
 //	Concrete Strategys	///
 
-class WarrAtt_S : public Strategy {
+class Wall_WS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);
 };
 
-class WarrWall_S : public Strategy {
+class Coin_PS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);
 };
 
-class Coin_S : public Strategy {
+class Bag_PS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);
 };
 
-class Bag_S : public Strategy {
+class Key_PS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);
 };
 
-class Key_S : public Strategy {
+class Wall_PS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);
 };
 
-class Wall_S : public Strategy {
-
-public:
-    bool doWork(Model*, Tile*);
-};
-
-class Exit_S : public Strategy {
+class Exit_PS : public Strategy {
 
 public:
     bool doWork(Model*, Tile*);

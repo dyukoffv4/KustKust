@@ -2,7 +2,6 @@
 
 #include "Defines.h"
 #include <string>
-#include <list>
 
 class Area;
 class Context;
@@ -10,12 +9,14 @@ class Observer;
 class Bridge;
 class State;
 class Object;
+class List;
 
 class Model {
 
 private:
 	Area* area;
 	Object* player;
+	List* warriors;
 	Context* context;
 	Observer* observer;
 	Bridge* bridge;
@@ -35,6 +36,7 @@ public:
 
 	void setState(State*);
 	Object* getPlayer();
+	List* getWarrs();
 	Area* getArea();
 	bool isPause();
 };

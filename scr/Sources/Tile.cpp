@@ -50,7 +50,6 @@ std::ostream& operator<<(std::ostream& out, Tile* tile) {
 	else
 		for (int i = 0; tile->getObjs()[i] != nullptr; i++) {
 			switch (tile->getObjs()[i]->getName()) {
-
 			case PLR:
 				out << "player";
 				break;

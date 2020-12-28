@@ -46,6 +46,15 @@ void View::areaDraw(Model* model) {
 				case PLR:
 					loot_s.setTextureRect(sf::Rect<int>(SPR_W * 0, 0, SPR_W, SPR_H));
 					break;
+				case SWAR:
+					loot_s.setTextureRect(sf::Rect<int>(SPR_W * 1, 0, SPR_W, SPR_H));
+					break;
+				case RWAR:
+					loot_s.setTextureRect(sf::Rect<int>(SPR_W * 1, 0, SPR_W, SPR_H));
+					break;
+				case TWAR:
+					loot_s.setTextureRect(sf::Rect<int>(SPR_W * 1, 0, SPR_W, SPR_H));
+					break;
 				case COIN:
 					loot_s.setTextureRect(sf::Rect<int>(SPR_W * 2, 0, SPR_W, SPR_H));
 					break;
@@ -99,12 +108,12 @@ void View::statDraw(Model* model) {
 	int num_b = 0;
 	int num_k = 0;
 
-	List list = *model->getPlayer()->getInvent();
-	for (int i = 0; list[i] != nullptr; i++) {
+	List* list = model->getPlayer()->getInvent();
+	for (int i = 0; (*list)[i] != nullptr; i++) {
 
-		if (list[i]->getName() == COIN) num_c++;
-		if (list[i]->getName() == BAG) num_b++;
-		if (list[i]->getName() == KEY) num_k++;
+		if ((*list)[i]->getName() == COIN) num_c++;
+		if ((*list)[i]->getName() == BAG) num_b++;
+		if ((*list)[i]->getName() == KEY) num_k++;
 	}
 
 	sf::Text text1, text2, text3;

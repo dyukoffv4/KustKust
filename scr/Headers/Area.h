@@ -7,6 +7,7 @@
 class Iterator;
 class Object;
 class Tile;
+class List;
 
 ///	---------------------//
 //	Concrete PlayGround	///
@@ -36,4 +37,5 @@ public:
 	Iterator getIterator();
 	Tile* getTile(short, short);
 	Object* getPlr();
+	List* getWarr();
 };

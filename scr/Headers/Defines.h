@@ -12,6 +12,9 @@
 #define WALL 'w'
 #define START 's'
 #define EXIT 'e'
+#define SWAR '1'
+#define RWAR '2'
+#define TWAR '3'
 
 #define SPR_H 72
 #define SPR_W 48

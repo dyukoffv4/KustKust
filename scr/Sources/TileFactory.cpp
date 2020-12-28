@@ -7,7 +7,7 @@ Object* Player_F::getObject(Tile* tile) {
 	return new Player_O(tile);
 }
 
-Object* Apple_F::getObject(Tile* tile) {
+Object* Coin_F::getObject(Tile* tile) {
 
 	return new Coin_O(tile);
 }
@@ -17,7 +17,7 @@ Object* Key_F::getObject(Tile* tile) {
 	return new Key_O(tile);
 }
 
-Object* Pie_F::getObject(Tile* tile) {
+Object* Bag_F::getObject(Tile* tile) {
 
 	return new Bag_O(tile);
 }

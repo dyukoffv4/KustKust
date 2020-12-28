@@ -4,6 +4,8 @@
 
 class Object;
 class Tile;
+template<class T>
+class Warrior_O;
 
 ///	---------------------//
 //	Interface Factory	///
@@ -23,7 +25,17 @@ public:
 	virtual Object* getObject(Tile*);
 };
 
-class Apple_F : Factory {
+template<class T>
+class Warrior_F : Factory {
+
+public:
+	virtual Object* getObject(Tile* tile) {
+
+		return (Object*)new Warrior_O<T>(tile);
+	};
+};
+
+class Coin_F : Factory {
 
 public:
 	virtual Object* getObject(Tile*);
@@ -35,7 +47,7 @@ public:
 	virtual Object* getObject(Tile*);
 };
 
-class Pie_F : Factory {
+class Bag_F : Factory {
 
 public:
 	virtual Object* getObject(Tile*);

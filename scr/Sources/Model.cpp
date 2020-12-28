@@ -14,6 +14,7 @@ Model::Model(std::string a_path, std::string l_path)  {
 	this->area = &Area::getArea(a_path);
 	if (!this->area->isGood()) this->game_end = true;
 	this->player = area->getPlr();
+	this->warriors = area->getWarr();
 
 	this->context = new Context(this);
 	this->observer = (Observer*)new TileObs(LOG_PATH);
@@ -32,6 +33,7 @@ Model::~Model() {
 	delete context;
 	delete observer;
 	delete bridge;
+	delete warriors;
 	if (state) delete state;
 }
 
@@ -41,6 +43,7 @@ void Model::moveAll(char direct) {
 
 	if (state) state->MakeStep(direct);
 
+	if (context->warriorWork()) game_end = true;
 	if (context->playerWork()) game_end = true;
 }
 
@@ -58,6 +61,11 @@ void Model::setState(State* _state) {
 Object* Model::getPlayer() {
 
 	return player;
+}
+
+List* Model::getWarrs() {
+
+	return warriors;
 }
 
 Area* Model::getArea() {

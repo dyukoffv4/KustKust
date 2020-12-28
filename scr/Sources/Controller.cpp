@@ -40,13 +40,20 @@ void Controller::getEvent() {
 void Controller::looping() {
 
 	view->resize(model);
-	model->setState(new PlrStepState(model));
+
+	bool step = false;
 
 	while (view->isOpen() && !model->game_end) {
 
 		this->getEvent();
 
-		if (command) command->execute();
+		if (command) {
+
+			step = !step;
+			if (step) model->setState(new PlrStepState(model));
+			else model->setState(new WarStepState(model));
+			command->execute();
+		}
 
 		view->areaDraw(model);
 		view->statDraw(model);
