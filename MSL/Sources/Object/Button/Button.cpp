@@ -1,15 +1,15 @@
 #include "../../../Headers/Object/Button/Button.h"
-#include "../../../Headers/Image/Image.h"
 
-mgl::Button::Button(rect r, int i, Image* i_l) : Object(r.pos, i) {
+mgl::Button::Button(int i, rect<short, short> r, Image* i_l) : Object(i, r.pos) {
 
 	size = r.size;
-	image_line = i_l;
+	image = i_l;
 	start = false;
 	click = false;
+	key = 0;
 }
 
-void mgl::Button::update(sf::Event::MouseButtonEvent event, bool press) {
+void mgl::Button::update_m(sf::Event::MouseButtonEvent event, bool press) {
 
 	if (press) {
 		if (!start && event.button == sf::Mouse::Button::Left)
@@ -27,12 +27,22 @@ void mgl::Button::update(sf::Event::MouseButtonEvent event, bool press) {
 	}
 }
 
-void mgl::Button::setSize(coord s) {
+void mgl::Button::update_b(sf::Event::KeyEvent event, bool press) {
+
+	if (press && !start && event.code == key) start = true;
+	if (!press && start && event.code == key) {
+
+		click = !click;
+		start = false;
+	}
+}
+
+void mgl::Button::setSize(vect<short> s) {
 
 	size = s;
 }
 
-mgl::coord mgl::Button::getSize() {
+mgl::vect<short> mgl::Button::getSize() {
 
 	return size;
 }
@@ -44,24 +54,23 @@ char mgl::Button::getName() {
 
 void mgl::Button::setImage(Image* i_l) {
 
-	image_line = i_l;
+	image = i_l;
 }
 
 void mgl::Button::draw(sf::RenderWindow& win) {
 
 	sf::Sprite spr;
-	short row = 0;
-	if (image_line) {
+	byte row = 0;
+	if (image) {
 
-		if (!start && click) row = 2;
-		else if (start) row = 1;
-		image_line->setCurr({ image_line->getCurr().x ,row });
-		spr = image_line->getSpr();
+		if (start) row = 1;
+		image->setCurr({ image->getCurr().x ,row });
+		spr = image->getSpr();
 	}
-	else spr = standart.getSpr();
+	else spr = standart_s.getSpr();
 
 	spr.setPosition(pos.x, pos.y);
-	spr.setScale(size.x / float(image_line->getSize().x), size.y / float(image_line->getSize().y));
+	spr.setScale(size.x / float(image->getSize().x), size.y / float(image->getSize().y));
 	win.draw(spr);
 }
 

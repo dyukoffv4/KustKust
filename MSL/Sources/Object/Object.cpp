@@ -1,6 +1,6 @@
 #include "../../Headers/Object/Object.h"
 
-mgl::Object::Object(coord c, int i) {
+mgl::Object::Object(int i, vect<short> c) {
 
 	id = i;
 	pos = c;
@@ -11,12 +11,12 @@ int mgl::Object::getId() {
 	return id;
 }
 
-void mgl::Object::setCoord(coord c) {
+void mgl::Object::setCoord(vect<short> c) {
 
 	pos = c;
 }
 
-mgl::coord mgl::Object::getCoord() {
+mgl::vect<short> mgl::Object::getCoord() {
 
 	return pos;
 }

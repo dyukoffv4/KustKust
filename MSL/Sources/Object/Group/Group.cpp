@@ -2,12 +2,12 @@
 #include "../../../Headers/Object/Button/Button.h"
 #include "../../../Headers/Image/Image.h"
 
-mgl::Group::Group(rect r, int i, bool c, bool e) : Object(r.pos, i) {
+mgl::Group::Group(rect<short, byte> r, int i, bool c, bool e) : Object(i, r.pos) {
 
 	center = c;
 	expand = e;
 	size = r.size;
-	cont = new Object * [size.x * size.y];
+	cont = new Object * [int(size.x) * int(size.y)];
 	for (int i = 0; i < size.x * size.y; i++) cont[i] = nullptr;
 }
 
@@ -23,8 +23,8 @@ void mgl::Group::push(Object* o) {
 
 void mgl::Group::resize() {
 
-	short w = size.x, h = size.y;
-	coord* map = new coord[(w + 1) * (h + 1)];
+	byte w = size.x, h = size.y;
+	vect<short>* map = new vect<short>[(int(w) + 1) * (int(h) + 1)];
 
 	for (int i = 0; i < (h + 1) * (w + 1); i++)
 		map[i] = { 0, 0 };
@@ -35,10 +35,10 @@ void mgl::Group::resize() {
 			if (cont[i * w + j]) {
 
 				if (cont[i * w + j]->getSize().x > map[j + 1].x)
-					map[j + 1] = coord{ cont[i * w + j]->getSize().x, 0 };
+					map[j + 1] = vect<short>{ cont[i * w + j]->getSize().x, 0 };
 
 				if (cont[i * w + j]->getSize().y > map[(i + 1) * (w + 1)].y)
-					map[(i + 1) * (w + 1)] = coord{ 0, cont[i * w + j]->getSize().y };
+					map[(i + 1) * (w + 1)] = vect<short>{ 0, cont[i * w + j]->getSize().y };
 			}
 		}
 
@@ -52,7 +52,7 @@ void mgl::Group::resize() {
 
 			if (cont[i * w + j]) {
 
-				coord _pos = map[i * (w + 1) + j] + pos;
+				vect<short> _pos = map[i * (w + 1) + j] + pos;
 				if (expand)
 					cont[i * w + j]->setSize(map[(i + 1) * (w + 1) + (j + 1)] - map[i * (w + 1) + j]);
 				else if (center)
@@ -81,12 +81,12 @@ bool mgl::Group::getSignal(int& id) {
 	return false;
 }
 
-void mgl::Group::setSize(coord s) {}
+void mgl::Group::setSize(vect<short> s) {}
 
-mgl::coord mgl::Group::getSize() {
+mgl::vect<short> mgl::Group::getSize() {
 
-	coord c = cont[size.x * size.y - 1]->getCoord() - pos + cont[size.x * size.y - 1]->getSize();
-	coord s = { c.x, c.y };
+	vect<short> c = cont[size.x * size.y - 1]->getCoord() - pos + cont[size.x * size.y - 1]->getSize();
+	vect<short> s = { c.x, c.y };
 	return s;
 }
 

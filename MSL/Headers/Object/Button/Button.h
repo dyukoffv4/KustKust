@@ -1,18 +1,20 @@
 #pragma once
 
 #include "../Object.h"
+#include "../../Image/Image.h"
 
 namespace mgl {
 
 	class Button : public Object {
 
 	public:
-		Button(rect r, int i, Image* i_l);
+		Button(int i, rect<short, short> r, Image* i_l = &standart_s);
 
-		void update(sf::Event::MouseButtonEvent e, bool p);
+		void update_m(sf::Event::MouseButtonEvent e, bool p);
+		void update_b(sf::Event::KeyEvent e, bool p);
 
-		virtual void setSize(coord s);
-		virtual coord getSize();
+		virtual void setSize(vect<short> s);
+		virtual vect<short> getSize();
 
 		virtual char getName();
 		virtual void setImage(Image* l_i);
@@ -20,10 +22,10 @@ namespace mgl {
 		virtual bool getSignal();
 
 	protected:
-		Image* image_line;
-		coord size;
+		Image* image;
+		vect<short> size;
 		bool start;
 		bool click;
-		// 2 byte
+		short key;
 	};
 }

@@ -7,19 +7,19 @@ namespace mgl {
 	class Object {
 
 	public:
-		Object(coord c, int i);
+		Object(int i, vect<short> c);
 
 		int getId();
-		virtual void setCoord(coord c);
-		virtual coord getCoord();
+		virtual void setCoord(vect<short> c);
+		virtual vect<short> getCoord();
 
 		virtual char getName() = 0;
 		virtual void draw(sf::RenderWindow&) = 0;
-		virtual void setSize(coord s) = 0;
-		virtual coord getSize() = 0;
+		virtual void setSize(vect<short> s) = 0;
+		virtual vect<short> getSize() = 0;
 
 	protected:
-		coord pos;
+		vect<short> pos;
 		int id;
 	};
 }

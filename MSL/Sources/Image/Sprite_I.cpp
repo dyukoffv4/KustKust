@@ -1,8 +1,8 @@
 #include "../../Headers/Image/Sprite_I.h"
 
-mgl::Sprite_I::Sprite_I(coord s, short n, short r, sf::Texture* t) : Image(s, { 0, r }, t) {
+mgl::Sprite_I::Sprite_I(vect<short> s, vect<byte> c, sf::Texture* t) : Image(s, vect<byte>{ 0, c.y }, t) {
 
-	len_s = n;
+	len_s = c.x;
 	tick = 0;
 	spd = SPR_Z;
 }

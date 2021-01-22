@@ -1,9 +1,9 @@
 #include "../../Headers/Image/Image.h"
 
-mgl::Image::Image(coord s, coord c, sf::Texture* t) {
+mgl::Image::Image(int i, vect<short> s, vect<byte> c, sf::Texture* t) {
 
-	texture = t;
 	size = s;
+	texture = t;
 	curr = c;
 }
 
@@ -15,22 +15,22 @@ sf::Sprite mgl::Image::getSpr() {
 	return spr;
 }
 
-void mgl::Image::setCurr(coord c) {
+void mgl::Image::setCurr(vect<byte> c) {
 
 	curr = c;
 }
 
-mgl::coord mgl::Image::getCurr() {
+mgl::vect<mgl::byte> mgl::Image::getCurr() {
 
 	return curr;
 }
 
-void mgl::Image::setSize(coord s) {
+void mgl::Image::setSize(vect<short> s) {
 
 	size = s;
 }
 
-mgl::coord mgl::Image::getSize() {
+mgl::vect<short> mgl::Image::getSize() {
 
 	return size;
 }
