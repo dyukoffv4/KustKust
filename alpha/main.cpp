@@ -35,11 +35,34 @@ void rbt(const byte real_s, ydep& real_m, list& best_l, short& best_c, list& cur
 		}
 
 	/* main tail of 'rbt' */
+	bool end;
+	curr_l.push_back(elem{ s, {x, y} });
+	for (int i = s; i > 0; i--) {
+
+		end = true;
+		for (int j = x; j < x + i; j++) real_m[j] += i;
+		for (int j = 0; j < real_s; j++) if (real_m[j] != real_s) end = false;
+		(*(--curr_l.end())).first = i;
+
+		if (end) {
+
+			best_c = curr_c;
+			best_l = curr_l;
+		}
+		else {
+
+			if (curr_c + 1 < best_c)
+				rbt(real_s, real_m, best_l, best_c, curr_l, curr_c + 1);
+		}
+
+		for (int j = x; j < x + i; j++) real_m[j] -= i;
+	}
+	curr_l.pop_back();
 }
 
 int main() {
 
-	byte	size = 5;
+	byte	size = 35;
 	ydep	map(size);
 	list	cont;
 	list	temp;
@@ -47,18 +70,16 @@ int main() {
 
 	/* time start */
 	time_t tick = clock();
-	/* time start */
 
 	rbt(size, map, cont, numb, temp, 1);
 
-	/* time end */
 	std::cout << double(clock() - tick) / 1000 << '\n';
 	/* time end */
-	
+
 	std::cout << numb << '\n';
 	for (auto i = cont.begin(); i != cont.end(); ++i)
 		std::cout << (*i) << '\n';
-	
-	
+
+
 	return 0;
 }
