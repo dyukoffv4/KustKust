@@ -12,7 +12,7 @@ namespace baaa_1 {
 
 	std::ostream& operator<< (std::ostream& out, const elem& data) {
 
-		out << (int)data.second.first << ' ' << (int)data.second.second << ' ' << (int)data.first;
+		out << (int)data.second.first + 1 << ' ' << (int)data.second.second + 1 << ' ' << (int)data.first;
 		return out;
 	}
 
@@ -35,7 +35,7 @@ namespace baaa_1 {
 		return 1;
 	}
 
-	void rbt_count(const byte real_s, bmap& real_m, list& best_l, short& best_c, list& curr_l, short curr_c) {
+	void rbt_count(const byte real_s, bmap& real_m, list& best_l, short& best_c, list& curr_l, short curr_c = 0) {
 
 		/* search for current square data */
 		byte y = real_s;
@@ -81,24 +81,30 @@ namespace baaa_1 {
 		curr_l.pop_back();
 	}
 
-	list rbt(const byte size) {
+	list rbt(const byte size, const byte maxs = 0) {
 
 		byte fact = factfind(size);
 		bmap temp_m;
 		list temp_l;
 		list best_l;
-		short best_c;
+		short best_c = maxs;
 		if (fact == 1) {
 
-			best_c = size * size + 1;
+			if (!best_c) best_c = size * size + 1;
 			temp_m.assign(size, 0);
-			rbt_count(size, temp_m, best_l, best_c, temp_l, 1);
+			for (int i = 0; i < (size - 1) / 2; i++) temp_m[i] = size;
+			temp_m[(size - 1) / 2] = (size + 1) / 2;
+			for (int i = (size + 1) / 2; i < size; i++) temp_m[i] = (size - 1) / 2;
+			temp_l.push_back(elem{ byte((size + 1) / 2), { 0, 0} });
+			temp_l.push_back(elem{ byte((size - 1) / 2), { (size + 1) / 2, 0} });
+			temp_l.push_back(elem{ byte((size - 1) / 2), { 0, (size + 1) / 2} });
+			rbt_count(size, temp_m, best_l, best_c, temp_l);
 		}
 		else {
 
-			best_c = fact * fact + 1;
+			if (!best_c) best_c = fact * fact + 1;
 			temp_m.assign(fact, 0);
-			rbt_count(fact, temp_m, best_l, best_c, temp_l, 1);
+			rbt_count(fact, temp_m, best_l, best_c, temp_l);
 			best_l = best_l * (size / fact);
 		}
 		return best_l;
@@ -109,13 +115,13 @@ int main() {
 
 	using namespace baaa_1;
 
-	/* time start */
+	// time start //
 	time_t tick = clock();
 
-	list l = rbt(27);
+	list l = rbt(33);
 
 	std::cout << double(clock() - tick) / 1000 << '\n';
-	/* time end */
+	// time end //
 
 	std::cout << l.size() << '\n';
 	for (auto i = l.begin(); i != l.end(); ++i)
