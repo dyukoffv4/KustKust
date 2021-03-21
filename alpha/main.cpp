@@ -30,7 +30,7 @@ namespace baaa_1 {
 
 	byte factfind(byte number) {
 
-		for (byte i = 2; i <= number / 2; i++)
+		for (byte i = 2; i <= number / 4 + 1; i++)
 			if (number % i == 0) return i;
 		return 1;
 	}
@@ -90,7 +90,7 @@ namespace baaa_1 {
 		short best_c = maxs;
 		if (fact == 1) {
 
-			if (!best_c) best_c = size * size + 1;
+			if (!best_c) best_c = size + 3;
 			temp_m.assign(size, 0);
 			for (int i = 0; i < (size - 1) / 2; i++) temp_m[i] = size;
 			temp_m[(size - 1) / 2] = (size + 1) / 2;
@@ -114,18 +114,24 @@ namespace baaa_1 {
 int main() {
 
 	using namespace baaa_1;
+	list	data;
+	int		numb;
+	time_t	tick;
 
-	// time start //
-	time_t tick = clock();
+	while (1) {
 
-	list l = rbt(33);
+		std::cin >> numb;
+		if (numb < 2) break;
+		tick = clock();
 
-	std::cout << double(clock() - tick) / 1000 << '\n';
-	// time end //
+		data = rbt(numb);
 
-	std::cout << l.size() << '\n';
-	for (auto i = l.begin(); i != l.end(); ++i)
-		std::cout << (*i) << '\n';
+		system("cls");
+		std::cout << double(clock() - tick) / 1000 << '\n';
+		std::cout << data.size() << '\n';
+		for (auto i = data.begin(); i != data.end(); ++i)
+			std::cout << (*i) << '\n';
+	}
 
 	return 0;
 }
