@@ -35,33 +35,51 @@ namespace baaa_1 {
 		return 1;
 	}
 
-	void rbt_count(const byte real_s, bmap& real_m, list& best_l, short& best_c, list& curr_l, short curr_c = 0) {
+	elem rbt_count(const byte real_s, bmap& real_m) {
 
-		/* search for current square data */
-		byte y = real_s;
-		byte x = 0;
+		elem data;
+
+		data.second.second = real_s;
+		data.second.first = 0;
 		for (int i = 0; i < real_s; i++)
-			if (real_m[i] < y) {
+			if (real_m[i] < data.second.second) {
 
-				y = real_m[i];
-				x = i;
+				data.second.second = real_m[i];
+				data.second.first = i;
 			}
-		byte s = real_s - (((x + y) + abs(x - y)) >> 1);
-		if (s == real_s) s--;
-		for (int i = x; i < x + s; i++)
-			if (real_m[i] > y) {
+		data.first = real_s - (((data.second.first + data.second.second) + abs(data.second.first - data.second.second)) >> 1);
+		if (data.first == real_s) data.first--;
+		for (int i = data.second.first; i < data.second.first + data.first; i++)
+			if (real_m[i] > data.second.second) {
 
-				s = i - x;
+				data.first = i - data.second.first;
 				break;
 			}
 
-		/* main tail of 'rbt' */
+		return data;
+	};
+
+	void rbt_fill(const byte x, const byte s, bmap& real_m) {
+
+		for (int i = x; i < x + s; i++) real_m[i] += s;
+	}
+
+	void rbt_free(const byte x, const byte s, bmap& real_m) {
+
+		for (int i = x; i < x + s; i++) real_m[i] -= s;
+	}
+
+	void rbt_mainy(const byte real_s, bmap& real_m, list& best_l, byte& best_c, list& curr_l, byte curr_c = 0) {
+
+		elem d = rbt_count(real_s, real_m);
 		bool end;
-		curr_l.push_back(elem{ s, {x, y} });
-		for (int i = s; i > 0; i--) {
+
+		curr_l.push_back(d);
+		for (int i = d.first; i > 0; i--) {
 
 			end = true;
-			for (int j = x; j < x + i; j++) real_m[j] += i;
+
+			rbt_fill(d.second.first, i, real_m);
 			for (int j = 0; j < real_s; j++) if (real_m[j] != real_s) end = false;
 			(*(--curr_l.end())).first = i;
 
@@ -73,40 +91,35 @@ namespace baaa_1 {
 			else {
 
 				if (curr_c + 1 < best_c)
-					rbt_count(real_s, real_m, best_l, best_c, curr_l, curr_c + 1);
+					rbt_mainy(real_s, real_m, best_l, best_c, curr_l, curr_c + 1);
 			}
-
-			for (int j = x; j < x + i; j++) real_m[j] -= i;
+			rbt_free(d.second.first, i, real_m);
 		}
 		curr_l.pop_back();
 	}
 
-	list rbt(const byte size, const byte maxs = 0) {
+	list rbt(const byte size) {
 
 		byte fact = factfind(size);
 		bmap temp_m;
 		list temp_l;
 		list best_l;
-		short best_c = maxs;
-		if (fact == 1) {
+		byte best_c;
 
-			if (!best_c) best_c = size + 3;
-			temp_m.assign(size, 0);
-			for (int i = 0; i < (size - 1) / 2; i++) temp_m[i] = size;
-			temp_m[(size - 1) / 2] = (size + 1) / 2;
-			for (int i = (size + 1) / 2; i < size; i++) temp_m[i] = (size - 1) / 2;
-			temp_l.push_back(elem{ byte((size + 1) / 2), { 0, 0} });
-			temp_l.push_back(elem{ byte((size - 1) / 2), { (size + 1) / 2, 0} });
-			temp_l.push_back(elem{ byte((size - 1) / 2), { 0, (size + 1) / 2} });
-			rbt_count(size, temp_m, best_l, best_c, temp_l);
-		}
-		else {
+		if (fact == 1) fact = size;
+		best_c = fact + 3;
+		temp_m.assign(fact, 0);
 
-			if (!best_c) best_c = fact * fact + 1;
-			temp_m.assign(fact, 0);
-			rbt_count(fact, temp_m, best_l, best_c, temp_l);
-			best_l = best_l * (size / fact);
-		}
+		rbt_fill(0, (fact + 1) / 2, temp_m);
+		rbt_fill(0, (fact - 1) / 2, temp_m);
+		rbt_fill((fact + 1) / 2, (fact - 1) / 2, temp_m);
+		temp_l.push_back(elem{ byte((fact + 1) / 2), { 0, 0 } });
+		if (fact != 2) temp_l.push_back(elem{ byte((fact - 1) / 2), { (fact + 1) / 2, 0 } });
+		if (fact != 2) temp_l.push_back(elem{ byte((fact - 1) / 2), { 0, (fact + 1) / 2 } });
+
+		rbt_mainy(fact, temp_m, best_l, best_c, temp_l);
+		best_l = best_l * byte(size / fact);
+
 		return best_l;
 	}
 }
