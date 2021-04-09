@@ -5,10 +5,10 @@
 
 namespace daa_21 {
 
-	typedef std::pair<char, char>	d_arc;
-	typedef std::map<float, char>	d_tab;
-	typedef std::map<char, d_tab>	d_map;
-	typedef std::vector<char>		d_vec;
+	typedef std::pair<char, char>		d_arc;
+	typedef std::multimap<float, char>	d_mul;
+	typedef std::map<char, d_mul>		d_map;
+	typedef std::vector<char>			d_vec;
 
 	std::istream& operator>>(std::istream& in, d_arc& data) {
 
@@ -29,7 +29,7 @@ namespace daa_21 {
 				if (temp_1 != '\n' && temp_1 != ' ') break;
 			}
 			in >> temp_2 >> temp_f;
-			data[temp_1][temp_f] = temp_2;
+			data[temp_1].insert(std::pair<float, char>(temp_f, temp_2));
 		}
 		return in;
 	}
