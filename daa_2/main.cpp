@@ -54,9 +54,9 @@ namespace daa_21 {
 		for (auto i = map[arc.first].begin(); i != map[arc.first].end(); ++i) {
 
 			int j;
-			for (j = 0; j < vec.size() - 1; j++)
-				if (vec[j] == arc.first && vec[j + 1] == (*i).second) break;
-			if (j != vec.size() - 1) continue;
+			for (j = 0; j < vec.size(); j++)
+				if (vec[j] == (*i).second) break;
+			if (j != vec.size()) continue;
 
 			arc.first = (*i).second;
 			vec.push_back(arc.first);
