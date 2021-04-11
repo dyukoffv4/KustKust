@@ -4,6 +4,8 @@
 
 namespace daa_2 {
 
+	void map_ze_gen(dmap_cs& data);
+
 	void map_md_gen(dmap_cs& data);
 
 	void map_sd_gen(dmap_cs& data);

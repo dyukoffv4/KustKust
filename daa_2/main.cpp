@@ -1,4 +1,3 @@
-#include <fstream>
 #include "daa_func.h"
 #include "daa_oper.h"
 
@@ -6,40 +5,34 @@ int main() {
 
 	using namespace daa_2;
 
-	std::ofstream file;
 	dmap_cs map;
 	doub_cc arc;
 	dvec_c_ vec;
 
-	//map_md_gen(map);
-	map_sd_gen(map);
-
-	file.open("..\\file_test.txt");
-	if (!file.is_open()) return 0;
-
 	/**/
-	file << "a y\n";
-	file << map;
+	arc = { 'a', 'y' };
+	map_ze_gen(map);
 	/**
-	file >> arc;
-	file >> map;
+	arc = { 'a', 'e' };
+	map_md_gen(map);
+	/**
+	arc = { 'e', 'u' };
+	map_sd_gen(map);
 	/**/
-
-	file.close();
 
 	std::cout << arc.first << ' ' << arc.second << '\n';
 	std::cout << map << '\n';
 
-	/**
+	/**/
 	vec.push_back(arc.first);
-	if (greedy(arc, map, vec)) std::cout << vec;
-	else std::cout << "no path";
-	/**
-	if (dijkstra(arc, map, vec)) std::cout << vec;
-	else std::cout << "no path";
-	/**
-	if (a_star(arc, map, vec)) std::cout << vec;
-	else std::cout << "no path";
+	if (greedy(arc, map, vec)) std::cout << vec << '\n';
+	else std::cout << "no path\n";
+	/**/
+	if (dijkstra(arc, map, vec)) std::cout << vec << '\n';
+	else std::cout << "no path\n";
+	/**/
+	if (a_star(arc, map, vec)) std::cout << vec << '\n';
+	else std::cout << "no path\n";
 	/**/
 
 	return 0;

@@ -1,5 +1,16 @@
 #include "daa_func.h"
 
+void daa_2::map_ze_gen(dmap_cs& data) {
+
+	for (char i = 'a'; i < 'z'; i++) {
+
+		if ((i - 'a') % 5 != 0) data[i].insert({ 1, i - 1 });
+		if ((i - 'a') % 5 != 4) data[i].insert({ 1, i + 1 });
+		if (i - 5 >= 'a') data[i].insert({ 1, i - 5 });
+		if (i + 5 <= 'y') data[i].insert({ 1, i + 5 });
+	}
+}
+
 void daa_2::map_md_gen(dmap_cs& data) {
 
 	for (char i = 'a'; i < 'z'; i++) {
