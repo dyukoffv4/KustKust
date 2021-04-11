@@ -6,20 +6,21 @@ int main() {
 
 	using namespace daa_2;
 
-	std::ifstream file;
+	std::ofstream file;
 	dmap_cs map;
 	doub_cc arc;
 	dvec_c_ vec;
 
-	//map_gen(map);
+	//map_md_gen(map);
+	map_sd_gen(map);
 
 	file.open("..\\file_test.txt");
 	if (!file.is_open()) return 0;
 
-	/**
-	file << "a e\n";
-	file << map;
 	/**/
+	file << "a y\n";
+	file << map;
+	/**
 	file >> arc;
 	file >> map;
 	/**/
@@ -33,7 +34,7 @@ int main() {
 	vec.push_back(arc.first);
 	if (greedy(arc, map, vec)) std::cout << vec;
 	else std::cout << "no path";
-	/**/
+	/**
 	if (dijkstra(arc, map, vec)) std::cout << vec;
 	else std::cout << "no path";
 	/**

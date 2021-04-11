@@ -1,6 +1,6 @@
 #include "daa_func.h"
 
-void daa_2::map_gen(dmap_cs& data) {
+void daa_2::map_md_gen(dmap_cs& data) {
 
 	for (char i = 'a'; i < 'z'; i++) {
 
@@ -9,6 +9,18 @@ void daa_2::map_gen(dmap_cs& data) {
 		if ((i - 'a') % 5 != 4) data[i].insert({ abs(temp + 1) + 1, i + 1 });
 		if (i - 5 >= 'a') data[i].insert({ abs(temp + 1) + 1, i - 5 });
 		if (i + 5 <= 'y') data[i].insert({ abs(temp - 1) + 1, i + 5 });
+	}
+}
+
+void daa_2::map_sd_gen(dmap_cs& data) {
+
+	for (char i = 'a'; i < 'z'; i++) {
+
+		float temp = float((i - 'a') % 5) + float((i - 'a') / 5) - 4;
+		if ((i - 'a') % 5 != 0) data[i].insert({ abs(temp - 1) + 1, i - 1 });
+		if ((i - 'a') % 5 != 4) data[i].insert({ abs(temp + 1) + 1, i + 1 });
+		if (i - 5 >= 'a') data[i].insert({ abs(temp - 1) + 1, i - 5 });
+		if (i + 5 <= 'y') data[i].insert({ abs(temp + 1) + 1, i + 5 });
 	}
 }
 

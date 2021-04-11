@@ -4,7 +4,9 @@
 
 namespace daa_2 {
 
-	void map_gen(dmap_cs& data);
+	void map_md_gen(dmap_cs& data);
+
+	void map_sd_gen(dmap_cs& data);
 
 	template <class T>
 	void turn_vect(std::vector<T>& data) {
