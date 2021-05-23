@@ -3,20 +3,25 @@
 
 bool daa_3::greedy(cc__arc arc, cci_map& map, c___vec& vec) {
 
-	for (auto i = map[arc.first].end(); 1; 1) {
+	cc__map que;
+	for (auto i : map[arc.first]) {
 
-		if (i == map[arc.first].begin()) break;
-		i--;
+		char diff = abs(arc.first - i.first);
+		if (que.count(diff) && que[diff] < i.first) continue;
+		que[diff] = i.first;
+	}
 
-		if (!(*i).second) continue;
+	for (auto i : que) {
+
+		if (!map[arc.first][i.second]) continue;
 
 		int j = 0;
-		for (j; j < vec.size(); j++) if (vec[j] == (*i).first) break;
+		for (j; j < vec.size(); j++) if (vec[j] == i.second) break;
 		if (j != vec.size()) continue;
 
-		vec.push_back((*i).first);
-		if ((*i).first == arc.second) return true;
-		if (greedy({ (*i).first, arc.second }, map, vec)) return true;
+		vec.push_back(i.second);
+		if (i.second == arc.second) return true;
+		if (greedy({ i.second, arc.second }, map, vec)) return true;
 		vec.pop_back();
 	}
 

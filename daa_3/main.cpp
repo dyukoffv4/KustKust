@@ -1,5 +1,6 @@
 #include "daa_func.h"
 #include "daa_oper.h"
+#include <fstream>
 
 int main() {
 
@@ -9,12 +10,10 @@ int main() {
 	cc__arc arc;
 	c___vec vec;
 
-	arc = { 'a', 'b' };
-	map['a']['d'] = 11;
-	map['a']['c'] = 10;
-	map['c']['d'] = 11;
-	map['c']['b'] = 10;
-	map['d']['b'] = 11;
+	std::ifstream file("file1.txt");
+	file >> arc.first >> arc.second;
+	file >> map;
+	file.close();
 	
 	std::cout << arc << '\n';
 	std::cout << map << '\n';
