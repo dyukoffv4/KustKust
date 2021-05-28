@@ -54,7 +54,7 @@ def aho_find_all(string, root, patterns):
     return output
 
 
-def aho_find_chains(splits, coords, maxlen):
+def aho_find_chains(splits, coords, maxlen, joker, string):
     chain = splits[0]
 
     for i in range(len(coords) - 1):
@@ -63,7 +63,13 @@ def aho_find_chains(splits, coords, maxlen):
         chain = []
         for j in range(len(curr_line)):
             if next_line.count(curr_line[j] + coords[i + 1][0] - coords[i][0]) > 0:
-                chain.append(curr_line[j] + coords[i + 1][0] - coords[i][0])
+                flag = 1
+                for k in range(curr_line[j], curr_line[j] + coords[i + 1][0] - coords[i][0] - 1):
+                    if string[k] == joker:
+                        flag = 0
+                        break
+                if flag == 1:
+                    chain.append(curr_line[j] + coords[i + 1][0] - coords[i][0])
 
     nchain = []
     for i in range(len(chain)):
@@ -97,15 +103,20 @@ def str_split(string, joker):
 
     return temp, cord
 
-
+print("Введите строку для обработки:", end="  ")
 string = str(input())
+print("Введите шаблон поиска:", end="  ")
 template = str(input())
+print("Введите символ-джокер шаблона поиска:", end="  ")
 joker = str(input())
+print("Введите символ, который не может быть на месте символа-джокера:", end="  ")
+blocked = str(input())
 
 templates, positions = str_split(template, joker)
 root = aho_create_state_machine(templates)
 output = aho_find_all(string, root, templates)
-result = aho_find_chains(output, positions, len(string) - len(template))
+result = aho_find_chains(output, positions, len(string) - len(template), blocked, string)
 
+print("\nРезультат:")
 for i in result:
     print(i)
