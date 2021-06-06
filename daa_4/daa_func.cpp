@@ -15,7 +15,7 @@ daa_4::daa_vec daa_4::get_suffix(daa_str temp) {
 	return p;
 }
 
-daa_4::daa_vec daa_4::get_entry(daa_str& text, daa_str& temp) {
+daa_4::daa_vec daa_4::get_entrys(daa_str& text, daa_str& temp) {
 
 	daa_vec result;
 	daa_vec indx = get_suffix(temp + "*" + text);
@@ -27,4 +27,20 @@ daa_4::daa_vec daa_4::get_entry(daa_str& text, daa_str& temp) {
 			result.push_back(i - temp_s + 1);
 
 	return result;
+}
+
+int daa_4::get_circentry(daa_str& shift, daa_str& temp) {
+
+	if (shift.length() != temp.length()) return -1;
+
+	daa_str text = shift + shift;
+
+	for (int i = 0; i < shift.length(); i++) {
+
+		int j;
+		for (j = 0; j < temp.length(); j++)
+			if (text[i + j] != temp[j]) break;
+		if (j == temp.length()) return i;
+	}
+	return -1;
 }
