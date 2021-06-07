@@ -3,26 +3,25 @@
 
 bool daa_3::greedy(cc__arc arc, cci_map& map, c___vec& vec) {
 
-	cc__map que;
-	for (auto i : map[arc.first]) {
+	ccc_map que;
+	for (auto& i : map[arc.first]) {
 
 		char diff = abs(arc.first - i.first);
-		if (que.count(diff) && que[diff] < i.first) continue;
-		que[diff] = i.first;
+		if (i.second) que[diff][i.first] = 0;
 	}
 
-	for (auto i : que) {
+	for (auto& i : que) {
+		for (auto& j : i.second) {
 
-		if (!map[arc.first][i.second]) continue;
+			int k = 0;
+			for (k; k < vec.size(); k++) if (vec[k] == j.first) break;
+			if (k != vec.size()) continue;
 
-		int j = 0;
-		for (j; j < vec.size(); j++) if (vec[j] == i.second) break;
-		if (j != vec.size()) continue;
-
-		vec.push_back(i.second);
-		if (i.second == arc.second) return true;
-		if (greedy({ i.second, arc.second }, map, vec)) return true;
-		vec.pop_back();
+			vec.push_back(j.first);
+			if (j.first == arc.second) return true;
+			if (greedy({ j.first, arc.second }, map, vec)) return true;
+			vec.pop_back();
+		}
 	}
 
 	return false;
@@ -35,10 +34,11 @@ void daa_3::clearmap(cci_map& map) {
 			j.second = 0;
 }
 
-long daa_3::findflow(cc__arc arc, cci_map& map) {
+long daa_3::findflow(cc__arc arc, cci_map& omap) {
 
 	c___vec vec;
 	cvi_vec mem;
+	cci_map map = omap;
 	int sum(0);
 
 	vec.push_back(arc.first);
@@ -50,6 +50,8 @@ long daa_3::findflow(cc__arc arc, cci_map& map) {
 
 		for (int i = 0; i < vec.size() - 1; i++)
 			map[vec[i]][vec[i + 1]] -= min;
+		for (int i = vec.size() - 2; i > 1; i--)
+			map[vec[i]][vec[i - 1]] = min;
 
 		mem.push_back(cvi_arc(vec, min));
 		sum += min;
@@ -58,10 +60,13 @@ long daa_3::findflow(cc__arc arc, cci_map& map) {
 		vec.push_back(arc.first);
 	}
 
-	clearmap(map);
+	clearmap(omap);
 	for (auto& i : mem)
-		for (int j = 0; j < i.first.size() - 1; j++)
-			map[i.first[j]][i.first[j + 1]] += i.second;
+		for (int j = 0; j < i.first.size() - 1; j++) {
+
+			if (omap[i.first[j]].count(i.first[j + 1])) omap[i.first[j]][i.first[j + 1]] += i.second;
+			else if (omap.count(i.first[j + 1]) && omap[i.first[j + 1]].count(i.first[j])) omap[i.first[j + 1]][i.first[j]] -= i.second;
+		}
 
 	return sum;
 }
