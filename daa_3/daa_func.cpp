@@ -6,16 +6,16 @@ bool daa_3::greedy(cc__arc arc, cci_map& map, c___vec& vec) {
 	ccc_map que;
 	for (auto& i : map[arc.first]) {
 
+		int k = 0;
+		for (k; k < vec.size() - 1; k++) if (vec[k] == arc.first && vec[k + 1] == i.first) break;
+		if (k != vec.size() - 1) continue;
+
 		char diff = abs(arc.first - i.first);
 		if (i.second) que[diff][i.first] = 0;
 	}
 
 	for (auto& i : que) {
 		for (auto& j : i.second) {
-
-			int k = 0;
-			for (k; k < vec.size(); k++) if (vec[k] == j.first) break;
-			if (k != vec.size()) continue;
 
 			vec.push_back(j.first);
 			if (j.first == arc.second) return true;
@@ -39,7 +39,7 @@ long daa_3::findflow(cc__arc arc, cci_map& omap) {
 	c___vec vec;
 	cvi_vec mem;
 	cci_map map = omap;
-	int sum(0);
+	int sum = 0;
 
 	vec.push_back(arc.first);
 	while (greedy(arc, map, vec)) {
