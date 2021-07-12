@@ -1,3 +1,0 @@
-text.1 - hello
-
-text.2 - world
