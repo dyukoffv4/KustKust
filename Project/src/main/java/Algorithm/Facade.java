@@ -3,7 +3,6 @@ package Algorithm;
 import GUI.MyRenderer;
 import Resource.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.util.ArrayList;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +13,7 @@ public class Facade {
     private Point start, end;
     private AStar.Iterator iterator;
     private ArrayList<Point> walls;
+    private final Logger logger;
 
     public Facade() {
         graph = null;
@@ -21,6 +21,7 @@ public class Facade {
         end = null;
         iterator = null;
         walls = null;
+        logger = LogManager.getLogger(Facade.class);
     }
     public void clear() {
         graph = null;
@@ -34,26 +35,32 @@ public class Facade {
         return iterator != null;
     }
 
-    public boolean next() {
+    public int next() {
         try {
             AStar.Step curr = iterator.next();
-            return curr != null;
+            return curr != null ? 1 : 0;
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            return false; // maybe throw
+            return -1; // error
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
+            return -1; // error
         }
     }
-    public boolean prev() {
+    public int prev() {
         try {
             AStar.Step curr = iterator.prev();
-            return curr != null;
+            return curr != null ? 1 : 0;
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            return false; // maybe throw
+            return -1; // error
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
+            return -1; // error
         }
     }
 
@@ -62,9 +69,10 @@ public class Facade {
             iterator.toStart();
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            // maybe throw
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
         }
     }
     public void toEnd() {
@@ -72,16 +80,16 @@ public class Facade {
             iterator.toEnd();
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            // maybe throw
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
         }
     }
 
     public void drawStep(JTable table) {
         try {
             AStar.Step curr = iterator.curr();
-            DefaultTableModel dtm = (DefaultTableModel) table.getModel();
             TableColumnModel columnModel = table.getColumnModel();
             // очистка поля
             for (int i = 0; i < table.getRowCount(); i++) {
@@ -96,6 +104,10 @@ public class Facade {
             // открытые - зеленый
             for (Point i : curr.getOpened()) {
                 table.setValueAt("o", i.getX(), i.getY());
+            }
+            // путь до текущей клетки - желтый
+            for (Point i : curr.getPath()) {
+                table.setValueAt("r", i.getX(), i.getY());
             }
             // стены - розовый
             for (Point i : walls) {
@@ -113,19 +125,23 @@ public class Facade {
             }
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            // maybe throw
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
         }
     }
     public String getStepLog() {
         try {
-            return iterator.curr().getCurrent().toString() + "\n";
+            return iterator.curr().toString() + "\n";
         }
         catch (NullPointerException exp) {
-            Logger logger = LogManager.getLogger(Facade.class);
             logger.error("Facade was not loaded or loaded incorrectly.");
-            return "error";
+            return "error\n";
+        }
+        catch (IllegalArgumentException exp) {
+            logger.error("\"" + exp.getMessage() + "\" from" + exp.getStackTrace()[0].toString());
+            return "error\n";
         }
     }
 
@@ -140,8 +156,12 @@ public class Facade {
                     array[i][j] = 0;
                     walls.add(new Point(j ,i));
                 }
-                if ("S".equals((String) table.getValueAt(j, i))) start = new Point(j, i);
-                if ("E".equals((String) table.getValueAt(j, i))) end = new Point(j, i);
+                if ("S".equals((String) table.getValueAt(j, i))) {
+                    start = new Point(j, i);
+                }
+                if ("E".equals((String) table.getValueAt(j, i))) {
+                    end = new Point(j, i);
+                }
             }
         }
 
@@ -149,11 +169,9 @@ public class Facade {
             graph = new Graph(array);
             iterator = AStar.execute(graph, start, end);
         }
-        catch (Exception exp) {
-            clear(); //?
-            Logger logger = LogManager.getLogger(Facade.class);
-            logger.error("Facade load went incorrectly in " + exp.getStackTrace()[0].getClassName() + ".");
-            // maybe throw
+        catch (IllegalArgumentException exp) {
+            clear();
+            logger.warn("Facade doesn't load: \"" + exp.getMessage() + "\" from " + exp.getStackTrace()[0].getClassName());
         }
     }
 }
