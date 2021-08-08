@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <map>
 
 // functions
 
@@ -70,22 +71,26 @@ std::string buildCircleXML(double c_x, double c_y, double rad, int pts) {
 
 // classes
 
-typedef std::vector<std::string> options;
-typedef std::pair<std::string, options> task;
+typedef std::string Key;
+typedef std::string Opt;
+typedef std::vector<Opt> Opts;
+typedef std::vector<Key> Keys;
+typedef std::pair<Key, Opts> Task;
+typedef std::vector<Task> Tasks;
 
 class GetOptions {
 
 private:
-	std::vector<task> tasks;
-	options keys;
-	options data;
+	Tasks tasks;
+	Keys keys;
+	Opts data;
 
 	void rebuildTasks() {
 
 		bool is_key_open = false;
 
 		tasks.clear();
-		tasks.push_back(task("", options()));
+		tasks.push_back(Task("", Opts()));
 		for (auto& i : data) {
 
 			if (i[0] == '-') is_key_open = false;
@@ -102,7 +107,7 @@ private:
 				}
 				if (is_key_open) {
 
-					tasks.push_back(task(i.substr(1, i.size() - 1), options()));
+					tasks.push_back(Task(i.substr(1, i.size() - 1), Opts()));
 					continue;
 				}
 			}
@@ -112,7 +117,7 @@ private:
 	}
 
 public:
-	void setKeys(options keys) {
+	void setKeys(Opts keys) {
 
 		for (auto& i : keys)
 			if (i == "") throw std::exception("# GetOptions.setKeys: Empty keys get!");
@@ -120,15 +125,189 @@ public:
 		rebuildTasks();
 	}
 
-	void setData(options data) {
+	void setData(Opts data) {
 
 		this->data = data;
 		rebuildTasks();
 	}
 
-	std::vector<task> getTasks() {
+	Tasks getTasks() {
 
 		return tasks;
+	}
+};
+
+class Listener {
+
+public:
+	virtual void execute(Opts) = 0;
+};
+
+class Terminal {
+
+private:
+	std::map<Key, Listener*> data;
+
+public:
+	Terminal() {}
+	~Terminal() {
+
+		for (auto& i : data)
+			if (i.second) delete i.second;
+	}
+
+	void addKey(Key key, Listener* lnr = nullptr) {
+	
+		if (!data.count(key))
+			data[key] = lnr;
+	}
+	void delKey(Key key) {
+
+		if (data.count(key)) {
+			if (data[key]) delete data[key];
+			data.erase(data.find(key));
+		}
+	}
+
+	void attachKey(Key key, Listener* lnr) {
+
+		if (data.count(key)) {
+			if (data[key]) delete data[key];
+			data[key] = lnr;
+		}
+	}
+	void detachKey(Key key) {
+
+		if (data.count(key)) {
+			if (data[key]) delete data[key];
+			data[key] = nullptr;
+		}
+	}
+	
+	void execute(Opts input) {
+
+		Keys keys;
+		for (auto& i : data) keys.push_back(i.first);
+		GetOptions executer;
+		try {
+			executer.setKeys(keys);
+			executer.setData(input);
+		}
+		catch (std::exception exp) {
+
+			std::cout << exp.what() << "\n";
+		}
+		Tasks tasks = executer.getTasks();
+
+		for (auto& i : tasks)
+			if (data[i.first]) data[i.first]->execute(i.second);
+	}
+};
+
+// my classes
+
+class MyTerminal : public Terminal {
+
+public:
+	int points;
+	int radius;
+	int center_x;
+	int center_y;
+
+	MyTerminal(int p = 10, int r = 1, int cx = 0, int cy = 0) : points(p), radius(r), center_x(cx), center_y(cy) {}
+};
+
+
+class CenterLtnr : public Listener {
+
+private:
+	MyTerminal* t;
+
+public:
+	CenterLtnr(MyTerminal* t) : t(t) {}
+
+	virtual void execute(Opts opts) override {
+	
+		if (opts.size() != 2)
+			std::cout << "# main: Only two arguments expected after \"-center\" key!\n";
+		else {
+
+			try {
+				t->center_x = str_num(opts[0]);
+				t->center_y = str_num(opts[1]);
+			}
+			catch (std::exception exp) {
+
+				std::cout << exp.what() << "\n";
+			}
+		}
+	}
+};
+
+class PointsLtnr : public Listener {
+
+private:
+	MyTerminal* t;
+
+public:
+	PointsLtnr(MyTerminal* t) : t(t) {}
+
+	virtual void execute(Opts opts) override {
+	
+		if (opts.size() != 1)
+			std::cout << "# main: Only one argument expected after \"-points\" key!\n";
+		else {
+
+			try {
+				t->points = str_num(opts[0]);
+			}
+			catch (std::exception exp) {
+
+				std::cout << exp.what() << "\n";
+			}
+		}
+	}
+};
+
+class RadiusLtnr : public Listener {
+
+private:
+	MyTerminal* t;
+
+public:
+	RadiusLtnr(MyTerminal* t) : t(t) {}
+
+	virtual void execute(Opts opts) override {
+	
+		if (opts.size() != 1)
+			std::cout << "# main: Only one argument expected after \"-radius\" key!\n";
+		else {
+
+			try {
+				t->radius = str_num(opts[0]);
+			}
+			catch (std::exception exp) {
+
+				std::cout << exp.what() << "\n";
+			}
+		}
+	}
+};
+
+class CircleLtnr : public Listener {
+
+private:
+	MyTerminal* t;
+
+public:
+	CircleLtnr(MyTerminal* t) : t(t) {}
+
+	virtual void execute(Opts opts) override {
+	
+		if (!opts.empty())
+			std::cout << "# main: Only keys expected after \"-circle\" key!\n";
+		else
+			std::cout << "> Circle XML: " + buildCircleXML(t->center_x, t->center_y, t->radius, t->points) + "\n";
 	}
 };
 
@@ -136,99 +315,16 @@ public:
 
 int main(int argc, char* argv[]) {
 
-	options data;
+	Opts data;
 	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
-	options keys;
-	keys.push_back("circle");
-	keys.push_back("points");
-	keys.push_back("radius");
-	keys.push_back("center");
+	
+	MyTerminal terminal;
+	terminal.addKey("center", new CenterLtnr(&terminal));
+	terminal.addKey("points", new PointsLtnr(&terminal));
+	terminal.addKey("radius", new RadiusLtnr(&terminal));
+	terminal.addKey("circle", new CircleLtnr(&terminal));
 
-	GetOptions executer;
-	try {
-		executer.setKeys(keys);
-		executer.setData(data);
-	}
-	catch(std::exception exp) {
-
-		std::cout << exp.what() << "\n";
-	}
-	std::vector<task> tasks = executer.getTasks();
-
-	// output
-
-	std::string key_edit;
-	int points = 4;
-	int radius = 1;
-	int center_x = 0;
-	int center_y = 0;
-
-	for (auto& i : tasks) {
-
-		if (i.first == "circle") {
-
-			key_edit = "circle";
-			if (!i.second.empty())
-				std::cout << "# main: Only keys expected after \"-circle\" key!\n";
-			std::cout << "> Circle XML: " + buildCircleXML(center_x, center_y, radius, points) + "\n";
-			continue;
-		}
-
-		if (i.first == "points") {
-
-			key_edit = "points";
-			if (i.second.size() != 1)
-				std::cout << "# main: Only one argument expected after \"-points\" key!\n";
-			else {
-
-				try {
-					points = str_num(i.second[0]);
-				}
-				catch (std::exception exp) {
-
-					std::cout << exp.what() << "\n";
-				}
-			}
-			continue;
-		}
-
-		if (i.first == "radius") {
-
-			key_edit = "radius";
-			if (i.second.size() != 1)
-				std::cout << "# main: Only one argument expected after \"-radius\" key!\n";
-			else {
-
-				try {
-					radius = str_num(i.second[0]);
-				}
-				catch (std::exception exp) {
-
-					std::cout << exp.what() << "\n";
-				}
-			}
-			continue;
-		}
-
-		if (i.first == "center") {
-
-			key_edit = "center";
-			if (i.second.size() != 2)
-				std::cout << "# main: Only two arguments expected after \"-center\" key!\n";
-			else {
-
-				try {
-					center_x = str_num(i.second[0]);
-					center_y = str_num(i.second[1]);
-				}
-				catch (std::exception exp) {
-
-					std::cout << exp.what() << "\n";
-				}
-			}
-			continue;
-		}
-	}
+	terminal.execute(data);
 
 	return 0;
 }
