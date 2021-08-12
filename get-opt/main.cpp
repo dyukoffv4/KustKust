@@ -55,92 +55,69 @@ std::string num_str(double num) {
 	return str;
 }
 
-std::string buildCircleXML(double c_x, double c_y, double rad, int pts) {
-
-	std::string xml;
-	xml += "M" + num_str(c_x + rad) + " " + num_str(c_y) + " ";
-	for (int i = 1; i < pts; i++) {
-
-		xml += "L";
-		xml += num_str(std::cos(i / double(pts) * 6.28319) * rad + c_x) + " ";
-		xml += num_str(std::sin(i / double(pts) * 6.28319) * rad + c_y) + " ";
-	}
-	xml += "Z";
-	return xml;
-}
-
 // classes
 
-typedef std::string Key;
-typedef std::string Opt;
-typedef std::vector<Opt> Opts;
-typedef std::vector<Key> Keys;
-typedef std::pair<Key, Opts> Task;
-typedef std::vector<Task> Tasks;
+typedef std::string Arg;
+typedef std::vector<Arg> Args;
 
-class GetOptions {
+class Key {
 
 private:
-	Tasks tasks;
-	Keys keys;
-	Opts data;
+	std::string data;
 
-	void rebuildTasks() {
-
-		bool is_key_open = false;
-
-		tasks.clear();
-		tasks.push_back(Task("", Opts()));
-		for (auto& i : data) {
-
-			if (i[0] == '-') is_key_open = false;
-
-			if (!is_key_open) {
-
-				for (auto& j : keys) {
-
-					if (i.substr(1, i.size() - 1) == j) {
-
-						is_key_open = true;
-						break;
-					}
-				}
-				if (is_key_open) {
-
-					tasks.push_back(Task(i.substr(1, i.size() - 1), Opts()));
-					continue;
-				}
-			}
-
-			tasks[tasks.size() - 1].second.push_back(i);
-		}
-	}
+	Key() : data("") {}
 
 public:
-	void setKeys(Opts keys) {
+	Key(const std::string& data) : data(data) {
 
-		for (auto& i : keys)
-			if (i == "") throw std::exception("# GetOptions.setKeys: Empty keys get!");
-		this->keys = keys;
-		rebuildTasks();
+		if (data.empty())
+			throw std::exception("# Key.Key: Name of key can't be empty!");
 	}
 
-	void setData(Opts data) {
+	bool sEqual(const Key& key) const {
 
-		this->data = data;
-		rebuildTasks();
+		if (data.empty() && key.data.empty()) return true;
+		if (data.empty() || key.data.empty()) return false;
+		return data[0] == key.data[0];
+	}
+	bool aEqual(const Key& key) const {
+
+		return data == key.data;
 	}
 
-	Tasks getTasks() {
+	bool sEqual(const std::string& str) const {
 
-		return tasks;
+		if (data.empty() && str.empty()) return true;
+		if (data.empty() || str.empty()) return false;
+		return data[0] == str[0];
+	}
+	bool aEqual(const std::string& str) const {
+
+		return data == str;
+	}
+	
+	bool operator<(const Key& key) const {
+
+		if (data.empty() && key.name().empty()) return false;
+		if (data.empty()) return true;
+		return data[0] < key.data[0];
+	}
+
+	std::string name() const {
+
+		return data;
+	}
+
+	static Key getNullKey() {
+
+		return Key();
 	}
 };
 
 class Listener {
 
 public:
-	virtual void execute(Opts) = 0;
+	virtual void execute(Args) = 0;
 };
 
 class Terminal {
@@ -149,7 +126,10 @@ private:
 	std::map<Key, Listener*> data;
 
 public:
-	Terminal() {}
+	Terminal() {
+
+		data[Key::getNullKey()] = nullptr;
+	}
 	~Terminal() {
 
 		for (auto& i : data)
@@ -183,24 +163,50 @@ public:
 			data[key] = nullptr;
 		}
 	}
+
+	void attachRoot(Listener* lnr) {
+
+		if (data[Key::getNullKey()]) delete data[Key::getNullKey()];
+		data[Key::getNullKey()] = lnr;
+	}
+	void detachRoot() {
+
+		if (data[Key::getNullKey()]) delete data[Key::getNullKey()];
+		data[Key::getNullKey()] = nullptr;
+	}
 	
-	void execute(Opts input) {
+	void execute(Args input) {
+	
+		Key curr_k = Key::getNullKey();
+		Args curr_a;
 
-		Keys keys;
-		for (auto& i : data) keys.push_back(i.first);
-		GetOptions executer;
-		try {
-			executer.setKeys(keys);
-			executer.setData(input);
+		for (auto& i : input) {
+
+			if (i[0] == '-') {
+
+				if (data[curr_k]) data[curr_k]->execute(curr_a);
+				curr_a.clear();
+
+				bool new_key = false;
+				for (auto& j : data) {
+
+					if (j.first.aEqual(i.substr(1, i.size() - 1))) {
+
+						curr_k = j.first;
+						new_key = true;
+						break;
+					}
+				}
+
+				if (!new_key) {
+
+					std::cout << "# Terminal.execute: Key with name \"" + i.substr(1, i.size() - 1) + "\" doesn't exist!\n";
+					curr_k = Key::getNullKey();
+				}
+			}
+			else curr_a.push_back(i);
 		}
-		catch (std::exception exp) {
-
-			std::cout << exp.what() << "\n";
-		}
-		Tasks tasks = executer.getTasks();
-
-		for (auto& i : tasks)
-			if (data[i.first]) data[i.first]->execute(i.second);
+		if (data[curr_k]) data[curr_k]->execute(curr_a);
 	}
 };
 
@@ -218,6 +224,16 @@ public:
 };
 
 
+class RootLtnr : public Listener {
+
+	virtual void execute(Args opts) override {
+
+		std::cout << "> Root arguments: ";
+		for (auto& i : opts) std::cout << "\"" + i + "\", ";
+		std::cout << ".\n";
+	}
+};
+
 class CenterLtnr : public Listener {
 
 private:
@@ -226,10 +242,10 @@ private:
 public:
 	CenterLtnr(MyTerminal* t) : t(t) {}
 
-	virtual void execute(Opts opts) override {
+	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 2)
-			std::cout << "# main: Only two arguments expected after \"-center\" key!\n";
+			std::cout << "# CenterLntr.execute: Only two arguments expected after \"-center\" key!\n";
 		else {
 
 			try {
@@ -252,10 +268,10 @@ private:
 public:
 	PointsLtnr(MyTerminal* t) : t(t) {}
 
-	virtual void execute(Opts opts) override {
+	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 1)
-			std::cout << "# main: Only one argument expected after \"-points\" key!\n";
+			std::cout << "# PointsLntr.execute: Only one argument expected after \"-points\" key!\n";
 		else {
 
 			try {
@@ -277,10 +293,10 @@ private:
 public:
 	RadiusLtnr(MyTerminal* t) : t(t) {}
 
-	virtual void execute(Opts opts) override {
+	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 1)
-			std::cout << "# main: Only one argument expected after \"-radius\" key!\n";
+			std::cout << "# RadiusLntr.execute: Only one argument expected after \"-radius\" key!\n";
 		else {
 
 			try {
@@ -302,12 +318,23 @@ private:
 public:
 	CircleLtnr(MyTerminal* t) : t(t) {}
 
-	virtual void execute(Opts opts) override {
+	virtual void execute(Args opts) override {
 	
 		if (!opts.empty())
-			std::cout << "# main: Only keys expected after \"-circle\" key!\n";
-		else
-			std::cout << "> Circle XML: " + buildCircleXML(t->center_x, t->center_y, t->radius, t->points) + "\n";
+			std::cout << "# CircleLntr.execute: Only keys expected after \"-circle\" key!\n";
+		else {
+
+			std::string xml;
+			xml += "> Circle XML: M" + num_str(t->center_x + t->radius) + " " + num_str(t->center_y) + " ";
+			for (int i = 1; i < t->points; i++) {
+
+				xml += "L";
+				xml += num_str(std::cos(i / double(t->points) * 6.28319) * t->radius + t->center_x) + " ";
+				xml += num_str(std::sin(i / double(t->points) * 6.28319) * t->radius + t->center_y) + " ";
+			}
+			xml += "Z\n";
+			std::cout << xml;
+		}
 	}
 };
 
@@ -315,16 +342,22 @@ public:
 
 int main(int argc, char* argv[]) {
 
-	Opts data;
+	Args data;
 	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
-	
-	MyTerminal terminal;
-	terminal.addKey("center", new CenterLtnr(&terminal));
-	terminal.addKey("points", new PointsLtnr(&terminal));
-	terminal.addKey("radius", new RadiusLtnr(&terminal));
-	terminal.addKey("circle", new CircleLtnr(&terminal));
 
-	terminal.execute(data);
+	MyTerminal terminal;
+	terminal.attachRoot(new RootLtnr());
+	terminal.addKey(Key("center"), new CenterLtnr(&terminal));
+	terminal.addKey(Key("points"), new PointsLtnr(&terminal));
+	terminal.addKey(Key("radius"), new RadiusLtnr(&terminal));
+	terminal.addKey(Key("xmlcrl"), new CircleLtnr(&terminal));
+	
+	try {
+		terminal.execute(data);
+	}
+	catch (std::exception e) {
+		std::cout << e.what() << '\n';
+	}
 
 	return 0;
 }
