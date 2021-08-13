@@ -26,7 +26,7 @@ double str_num(std::string str) {
 				point = i + 1;
 				continue;
 			}
-			if (str[i] < 48 || str[i] > 57) throw std::exception("# str_num: Invalid number format!");
+			if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
 			num = num * 10 + (str[i] - 48);
 		}
 
@@ -64,42 +64,50 @@ class Key {
 
 private:
 	std::string data;
+	static Key getNull() {
 
-	Key() : data("") {}
+		Key key('N');
+		key.data = "-";
+		return key;
+	}
+	static Key getRoot() {
+
+		Key key('N');
+		key.data = "~";
+		return key;
+	}
 
 public:
-	Key(const std::string& data) : data(data) {
+	explicit Key(const char& data) {
+
+		this->data = data;
+	}
+	explicit Key(const std::string& data) {
 
 		if (data.empty())
-			throw std::exception("# Key.Key: Name of key can't be empty!");
+			throw std::invalid_argument("# Key.Key: Name of key can't be empty!");
+		this->data = data;
 	}
 
-	bool sEqual(const Key& key) const {
+	void rename(const std::string& data) {
 
-		if (data.empty() && key.data.empty()) return true;
-		if (data.empty() || key.data.empty()) return false;
-		return data[0] == key.data[0];
+		if (data.empty())
+			throw std::invalid_argument("# Key.Key: Name of key can't be empty!");
+		this->data = data;
 	}
-	bool aEqual(const Key& key) const {
+
+	bool largeEqual(const Key& key) const {
 
 		return data == key.data;
 	}
+	bool shortEqual(const Key& key) const {
 
-	bool sEqual(const std::string& str) const {
-
-		if (data.empty() && str.empty()) return true;
-		if (data.empty() || str.empty()) return false;
-		return data[0] == str[0];
-	}
-	bool aEqual(const std::string& str) const {
-
-		return data == str;
+		return data[0] == key.data[0];
 	}
 	
+	// stl operator
 	bool operator<(const Key& key) const {
 
-		if (data.empty() && key.name().empty()) return false;
-		if (data.empty()) return true;
 		return data[0] < key.data[0];
 	}
 
@@ -108,15 +116,17 @@ public:
 		return data;
 	}
 
-	static Key getNullKey() {
-
-		return Key();
-	}
+	static Key root_key;
+	static Key null_key;
 };
+
+Key Key::root_key = Key::getRoot();
+Key Key::null_key = Key::getNull();
 
 class Listener {
 
 public:
+	virtual Listener* getCopy() = 0;
 	virtual void execute(Args) = 0;
 };
 
@@ -128,12 +138,26 @@ private:
 public:
 	Terminal() {
 
-		data[Key::getNullKey()] = nullptr;
+		data[Key::root_key] = nullptr;
+		data[Key::null_key] = nullptr;
+	}
+	Terminal(const Terminal& term) {
+
+		for (auto& i : term.data)
+			data[i.first] = i.second->getCopy();
 	}
 	~Terminal() {
 
 		for (auto& i : data)
 			if (i.second) delete i.second;
+	}
+
+	Terminal& operator=(const Terminal& term) {
+
+		for (auto& i : data)
+			if (i.second) delete i.second;
+		for (auto& i : term.data)
+			data[i.first] = i.second->getCopy();
 	}
 
 	void addKey(Key key, Listener* lnr = nullptr) {
@@ -166,47 +190,66 @@ public:
 
 	void attachRoot(Listener* lnr) {
 
-		if (data[Key::getNullKey()]) delete data[Key::getNullKey()];
-		data[Key::getNullKey()] = lnr;
+		if (data[Key::root_key]) delete data[Key::root_key];
+		data[Key::root_key] = lnr;
 	}
 	void detachRoot() {
 
-		if (data[Key::getNullKey()]) delete data[Key::getNullKey()];
-		data[Key::getNullKey()] = nullptr;
+		if (data[Key::root_key]) delete data[Key::root_key];
+		data[Key::root_key] = nullptr;
 	}
 	
 	void execute(Args input) {
 	
-		Key curr_k = Key::getNullKey();
+		Key curr_k = Key::root_key;
 		Args curr_a;
 
 		for (auto& i : input) {
 
 			if (i[0] == '-') {
 
-				if (data[curr_k]) data[curr_k]->execute(curr_a);
-				curr_a.clear();
-
-				bool new_key = false;
-				for (auto& j : data) {
-
-					if (j.first.aEqual(i.substr(1, i.size() - 1))) {
-
-						curr_k = j.first;
-						new_key = true;
-						break;
-					}
+				// previous task execute
+				try {
+					if (data[curr_k]) data[curr_k]->execute(curr_a);
 				}
+				catch (std::invalid_argument e) {
+					std::cout << "# Terminal.execute->" << e.what() << "\n";
+				}
+				curr_a.clear();
+				curr_k = Key::null_key;
 
-				if (!new_key) {
+				// new key finding
+				if (i.size() < 2) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
+				else {
 
-					std::cout << "# Terminal.execute: Key with name \"" + i.substr(1, i.size() - 1) + "\" doesn't exist!\n";
-					curr_k = Key::getNullKey();
+					if (i.size() > 1 && i[1] == '-') {
+
+						if (i.size() < 3) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
+						else {
+
+							if (data.count(Key(i[2])) && data.find(Key(i[2]))->first.name() == i.substr(2, i.size() - 1)) curr_k = Key(i[2]);
+							else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2, i.size() - 1) + "\" doesn't exist!\n";
+						}
+					}
+					else {
+
+						if (i.size() > 2) std::cout << "# Terminal.execute: Short key expected after \"-\"!\n";
+						else {
+
+							if (data.count(Key(i[1]))) curr_k = Key(i[1]);
+							else std::cout << Arg("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
+						}
+					}
 				}
 			}
 			else curr_a.push_back(i);
 		}
-		if (data[curr_k]) data[curr_k]->execute(curr_a);
+		try {
+			if (data[curr_k]) data[curr_k]->execute(curr_a);
+		}
+		catch (std::invalid_argument e) {
+			std::cout << "# Terminal.execute->" << e.what() << "\n";
+		}
 	}
 };
 
@@ -226,6 +269,12 @@ public:
 
 class RootLtnr : public Listener {
 
+public:
+	virtual Listener* getCopy() {
+
+		return new RootLtnr();
+	}
+
 	virtual void execute(Args opts) override {
 
 		std::cout << "> Root arguments: ";
@@ -242,20 +291,23 @@ private:
 public:
 	CenterLtnr(MyTerminal* t) : t(t) {}
 
+	virtual Listener* getCopy() {
+
+		return new CenterLtnr(t);
+	}
+
 	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 2)
-			std::cout << "# CenterLntr.execute: Only two arguments expected after \"-center\" key!\n";
-		else {
+			throw std::invalid_argument("CenterLntr.execute: Only two arguments expected after \"c/center\" key!");
 
-			try {
-				t->center_x = str_num(opts[0]);
-				t->center_y = str_num(opts[1]);
-			}
-			catch (std::exception exp) {
+		try {
+			t->center_x = str_num(opts[0]);
+			t->center_y = str_num(opts[1]);
+		}
+		catch (std::domain_error exp) {
 
-				std::cout << exp.what() << "\n";
-			}
+			throw std::invalid_argument(Arg("CenterLntr.execute->") + exp.what());
 		}
 	}
 };
@@ -268,10 +320,15 @@ private:
 public:
 	PointsLtnr(MyTerminal* t) : t(t) {}
 
+	virtual Listener* getCopy() {
+
+		return new PointsLtnr(t);
+	}
+
 	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 1)
-			std::cout << "# PointsLntr.execute: Only one argument expected after \"-points\" key!\n";
+			throw std::invalid_argument("PointsLntr.execute: Only one argument expected after \"p/points\" key!");
 		else {
 
 			try {
@@ -279,7 +336,7 @@ public:
 			}
 			catch (std::exception exp) {
 
-				std::cout << exp.what() << "\n";
+				throw std::invalid_argument(Arg("PointsLntr.execute->") + exp.what());
 			}
 		}
 	}
@@ -293,10 +350,15 @@ private:
 public:
 	RadiusLtnr(MyTerminal* t) : t(t) {}
 
+	virtual Listener* getCopy() {
+
+		return new RadiusLtnr(t);
+	}
+
 	virtual void execute(Args opts) override {
 	
 		if (opts.size() != 1)
-			std::cout << "# RadiusLntr.execute: Only one argument expected after \"-radius\" key!\n";
+			throw std::invalid_argument("RadiusLntr.execute: Only one argument expected after \"r/radius\" key!");
 		else {
 
 			try {
@@ -304,7 +366,7 @@ public:
 			}
 			catch (std::exception exp) {
 
-				std::cout << exp.what() << "\n";
+				throw std::invalid_argument(Arg("RadiusLntr.execute->") + exp.what());
 			}
 		}
 	}
@@ -318,10 +380,15 @@ private:
 public:
 	CircleLtnr(MyTerminal* t) : t(t) {}
 
+	virtual Listener* getCopy() {
+
+		return new CircleLtnr(t);
+	}
+
 	virtual void execute(Args opts) override {
 	
 		if (!opts.empty())
-			std::cout << "# CircleLntr.execute: Only keys expected after \"-circle\" key!\n";
+			throw std::invalid_argument("CircleLntr.execute: Only keys expected after \"-circle\" key!");
 		else {
 
 			std::string xml;
@@ -345,18 +412,18 @@ int main(int argc, char* argv[]) {
 	Args data;
 	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
 
-	MyTerminal terminal;
-	terminal.attachRoot(new RootLtnr());
-	terminal.addKey(Key("center"), new CenterLtnr(&terminal));
-	terminal.addKey(Key("points"), new PointsLtnr(&terminal));
-	terminal.addKey(Key("radius"), new RadiusLtnr(&terminal));
-	terminal.addKey(Key("xmlcrl"), new CircleLtnr(&terminal));
-	
 	try {
+		MyTerminal terminal;
+		terminal.attachRoot(new RootLtnr());
+		terminal.addKey(Key("center"), new CenterLtnr(&terminal));
+		terminal.addKey(Key("points"), new PointsLtnr(&terminal));
+		terminal.addKey(Key("radius"), new RadiusLtnr(&terminal));
+		terminal.addKey(Key("xmlcrl"), new CircleLtnr(&terminal));
 		terminal.execute(data);
 	}
-	catch (std::exception e) {
-		std::cout << e.what() << '\n';
+	catch (std::invalid_argument e) {
+
+		std::cout << e.what() << "\n";
 	}
 
 	return 0;
