@@ -1,5 +1,5 @@
-SRC_DIR = ~/GitHub/KustKust/get-opt/src/
-DST_DIR = ~/GitHub/KustKust/get-opt/dst/
+SRC_DIR = src/
+DST_DIR = dst/
 NAME = test
 
 all: $(DST_DIR)main.o $(DST_DIR)utils.o $(DST_DIR)key.o $(DST_DIR)terminal.o

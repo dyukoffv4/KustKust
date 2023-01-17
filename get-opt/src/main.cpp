@@ -14,7 +14,6 @@ public:
 	MyTerminal(int p = 10, int r = 1, int cx = 0, int cy = 0) : points(p), radius(r), center_x(cx), center_y(cy) {}
 };
 
-
 class RootLtnr : public Listener {
 public:
 	virtual Listener* getCopy() {
