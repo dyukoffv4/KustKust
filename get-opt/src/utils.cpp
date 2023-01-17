@@ -37,7 +37,7 @@ std::string num_str(double num) {
 
 	for (int i = num_i; i > 0; i /= 10) str = char(i % 10 + 48) + str;
 
-	if (str.empty()) str = "0";
+	if (num_i == 0) str = "0" + str;
 	if (minus) str = "-" + str;
 
 	return str;
