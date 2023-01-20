@@ -6,15 +6,22 @@
 #include "key.hpp"
 
 
+class Terminal;
+
 class Listener {
+protected:
+	Terminal* term;
+
 public:
+	explicit Listener(Terminal* _term);
 	virtual Listener* getCopy() = 0;
 	virtual void execute(Args) = 0;
 };
 
 class Terminal {
 private:
-	std::map<Key, Listener*> data;
+	std::map<Key, Listener*> binds;
+	std::map<std::string, int> data;
 
 public:
 	Terminal();
@@ -22,6 +29,8 @@ public:
 	~Terminal();
 
 	Terminal& operator=(const Terminal& term);
+
+	int& Data(std::string key);
 
 	void addKey(Key key, Listener* lnr = nullptr);
 	void delKey(Key key);

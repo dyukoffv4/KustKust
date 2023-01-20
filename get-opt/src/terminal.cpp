@@ -1,58 +1,71 @@
 #include "terminal.hpp"
 
 
+Listener::Listener(Terminal* _term) {
+    this->term = _term;
+}
+
 Terminal::Terminal() {
-    data[Key::root_key] = nullptr;
-    data[Key::null_key] = nullptr;
+    binds[Key::root_key] = nullptr;
+    binds[Key::null_key] = nullptr;
 }
 
 Terminal::Terminal(const Terminal &term) {
-    for (auto &i : term.data) data[i.first] = i.second->getCopy();
+    for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
+    for (auto &i : term.data) data[i.first] = i.second;
 }
 
 Terminal::~Terminal() {
-    for (auto &i : data) if (i.second) delete i.second;
+    for (auto &i : binds) if (i.second) delete i.second;
 }
 
 Terminal &Terminal::operator=(const Terminal &term) {
-    for (auto &i : data) if (i.second) delete i.second;
-    for (auto &i : term.data) data[i.first] = i.second->getCopy();
+    for (auto &i : binds) if (i.second) delete i.second;
+    binds.clear();
+    for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
+    data.clear();
+    for (auto &i : term.data) data[i.first] = i.second;
     return *this;
 }
 
+int& Terminal::Data(std::string key) {
+    if (!data[key]) data[key] = 0;
+    return data[key];
+}
+
 void Terminal::addKey(Key key, Listener *lnr) {
-    if (!data.count(key)) data[key] = lnr;
+    if (!binds.count(key)) binds[key] = lnr;
 }
 
 void Terminal::delKey(Key key) {
-    if (data.count(key)) {
-        if (data[key]) delete data[key];
-        data.erase(data.find(key));
+    if (binds.count(key)) {
+        if (binds[key]) delete binds[key];
+        binds.erase(binds.find(key));
     }
 }
 
 void Terminal::attachKey(Key key, Listener *lnr) {
-    if (data.count(key)) {
-        if (data[key]) delete data[key];
-        data[key] = lnr;
+    if (binds.count(key)) {
+        if (binds[key]) delete binds[key];
+        binds[key] = lnr;
     }
 }
 
 void Terminal::detachKey(Key key) {
-    if (data.count(key)) {
-        if (data[key]) delete data[key];
-        data[key] = nullptr;
+    if (binds.count(key)) {
+        if (binds[key]) delete binds[key];
+        binds[key] = nullptr;
     }
 }
 
 void Terminal::attachRoot(Listener *lnr) {
-    if (data[Key::root_key]) delete data[Key::root_key];
-    data[Key::root_key] = lnr;
+    if (binds[Key::root_key]) delete binds[Key::root_key];
+    binds[Key::root_key] = lnr;
 }
 
 void Terminal::detachRoot() {
-    if (data[Key::root_key]) delete data[Key::root_key];
-    data[Key::root_key] = nullptr;
+    if (binds[Key::root_key]) delete binds[Key::root_key];
+    binds[Key::root_key] = nullptr;
 }
 
 void Terminal::execute(Args input) {
@@ -63,7 +76,7 @@ void Terminal::execute(Args input) {
         if (i[0] == '-') {
             // previous task execute
             try {
-                if (data[curr_k]) data[curr_k]->execute(curr_a);
+                if (binds[curr_k]) binds[curr_k]->execute(curr_a);
             }
             catch (std::invalid_argument e) {
                 std::cout << "# Terminal.execute->" << e.what() << "\n";
@@ -77,14 +90,14 @@ void Terminal::execute(Args input) {
                 if (i.size() > 1 && i[1] == '-') {
                     if (i.size() < 3) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
                     else {
-                        if (data.count(Key(i[2])) && data.find(Key(i[2]))->first.name() == i.substr(2, i.size() - 1)) curr_k = Key(i[2]);
+                        if (binds.count(Key(i[2])) && binds.find(Key(i[2]))->first.name() == i.substr(2, i.size() - 1)) curr_k = Key(i[2]);
                         else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2, i.size() - 1) + "\" doesn't exist!\n";
                     }
                 }
                 else {
                     if (i.size() > 2) std::cout << "# Terminal.execute: Short key expected after \"-\"!\n";
                     else {
-                        if (data.count(Key(i[1]))) curr_k = Key(i[1]);
+                        if (binds.count(Key(i[1]))) curr_k = Key(i[1]);
                         else std::cout << Arg("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
                     }
                 }
@@ -93,7 +106,7 @@ void Terminal::execute(Args input) {
         else curr_a.push_back(i);
     }
     try {
-        if (data[curr_k]) data[curr_k]->execute(curr_a);
+        if (binds[curr_k]) binds[curr_k]->execute(curr_a);
     }
     catch (std::invalid_argument e) {
         std::cout << "# Terminal.execute->" << e.what() << "\n";
