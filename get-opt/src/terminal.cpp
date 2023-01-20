@@ -28,12 +28,9 @@ Terminal &Terminal::operator=(const Terminal &term) {
     return *this;
 }
 
-int Terminal::getData(std::string key) {
+int& Terminal::Data(std::string key) {
+    if (!data[key]) data[key] = 0;
     return data[key];
-}
-
-void Terminal::setData(std::string key, int value) {
-    data[key] = value;
 }
 
 void Terminal::addKey(Key key, Listener *lnr) {

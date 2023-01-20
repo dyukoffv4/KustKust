@@ -30,8 +30,7 @@ public:
 
 	Terminal& operator=(const Terminal& term);
 
-	int getData(std::string key);
-	void setData(std::string key, int value);
+	int& Data(std::string key);
 
 	void addKey(Key key, Listener* lnr = nullptr);
 	void delKey(Key key);

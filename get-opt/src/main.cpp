@@ -30,8 +30,8 @@ public:
 	virtual void execute(Args opts) override {
 		if (opts.size() != 2) throw std::invalid_argument("CenterLntr.execute: Only two arguments expected after \"c/center\" key!");
 		try {
-			term->setData("center_x", str_num(opts[0]));
-			term->setData("center_y", str_num(opts[1]));
+			term->Data("center_x") = str_num(opts[0]);
+			term->Data("center_y") = str_num(opts[1]);
 		}
 		catch (std::domain_error exp) {
 			throw std::invalid_argument(Arg("CenterLntr.execute->") + exp.what());
@@ -51,7 +51,7 @@ public:
 		if (opts.size() != 1) throw std::invalid_argument("PointsLntr.execute: Only one argument expected after \"p/points\" key!");
 		else {
 			try {
-				term->setData("points", str_num(opts[0]));
+				term->Data("points") = str_num(opts[0]);
 			}
 			catch (std::exception exp) {
 				throw std::invalid_argument(Arg("PointsLntr.execute->") + exp.what());
@@ -72,7 +72,7 @@ public:
 		if (opts.size() != 1) throw std::invalid_argument("RadiusLntr.execute: Only one argument expected after \"r/radius\" key!");
 		else {
 			try {
-				term->setData("radius", str_num(opts[0]));
+				term->Data("radius") = str_num(opts[0]);
 			}
 			catch (std::exception exp) {
 				throw std::invalid_argument(Arg("RadiusLntr.execute->") + exp.what());
@@ -92,7 +92,7 @@ public:
 	virtual void execute(Args opts) override {
 		if (!opts.empty()) throw std::invalid_argument("CircleLntr.execute: Only keys expected after \"-circle\" key!");
 		else {
-			int center_x(term->getData("center_x")), center_y(term->getData("center_y")), points(term->getData("points")), radius(term->getData("radius"));
+			int center_x(term->Data("center_x")), center_y(term->Data("center_y")), points(term->Data("points")), radius(term->Data("radius"));
 			std::string xml;
 			xml += "> Circle XML: M" + num_str(center_x + radius) + " " + num_str(center_y) + " ";
 			for (int i = 1; i < points; i++) {
@@ -114,10 +114,10 @@ int main(int argc, char* argv[]) {
 
 	try {
 		Terminal terminal;
-		terminal.setData("points", 10);
-		terminal.setData("radius", 1);
-		terminal.setData("center_x", 0);
-		terminal.setData("center_y", 0);
+		terminal.Data("points") = 10;
+		terminal.Data("radius") = 1;
+		terminal.Data("center_x") = 0;
+		terminal.Data("center_y") = 0;
 		terminal.attachRoot(new RootLtnr(&terminal));
 		terminal.addKey(Key("center"), new CenterLtnr(&terminal));
 		terminal.addKey(Key("points"), new PointsLtnr(&terminal));
