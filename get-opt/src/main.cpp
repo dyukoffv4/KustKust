@@ -14,8 +14,8 @@ public:
 
 	virtual void execute(Args opts) override {
 		std::cout << "> Root arguments: ";
-		for (auto& i : opts) std::cout << "\"" + i + "\", ";
-		std::cout << ".\n";
+		for (auto& i : opts) std::cout << "\"" + i + "\"; ";
+		std::cout << "\n";
 	}
 };
 
@@ -118,11 +118,11 @@ int main(int argc, char* argv[]) {
 		terminal.Data("radius") = 1;
 		terminal.Data("center_x") = 0;
 		terminal.Data("center_y") = 0;
-		terminal.attachRoot(new RootLtnr(&terminal));
-		terminal.addKey(Key("center"), new CenterLtnr(&terminal));
-		terminal.addKey(Key("points"), new PointsLtnr(&terminal));
-		terminal.addKey(Key("radius"), new RadiusLtnr(&terminal));
-		terminal.addKey(Key("xmlcrl"), new CircleLtnr(&terminal));
+		terminal.setRoot(new RootLtnr(&terminal));
+		terminal.setKey(Key("center"), new CenterLtnr(&terminal));
+		terminal.setKey(Key("points"), new PointsLtnr(&terminal));
+		terminal.setKey(Key("radius"), new RadiusLtnr(&terminal));
+		terminal.setKey(Key("xmlcrl"), new CircleLtnr(&terminal));
 		terminal.execute(data);
 	}
 	catch (std::invalid_argument e) {

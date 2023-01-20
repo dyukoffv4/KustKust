@@ -32,14 +32,11 @@ public:
 
 	int& Data(std::string key);
 
-	void addKey(Key key, Listener* lnr = nullptr);
+	void setKey(Key key, Listener* lnr = nullptr);
 	void delKey(Key key);
 
-	void attachKey(Key key, Listener* lnr);
-	void detachKey(Key key);
-
-	void attachRoot(Listener* lnr);
-	void detachRoot();
+	void setRoot(Listener* lnr);
+	void delRoot();
 	
 	void execute(Args input);
 };
