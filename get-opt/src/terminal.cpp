@@ -28,13 +28,14 @@ Terminal &Terminal::operator=(const Terminal &term) {
     return *this;
 }
 
-int& Terminal::Data(std::string key) {
-    if (!data[key]) data[key] = 0;
+std::string& Terminal::Data(std::string key) {
+    if (!data.count(key)) data[key] = "0";
     return data[key];
 }
 
-void Terminal::addKey(Key key, Listener *lnr) {
-    if (!binds.count(key)) binds[key] = lnr;
+void Terminal::setKey(Key key, Listener *lnr) {
+    if (binds.count(key) && binds[key]) delete binds[key];
+    binds[key] = lnr;
 }
 
 void Terminal::delKey(Key key) {
@@ -44,26 +45,12 @@ void Terminal::delKey(Key key) {
     }
 }
 
-void Terminal::attachKey(Key key, Listener *lnr) {
-    if (binds.count(key)) {
-        if (binds[key]) delete binds[key];
-        binds[key] = lnr;
-    }
-}
-
-void Terminal::detachKey(Key key) {
-    if (binds.count(key)) {
-        if (binds[key]) delete binds[key];
-        binds[key] = nullptr;
-    }
-}
-
-void Terminal::attachRoot(Listener *lnr) {
+void Terminal::setRoot(Listener *lnr) {
     if (binds[Key::root_key]) delete binds[Key::root_key];
     binds[Key::root_key] = lnr;
 }
 
-void Terminal::detachRoot() {
+void Terminal::delRoot() {
     if (binds[Key::root_key]) delete binds[Key::root_key];
     binds[Key::root_key] = nullptr;
 }
