@@ -21,7 +21,7 @@ public:
 class Terminal {
 private:
 	std::map<Key, Listener*> binds;
-	std::map<std::string, int> data;
+	std::map<std::string, std::string> data;
 
 public:
 	Terminal();
@@ -30,7 +30,7 @@ public:
 
 	Terminal& operator=(const Terminal& term);
 
-	int& Data(std::string key);
+	std::string& Data(std::string key);
 
 	void setKey(Key key, Listener* lnr = nullptr);
 	void delKey(Key key);

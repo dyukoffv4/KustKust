@@ -28,8 +28,8 @@ Terminal &Terminal::operator=(const Terminal &term) {
     return *this;
 }
 
-int& Terminal::Data(std::string key) {
-    if (!data[key]) data[key] = 0;
+std::string& Terminal::Data(std::string key) {
+    if (!data.count(key)) data[key] = "0";
     return data[key];
 }
 
