@@ -1,21 +1,28 @@
-SRC_DIR = src/
-DST_DIR = dst/
-NAME = test
+LIB = src/lib/
+UTL = src/utils/
+SRC = src/
+DST = dst/
 
-all: $(DST_DIR)main.o $(DST_DIR)utils.o $(DST_DIR)key.o $(DST_DIR)terminal.o
-	g++ $(DST_DIR)main.o $(DST_DIR)utils.o $(DST_DIR)key.o $(DST_DIR)terminal.o -o $(DST_DIR)$(NAME)
+NAME = get-opt
 
-$(DST_DIR)main.o: $(SRC_DIR)main.cpp $(SRC_DIR)utils.hpp $(SRC_DIR)key.hpp
-	g++ -c $(SRC_DIR)main.cpp -o $(DST_DIR)main.o
 
-$(DST_DIR)utils.o: $(SRC_DIR)utils.cpp $(SRC_DIR)utils.hpp
-	g++ -c $(SRC_DIR)utils.cpp -o $(DST_DIR)utils.o
+all: $(DST)main.o $(DST)paint.o $(DST)utils.o $(DST)key.o $(DST)terminal.o
+	g++ $(DST)main.o $(DST)paint.o $(DST)utils.o $(DST)key.o $(DST)terminal.o -o $(DST)$(NAME)
 
-$(DST_DIR)key.o: $(SRC_DIR)key.cpp $(SRC_DIR)key.hpp
-	g++ -c $(SRC_DIR)key.cpp -o $(DST_DIR)key.o
+$(DST)main.o: $(SRC)main.cpp $(SRC)paint.hpp $(UTL)utils.hpp $(LIB)terminal.hpp
+	g++ -c $(SRC)main.cpp -o $(DST)main.o
 
-$(DST_DIR)terminal.o: $(SRC_DIR)terminal.cpp $(SRC_DIR)terminal.hpp
-	g++ -c $(SRC_DIR)terminal.cpp -o $(DST_DIR)terminal.o
+$(DST)paint.o: $(SRC)paint.cpp $(SRC)paint.hpp
+	g++ -c $(SRC)paint.cpp -o $(DST)paint.o
+
+$(DST)utils.o: $(UTL)utils.cpp $(UTL)utils.hpp
+	g++ -c $(UTL)utils.cpp -o $(DST)utils.o
+
+$(DST)key.o: $(LIB)key.cpp $(LIB)key.hpp
+	g++ -c $(LIB)key.cpp -o $(DST)key.o
+
+$(DST)terminal.o: $(LIB)terminal.cpp $(LIB)terminal.hpp
+	g++ -c $(LIB)terminal.cpp -o $(DST)terminal.o
 
 clean:
-	rm -rf $(DST_DIR)*.o $(DST_DIR)$(NAME)
+	rm -rf $(DST)*.o $(DST)$(NAME)

@@ -1,2 +1,4 @@
-.vs*
+.vscode
 dst
+pict/*
+!pict/simpsonsvr.bmp
