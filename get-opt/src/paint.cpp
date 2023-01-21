@@ -140,25 +140,9 @@ Paint::Image Paint::set_component(Component color, const Image& image) {
 Paint::Image Paint::put_circle(Circle circle, const Image& image) {
     Image n_image(image);
 
-    int x0, y0, rad_b, rad_s;
-    BGR l_color, f_color;
-
-    if (circle.x2) {
-        x0 = (circle.x1 + circle.x2) / 2;
-        y0 = (circle.y1 + circle.y2) / 2;
-        rad_b = x0 - circle.x1;
-        rad_s = rad_b - circle.width;
-        l_color = circle.l_color;
-        if (circle.f_flag) f_color = circle.f_color;
-    }
-    else {
-        x0 = circle.x0;
-        y0 = circle.y0;
-        rad_b = circle.rad_b;
-        rad_s = rad_b - circle.width;
-        l_color = circle.l_color;
-        if (circle.f_flag) f_color = circle.f_color;
-    }
+    int x0 = circle.x0, y0 = circle.y0, rad_b = circle.rad_b;
+    int rad_s = rad_b - circle.width;
+    BGR l_color = circle.l_color, f_color = circle.f_color;
 
     for (int i = 0; i < n_image.BIH.height; i++) {
         for (int j = 0; j < n_image.BIH.width; j++) {

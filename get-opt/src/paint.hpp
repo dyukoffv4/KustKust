@@ -60,10 +60,6 @@ namespace Paint {
         int x0;
         int y0;
         int rad_b;
-        int x1;
-        int y1;
-        int x2;
-        int y2;
         int width;
         BGR l_color;
         int f_flag;
