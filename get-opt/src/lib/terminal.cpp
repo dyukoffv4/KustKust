@@ -1,10 +1,6 @@
 #include "terminal.hpp"
 
 
-Listener::Listener(Terminal* _term) {
-    this->term = _term;
-}
-
 Terminal::Terminal() {
     binds[Key::root_key] = nullptr;
     binds[Key::null_key] = nullptr;
@@ -12,7 +8,6 @@ Terminal::Terminal() {
 
 Terminal::Terminal(const Terminal &term) {
     for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
-    for (auto &i : term.data) data[i.first] = i.second;
 }
 
 Terminal::~Terminal() {
@@ -23,14 +18,7 @@ Terminal &Terminal::operator=(const Terminal &term) {
     for (auto &i : binds) if (i.second) delete i.second;
     binds.clear();
     for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
-    data.clear();
-    for (auto &i : term.data) data[i.first] = i.second;
     return *this;
-}
-
-std::string& Terminal::Data(std::string key) {
-    if (!data.count(key)) data[key] = "0";
-    return data[key];
 }
 
 void Terminal::setKey(Key key, Listener *lnr) {
