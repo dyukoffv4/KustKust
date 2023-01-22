@@ -36,7 +36,7 @@ bool Key::shortEqual(const Key &key) const {
 }
 
 bool Key::operator<(const Key &key) const {
-    return data[0] < key.data[0];
+    return data < key.data;
 }
 
 std::string Key::name() const {

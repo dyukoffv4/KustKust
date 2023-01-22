@@ -7,39 +7,28 @@ Terminal::Terminal() {
 }
 
 Terminal::Terminal(const Terminal &term) {
-    for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
-}
-
-Terminal::~Terminal() {
-    for (auto &i : binds) if (i.second) delete i.second;
+    for (auto &i : term.binds) binds[i.first] = i.second;
 }
 
 Terminal &Terminal::operator=(const Terminal &term) {
-    for (auto &i : binds) if (i.second) delete i.second;
     binds.clear();
-    for (auto &i : term.binds) binds[i.first] = i.second->getCopy();
+    for (auto &i : term.binds) binds[i.first] = i.second;
     return *this;
 }
 
-void Terminal::setKey(Key key, Listener *lnr) {
-    if (binds.count(key) && binds[key]) delete binds[key];
+void Terminal::setKey(Key key, void (*lnr)(Args)) {
     binds[key] = lnr;
 }
 
 void Terminal::delKey(Key key) {
-    if (binds.count(key)) {
-        if (binds[key]) delete binds[key];
-        binds.erase(binds.find(key));
-    }
+    if (binds.count(key)) binds.erase(binds.find(key));
 }
 
-void Terminal::setRoot(Listener *lnr) {
-    if (binds[Key::root_key]) delete binds[Key::root_key];
+void Terminal::setRoot(void (*lnr)(Args)) {
     binds[Key::root_key] = lnr;
 }
 
 void Terminal::delRoot() {
-    if (binds[Key::root_key]) delete binds[Key::root_key];
     binds[Key::root_key] = nullptr;
 }
 
@@ -51,7 +40,7 @@ void Terminal::execute(Args input) {
         if (i[0] == '-') {
             // previous task execute
             try {
-                if (binds[curr_k]) binds[curr_k]->execute(curr_a);
+                if (binds[curr_k]) binds[curr_k](curr_a);
             }
             catch (std::invalid_argument e) {
                 std::cout << "# Terminal.execute->" << e.what() << "\n";
@@ -60,13 +49,13 @@ void Terminal::execute(Args input) {
             curr_k = Key::null_key;
 
             // new key finding
-            if (i.size() < 2) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
+            if (i.size() == 1) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
             else {
                 if (i.size() > 1 && i[1] == '-') {
-                    if (i.size() < 3) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
+                    if (i.size() == 2) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
                     else {
-                        if (binds.count(Key(i[2])) && binds.find(Key(i[2]))->first.name() == i.substr(2, i.size() - 1)) curr_k = Key(i[2]);
-                        else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2, i.size() - 1) + "\" doesn't exist!\n";
+                        if (binds.count(Key(i.substr(2, i.size() - 2)))) curr_k = Key(i.substr(2, i.size() - 2));
+                        else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2, i.size() - 2) + "\" doesn't exist!\n";
                     }
                 }
                 else {
@@ -81,7 +70,7 @@ void Terminal::execute(Args input) {
         else curr_a.push_back(i);
     }
     try {
-        if (binds[curr_k]) binds[curr_k]->execute(curr_a);
+        if (binds[curr_k]) binds[curr_k](curr_a);
     }
     catch (std::invalid_argument e) {
         std::cout << "# Terminal.execute->" << e.what() << "\n";

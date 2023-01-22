@@ -6,27 +6,20 @@
 #include "key.hpp"
 
 
-class Listener {
-public:
-	virtual Listener* getCopy() = 0;
-	virtual void execute(Args) = 0;
-};
-
 class Terminal {
 private:
-	std::map<Key, Listener*> binds;
+	std::map<Key, void (*)(Args)> binds;
 
 public:
 	Terminal();
 	Terminal(const Terminal& term);
-	~Terminal();
 
 	Terminal& operator=(const Terminal& term);
 
-	void setKey(Key key, Listener* lnr = nullptr);
+	void setKey(Key key, void (*)(Args) = nullptr);
 	void delKey(Key key);
 
-	void setRoot(Listener* lnr);
+	void setRoot(void (*)(Args));
 	void delRoot();
 	
 	void execute(Args input);
