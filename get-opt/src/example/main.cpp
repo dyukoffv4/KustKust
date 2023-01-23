@@ -86,16 +86,15 @@ int main(int argc, char* argv[]) {
 	try {
 		Terminal terminal;
 		terminal.setRoot(Listeners::set_load_image_path);
-		terminal.setKey(Key("out"), Listeners::set_save_image_path);
-		terminal.setKey(Key("color"), Listeners::set_component);
-		terminal.setKey(Key("circle"), Listeners::put_circle);
-		terminal.setKey(Key("slice"), Listeners::cut_the_crap);
-		terminal.setKey(Key("square"), Listeners::put_rectangle);
+		terminal.setKey(Key('o', "out"), Listeners::set_save_image_path);
+		terminal.setKey(Key('c', "color"), Listeners::set_component);
+		terminal.setKey(Key('r', "circle"), Listeners::put_circle);
+		terminal.setKey(Key('x', "slice"), Listeners::cut_the_crap);
+		terminal.setKey(Key('s', "square"), Listeners::put_rectangle);
 		terminal.execute(data);
 
-		if (Listeners::images.size() == 1) std::cout << Listeners::images[0].save(Listeners::save_path + ".bmp") << std::endl;
-		else for (int i = 0; i < Listeners::images.size(); i++)
-			std::cout << Listeners::images[i].save(Listeners::save_path + dub_str(i) + ".bmp") << std::endl;
+		if (Listeners::images.size() == 1) Listeners::images[0].save(Listeners::save_path + ".bmp");
+		else for (int i = 0; i < Listeners::images.size(); i++) Listeners::images[i].save(Listeners::save_path + dub_str(i) + ".bmp");
 	}
 	catch (std::invalid_argument e) {
 		std::cout << e.what() << "\n";

@@ -16,10 +16,10 @@ public:
 
 	Terminal& operator=(const Terminal& term);
 
-	void setKey(Key key, void (*)(Args) = nullptr);
+	void setKey(Key key, void (*lnr)(Args) = nullptr);
 	void delKey(Key key);
 
-	void setRoot(void (*)(Args));
+	void setRoot(void (*lnr)(Args));
 	void delRoot();
 	
 	void execute(Args input);

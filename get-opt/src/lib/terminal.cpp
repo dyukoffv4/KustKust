@@ -2,8 +2,8 @@
 
 
 Terminal::Terminal() {
-    binds[Key::root_key] = nullptr;
-    binds[Key::null_key] = nullptr;
+    binds[Key::getRoot()] = nullptr;
+    binds[Key::getNull()] = nullptr;
 }
 
 Terminal::Terminal(const Terminal &term) {
@@ -17,23 +17,31 @@ Terminal &Terminal::operator=(const Terminal &term) {
 }
 
 void Terminal::setKey(Key key, void (*lnr)(Args)) {
-    binds[key] = lnr;
+    if (key.getState() == Key::State::A) {
+        binds[Key(key.lname())] = lnr;
+        binds[Key(key.sname())] = lnr;
+    }
+    else binds[key] = lnr;
 }
 
 void Terminal::delKey(Key key) {
-    if (binds.count(key)) binds.erase(binds.find(key));
+    if (key.getState() == Key::State::A) {
+        if (binds.count(Key(key.lname()))) binds.erase(binds.find(Key(key.lname())));
+        if (binds.count(Key(key.sname()))) binds.erase(binds.find(Key(key.sname())));
+    }
+    else if (binds.count(key)) binds.erase(binds.find(key));
 }
 
 void Terminal::setRoot(void (*lnr)(Args)) {
-    binds[Key::root_key] = lnr;
+    binds[Key::getRoot()] = lnr;
 }
 
 void Terminal::delRoot() {
-    binds[Key::root_key] = nullptr;
+    binds[Key::getRoot()] = nullptr;
 }
 
 void Terminal::execute(Args input) {
-    Key curr_k = Key::root_key;
+    Key curr_k = Key::getRoot();
     Args curr_a;
 
     for (auto &i : input) {
@@ -46,7 +54,7 @@ void Terminal::execute(Args input) {
                 std::cout << "# Terminal.execute->" << e.what() << "\n";
             }
             curr_a.clear();
-            curr_k = Key::null_key;
+            curr_k = Key::getNull();
 
             // new key finding
             if (i.size() == 1) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";

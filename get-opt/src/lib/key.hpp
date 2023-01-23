@@ -7,23 +7,22 @@
 
 class Key {
 private:
-	std::string data;
-	static Key getNull();
-	static Key getRoot();
+	char s_data;
+	std::string l_data;
 
 public:
-	explicit Key(const char& data);
-	explicit Key(const std::string& data);
+	enum State{E, S, L, A};
 
-	void rename(const std::string& data);
+	explicit Key(const std::string& l_data);
+	explicit Key(const char& s_data, const std::string& l_data = "");
 
-	bool largeEqual(const Key& key) const;
-	bool shortEqual(const Key& key) const;
-	
+	State getState() const;
+
 	bool operator<(const Key& key) const;
 
-	std::string name() const;
+	char sname() const;
+	std::string lname() const;
 
-	static Key root_key;
-	static Key null_key;
+	static Key getNull();
+	static Key getRoot();
 };
