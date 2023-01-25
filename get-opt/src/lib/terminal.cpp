@@ -1,6 +1,5 @@
 #include "terminal.hpp"
 
-
 Terminal::Terminal() {
     binds[Key::getRoot()] = nullptr;
     binds[Key::getNull()] = nullptr;

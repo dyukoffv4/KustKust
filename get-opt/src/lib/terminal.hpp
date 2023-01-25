@@ -5,7 +5,6 @@
 #include "defines.hpp"
 #include "key.hpp"
 
-
 class Terminal {
 private:
 	std::map<Key, void (*)(Args)> binds;
