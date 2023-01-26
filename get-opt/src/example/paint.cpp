@@ -116,23 +116,15 @@ std::vector<Paint::Image> Paint::slice_image(const Image& image, int x_lines, in
 }
 
 Paint::Image Paint::set_component(const Image& image, char index, unsigned char value) {
-    if (index != 'r' || index != 'g' || index != 'b')
+    if (index != 'r' && index != 'g' && index != 'b')
         throw std::invalid_argument("# Paint::set_component: Component name should be 'r', 'g' or 'b'!");
 
     Image n_image(image);
     for (int i = 0; i < n_image.BIH.height; i++) {
         for (int j = 0; j < n_image.BIH.width; j++) {
-            switch (index) {
-            case 'r':
-                n_image.BM[i][j].r = value;
-                break;
-            case 'g':
-                n_image.BM[i][j].g = value;
-                break;
-            case 'b':
-                n_image.BM[i][j].b = value;
-                break;
-            }
+            if (index == 'r') n_image.BM[i][j].r = value;
+            else if (index == 'g') n_image.BM[i][j].g = value;
+            else n_image.BM[i][j].b = value;
         }
     }
     return n_image;
@@ -142,14 +134,9 @@ Paint::Image Paint::put_circle(const Image& image, int x, int y, int radius, BGR
     if (border < 0 || radius < 0) throw std::invalid_argument("# Paint::put_circle: Border and Radius should be positive!");
     if (border > radius) throw std::invalid_argument("# Paint::put_circle: Border should be lower then Radius!");
 
-    int x1 = x - radius > 0 ? x - radius : 0;
-    int x2 = x + radius > 0 ? x + radius : 0;
-    int y1 = y - radius > 0 ? y - radius : 0;
-    int y2 = y + radius > 0 ? y + radius : 0;
-
     Image n_image(image);
-    for (int i = y1; i < y2; i++) {
-        for (int j = x1; j < x2; j++) {
+    for (int i = 0; i < n_image.BIH.height; i++) {
+        for (int j = 0; j < n_image.BIH.width; j++) {
             int S2 = pow(x - j, 2) + pow(y - i, 2), sR2 = pow(radius - border, 2), R2 = pow(radius, 2);
             if (S2 < sR2) n_image.BM[i][j] = f_color;
             if (S2 > sR2 && S2 < R2) n_image.BM[i][j] = b_color;

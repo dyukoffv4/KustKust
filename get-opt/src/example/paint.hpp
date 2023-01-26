@@ -61,7 +61,7 @@ namespace Paint {
 
     Image set_component(const Image& image, char index, unsigned char value);
 
-    Image put_circle(const Image& image, int x, int y, int radius, BGR f_color, int border = 0, BGR b_color = {0, 0, 0});
+    Image put_circle(const Image& image, int x, int y, int radius, BGR f_color, int border, BGR b_color);
 
     Image put_square(const Image& image, int x1, int y1, int x2, int y2, int x_d, int y_d);
 
