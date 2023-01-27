@@ -39,6 +39,24 @@ void Terminal::delRoot() {
     binds[Key::getRoot()] = nullptr;
 }
 
+void Terminal::setFinal(void (*lnr)(Args)) {
+    last = lnr;
+}
+
+void Terminal::delFinal() {
+    last = nullptr;
+}
+
+void Terminal::cleanBinds() {
+    binds.clear();
+}
+
+void Terminal::execute(int argc, char* argv[]) {
+    Args data;
+	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
+    execute(data);
+}
+
 void Terminal::execute(Args input) {
     Key curr_k = Key::getRoot();
     Args curr_a;
@@ -84,6 +102,7 @@ void Terminal::execute(Args input) {
     }
     try {
         if (binds[curr_k]) binds[curr_k](curr_a);
+        if (last) last(curr_a);
     }
     catch (std::invalid_argument e) {
         std::cout << "# Terminal.execute->" << e.what() << "\n";

@@ -7,6 +7,7 @@
 
 class Terminal {
 private:
+	void (*last)(Args) = nullptr;
 	std::map<Key, void (*)(Args)> binds;
 
 public:
@@ -20,6 +21,12 @@ public:
 
 	void setRoot(void (*lnr)(Args));
 	void delRoot();
+
+	void setFinal(void (*lnr)(Args));
+	void delFinal();
+
+	void cleanBinds();
 	
+	void execute(int argc, char* argv[]);
 	void execute(Args input);
 };

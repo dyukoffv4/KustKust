@@ -32,21 +32,33 @@ namespace Listeners {
 	std::string save_path;
 
 	namespace Color {
+		char index, value;
+
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Color: Only two arguments expected after \"c/color\" key!");
 			try {
-				for (auto& i : images) i = Paint::set_component(i, opts[0][0], str_int(opts[1]));
+				index = opts[0][0];
+				value = str_int(opts[1]);
 			}
 			catch (std::domain_error exp) {
-				throw exp;
+				throw std::invalid_argument(Arg("Listeners::Color->") + exp.what());
 			}
 		}
 
-		void onHelp (Args opts) {
+		void onHelp(Args opts) {
 			std::cout << "Справочная информация по -c / --color:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - изменяемый компонент.\n";
 			std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
+		}
+
+		void onFinal(Args opts) {
+			try {
+				for (auto& i : images) i = Paint::set_component(i, index, value);
+			}
+			catch (std::exception exp) {
+				throw std::invalid_argument(Arg("Listeners::Color->") + exp.what());
+			}
 		}
 	}
 
@@ -66,7 +78,7 @@ namespace Listeners {
 			}
 		}
 
-		void onFill (Args opts) {
+		void onFill(Args opts) {
 			if (opts.size() != 3) throw std::invalid_argument("Listeners::Circle: Only three arguments expected after \"f/fill\" key!");
 			try {
 				fill_color.r = str_int(opts[0]);
@@ -78,7 +90,7 @@ namespace Listeners {
 			}
 		}
 
-		void onBorder (Args opts) {
+		void onBorder(Args opts) {
 			if (opts.size() != 4) throw std::invalid_argument("Listeners::Circle: Only four arguments expected after \"b/border\" key!");
 			try {
 				border = str_int(opts[0]);
@@ -91,7 +103,7 @@ namespace Listeners {
 			}
 		}
 
-		void onHelp (Args opts) {
+		void onHelp(Args opts) {
 			std::cout << "Справочная информация по -r (--circle):\n";
 			std::cout << "Флаги:\n";
 			std::cout << "\t-f (--fill):\t\n";
@@ -105,7 +117,7 @@ namespace Listeners {
 			std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
 		}
 
-		void execute() {
+		void onFinal(Args opts) {
 			try {
 				for (auto& i : images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
 			}
@@ -116,38 +128,53 @@ namespace Listeners {
 	}
 
 	namespace Slice {
+		int x_lines, y_lines;
+
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Slice: Only two arguments expected after \"x/slice\" key!");
 			try {
-				for (auto& i : Paint::slice_image(images[0], str_int(opts[0]), str_int(opts[1]))) images.push_back(i);
-				images.erase(images.begin());
+				x_lines = str_int(opts[0]);
+				y_lines = str_int(opts[1]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Slice->") + exp.what());
 			}
 		}
 
-		void onHelp (Args opts) {
+		void onHelp(Args opts) {
 			std::cout << "Справочная информация по -x / --slice:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - число вертикальных изображений.\n";
 			std::cout << "\t2 параметр - число горизонтальных изображений.\n";
 		}
+
+		void onFinal(Args opts) {
+			try {
+				for (auto& i : Paint::slice_image(images[0], x_lines, y_lines)) images.push_back(i);
+				images.erase(images.begin());
+			}
+			catch (std::exception exp) {
+				throw std::invalid_argument(Arg("Listeners::Slice->") + exp.what());
+			}
+		}
 	}
 
 	namespace Square {
+		int x1, y1, x2, y2, x_d, y_d;
+
 		void onRoot(Args opts) {
 			if (opts.size() != 6) throw std::invalid_argument("Listeners::Square: Only six arguments expected after \"s/square\" key!");
 			try {
-				for (auto& i : images)
-					i = Paint::put_square(i, str_int(opts[0]), str_int(opts[1]), str_int(opts[2]), str_int(opts[3]), str_int(opts[4]), str_int(opts[5]));
+				x1 = str_int(opts[0]); y1 = str_int(opts[1]);
+				x2 = str_int(opts[2]); y2 = str_int(opts[3]);
+				x_d = str_int(opts[4]); y_d = str_int(opts[5]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Square->") + exp.what());
 			}
 		}
 
-		void onHelp (Args opts) {
+		void onHelp(Args opts) {
 			std::cout << "Справочная информация по -s / --square:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - положение нижнего левого угла по горизонтали.\n";
@@ -157,16 +184,25 @@ namespace Listeners {
 			std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
 			std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
 		}
+
+		void onFinal(Args opts) {
+			try {
+				for (auto& i : images) i = Paint::put_square(i, x1, y1, x2, y2, x_d, y_d);
+			}
+			catch (std::exception exp) {
+				throw std::invalid_argument(Arg("Listeners::Square->") + exp.what());
+			}
+		}
 	}
 
 	namespace Main {
 		void set_load_path(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Main: No working file specified!");
 			try {
-				images[0].load(opts[1]);
-				save_path = opts[1];
+				Listeners::images[0].load(opts[1]);
+				Listeners::save_path = opts[1];
 				int pos = opts[1].find(".bmp");
-				if (pos) save_path = opts[1].substr(0, pos) + "_0";
+				if (pos) Listeners::save_path = opts[1].substr(0, pos) + "_0";
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Main->") + exp.what());
@@ -176,9 +212,9 @@ namespace Listeners {
 		void set_save_path(Args opts) {
 			if (opts.size() != 1) throw std::invalid_argument("Listeners::Main: Only one arguments expected after \"o/out\" key!");
 			try {
-				save_path = opts[0];
+				Listeners::save_path = opts[0];
 				int pos = opts[0].find(".bmp");
-				if (pos) save_path = opts[0].substr(0, pos);
+				if (pos) Listeners::save_path = opts[0].substr(0, pos);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Main->") + exp.what());
@@ -188,6 +224,7 @@ namespace Listeners {
 		void onColor(Args opts) {
 			Terminal terminal;
 			terminal.setRoot(Listeners::Color::onRoot);
+			terminal.setFinal(Listeners::Color::onFinal);
 			terminal.setKey(Key('h', "help"), Listeners::Color::onHelp);
 			terminal.execute(opts);
 		}
@@ -195,16 +232,17 @@ namespace Listeners {
 		void onCircle(Args opts) {
 			Terminal terminal;
 			terminal.setRoot(Listeners::Circle::onRoot);
+			terminal.setFinal(Listeners::Circle::onFinal);
 			terminal.setKey(Key('f', "fill"), Listeners::Circle::onFill);
 			terminal.setKey(Key('b', "border"), Listeners::Circle::onBorder);
 			terminal.setKey(Key('h', "help"), Listeners::Circle::onHelp);
 			terminal.execute(opts);
-			Listeners::Circle::execute();
 		}
 
 		void onSlice(Args opts) {
 			Terminal terminal;
 			terminal.setRoot(Listeners::Slice::onRoot);
+			terminal.setFinal(Listeners::Slice::onFinal);
 			terminal.setKey(Key('h', "help"), Listeners::Slice::onHelp);
 			terminal.execute(opts);
 		}
@@ -212,6 +250,7 @@ namespace Listeners {
 		void onSquare(Args opts) {
 			Terminal terminal;
 			terminal.setRoot(Listeners::Square::onRoot);
+			terminal.setFinal(Listeners::Square::onFinal);
 			terminal.setKey(Key('h', "help"), Listeners::Square::onHelp);
 			terminal.execute(opts);
 		}
@@ -227,26 +266,31 @@ namespace Listeners {
 			std::cout << "\t-s (--square):\tКопирование и перемещения части изображения в другое место.\n";
 			std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
 		}
+
+		void onFinal(Args opts) {
+			try {
+				if (Listeners::images.size() == 1) Listeners::images[0].save(Listeners::save_path + ".bmp");
+				else for (int i = 0; i < Listeners::images.size(); i++) Listeners::images[i].save(Listeners::save_path + int_str(i) + ".bmp");
+			}
+			catch (std::exception exp) {
+				throw std::invalid_argument(Arg("Listeners::Main->") + exp.what());
+			}
+		}
 	}
 }
 
 int main(int argc, char* argv[]) {
-	Args data;
-	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
-
 	try {
 		Terminal terminal;
 		terminal.setRoot(Listeners::Main::set_load_path);
+		terminal.setFinal(Listeners::Main::onFinal);
 		terminal.setKey(Key('o', "out"), Listeners::Main::set_save_path);
 		terminal.setKey(Key('c', "color"), Listeners::Main::onColor);
 		terminal.setKey(Key('r', "circle"), Listeners::Main::onCircle);
 		terminal.setKey(Key('x', "slice"), Listeners::Main::onSlice);
 		terminal.setKey(Key('s', "square"), Listeners::Main::onSquare);
 		terminal.setKey(Key('h', "help"), Listeners::Main::onHelp);
-		terminal.execute(data);
-
-		if (Listeners::images.size() == 1) Listeners::images[0].save(Listeners::save_path + ".bmp");
-		else for (int i = 0; i < Listeners::images.size(); i++) Listeners::images[i].save(Listeners::save_path + int_str(i) + ".bmp");
+		terminal.execute(argc, argv);
 	}
 	catch (std::invalid_argument e) {
 		std::cout << e.what() << "\n";
