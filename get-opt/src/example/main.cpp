@@ -1,6 +1,31 @@
 #include "../lib/terminal.hpp"
-#include "utils.hpp"
 #include "paint.hpp"
+
+int str_int(std::string str) {
+	int num = 0;
+	if (!str.empty()) {
+		bool minus = false;
+		for (int i = 0; i < str.size(); i++) {
+			if (str[i] == '-') {
+				minus = true;
+				continue;
+			}
+			if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
+			num = num * 10 + (str[i] - 48);
+		}
+		if (minus) num *= -1;
+	}
+	return num;
+}
+
+std::string int_str(int num) {
+	std::string str;
+	bool minus = (num < 0) ? true : false;
+	for (int i = num; i > 0; i /= 10) str = char(i % 10 + 48) + str;
+	if (num == 0) str = "0" + str;
+	if (minus) str = "-" + str;
+	return str;
+}
 
 namespace Listeners {
 	std::vector<Paint::Image> images(1);
@@ -10,11 +35,10 @@ namespace Listeners {
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Color: Only two arguments expected after \"c/color\" key!");
 			try {
-				for (auto& i : images)
-					i = Paint::set_component(i, opts[0][0], str_int(opts[1]));
+				for (auto& i : images) i = Paint::set_component(i, opts[0][0], str_int(opts[1]));
 			}
 			catch (std::domain_error exp) {
-				throw std::invalid_argument(Arg("Listeners::Color->") + exp.what());
+				throw exp;
 			}
 		}
 
@@ -27,14 +51,15 @@ namespace Listeners {
 	}
 
 	namespace Circle {
-		Paint::BGR fill_color = {255, 255, 255}, border_color = {0, 0, 0};
-		int border = 0;
+		Paint::BGR fill_color, border_color = {0, 0, 0};
+		int x, y, radius, border = 0;
 
 		void onRoot(Args opts) {
 			if (opts.size() != 3) throw std::invalid_argument("Listeners::Circle: Only three root arguments expected after \"r/circle\" key!");
 			try {
-				for (auto& i : images)
-					i = Paint::put_circle(i, str_int(opts[0]), str_int(opts[1]), str_int(opts[2]), fill_color, border, border_color);
+				x = str_int(opts[0]);
+				y = str_int(opts[1]);
+				radius = str_int(opts[2]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Circle->") + exp.what());
@@ -78,6 +103,15 @@ namespace Listeners {
 			std::cout << "\t3 параметр - радиус окружности.\n";
 			std::cout << "Необязательные параметры:\t\n";
 			std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
+		}
+
+		void execute() {
+			try {
+				for (auto& i : images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
+			}
+			catch (std::exception exp) {
+				throw std::invalid_argument(Arg("Listeners::Circle->") + exp.what());
+			}
 		}
 	}
 
@@ -165,6 +199,7 @@ namespace Listeners {
 			terminal.setKey(Key('b', "border"), Listeners::Circle::onBorder);
 			terminal.setKey(Key('h', "help"), Listeners::Circle::onHelp);
 			terminal.execute(opts);
+			Listeners::Circle::execute();
 		}
 
 		void onSlice(Args opts) {

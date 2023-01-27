@@ -45,6 +45,12 @@ void Terminal::execute(Args input) {
 
     for (auto &i : input) {
         if (i[0] == '-') {
+            // extra key checkout
+            if ((i.size() == 3 && i[1] == '-') || (i.size() >= 3 && i[1] == '-' && i[2] == '-')) {
+                curr_a.push_back(i.substr(1));
+                continue;
+            }
+
             // previous task execute
             try {
                 if (binds[curr_k]) binds[curr_k](curr_a);
@@ -61,8 +67,8 @@ void Terminal::execute(Args input) {
                 if (i.size() > 1 && i[1] == '-') {
                     if (i.size() == 2) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
                     else {
-                        if (binds.count(Key(i.substr(2, i.size() - 2)))) curr_k = Key(i.substr(2, i.size() - 2));
-                        else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2, i.size() - 2) + "\" doesn't exist!\n";
+                        if (binds.count(Key(i.substr(2)))) curr_k = Key(i.substr(2));
+                        else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2) + "\" doesn't exist!\n";
                     }
                 }
                 else {

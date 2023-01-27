@@ -1,5 +1,4 @@
 #include "paint.hpp"
-#include "utils.hpp"
 
 Paint::Image::Image() : BM(nullptr) {}
 
