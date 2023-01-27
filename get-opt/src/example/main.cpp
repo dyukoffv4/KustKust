@@ -1,35 +1,23 @@
 #include "../lib/terminal.hpp"
 #include "paint.hpp"
 
-int str_int(std::string str) {
-	int num = 0;
-	if (!str.empty()) {
-		bool minus = false;
-		for (int i = 0; i < str.size(); i++) {
-			if (str[i] == '-') {
-				minus = true;
-				continue;
-			}
-			if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
-			num = num * 10 + (str[i] - 48);
-		}
-		if (minus) num *= -1;
-	}
-	return num;
-}
-
-std::string int_str(int num) {
-	std::string str;
-	bool minus = (num < 0) ? true : false;
-	for (int i = num; i > 0; i /= 10) str = char(i % 10 + 48) + str;
-	if (num == 0) str = "0" + str;
-	if (minus) str = "-" + str;
-	return str;
-}
+using namespace GetOpt;
 
 namespace Listeners {
 	std::vector<Paint::Image> images(1);
 	std::string save_path;
+
+	int atoi(std::string str) {
+		int minus = 0, num = 0;
+		if (!str.empty()) {
+			minus = str[0] == '-' ? 1 : 0;
+			for (int i = minus; i < str.size(); i++) {
+				if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
+				num = num * 10 + (str[i] - 48);
+			}
+		}
+		return minus ? -1 * num : num;
+	}
 
 	namespace Color {
 		char index, value;
@@ -38,7 +26,7 @@ namespace Listeners {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Color: Only two arguments expected after \"c/color\" key!");
 			try {
 				index = opts[0][0];
-				value = str_int(opts[1]);
+				value = atoi(opts[1]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Color->") + exp.what());
@@ -69,9 +57,9 @@ namespace Listeners {
 		void onRoot(Args opts) {
 			if (opts.size() != 3) throw std::invalid_argument("Listeners::Circle: Only three root arguments expected after \"r/circle\" key!");
 			try {
-				x = str_int(opts[0]);
-				y = str_int(opts[1]);
-				radius = str_int(opts[2]);
+				x = atoi(opts[0]);
+				y = atoi(opts[1]);
+				radius = atoi(opts[2]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Circle->") + exp.what());
@@ -81,9 +69,9 @@ namespace Listeners {
 		void onFill(Args opts) {
 			if (opts.size() != 3) throw std::invalid_argument("Listeners::Circle: Only three arguments expected after \"f/fill\" key!");
 			try {
-				fill_color.r = str_int(opts[0]);
-				fill_color.g = str_int(opts[1]);
-				fill_color.b = str_int(opts[2]);
+				fill_color.r = atoi(opts[0]);
+				fill_color.g = atoi(opts[1]);
+				fill_color.b = atoi(opts[2]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Circle->") + exp.what());
@@ -93,10 +81,10 @@ namespace Listeners {
 		void onBorder(Args opts) {
 			if (opts.size() != 4) throw std::invalid_argument("Listeners::Circle: Only four arguments expected after \"b/border\" key!");
 			try {
-				border = str_int(opts[0]);
-				border_color.r = str_int(opts[1]);
-				border_color.g = str_int(opts[2]);
-				border_color.b = str_int(opts[3]);
+				border = atoi(opts[0]);
+				border_color.r = atoi(opts[1]);
+				border_color.g = atoi(opts[2]);
+				border_color.b = atoi(opts[3]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Circle->") + exp.what());
@@ -133,8 +121,8 @@ namespace Listeners {
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Slice: Only two arguments expected after \"x/slice\" key!");
 			try {
-				x_lines = str_int(opts[0]);
-				y_lines = str_int(opts[1]);
+				x_lines = atoi(opts[0]);
+				y_lines = atoi(opts[1]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Slice->") + exp.what());
@@ -165,9 +153,9 @@ namespace Listeners {
 		void onRoot(Args opts) {
 			if (opts.size() != 6) throw std::invalid_argument("Listeners::Square: Only six arguments expected after \"s/square\" key!");
 			try {
-				x1 = str_int(opts[0]); y1 = str_int(opts[1]);
-				x2 = str_int(opts[2]); y2 = str_int(opts[3]);
-				x_d = str_int(opts[4]); y_d = str_int(opts[5]);
+				x1 = atoi(opts[0]); y1 = atoi(opts[1]);
+				x2 = atoi(opts[2]); y2 = atoi(opts[3]);
+				x_d = atoi(opts[4]); y_d = atoi(opts[5]);
 			}
 			catch (std::domain_error exp) {
 				throw std::invalid_argument(Arg("Listeners::Square->") + exp.what());
@@ -270,7 +258,11 @@ namespace Listeners {
 		void onFinal(Args opts) {
 			try {
 				if (Listeners::images.size() == 1) Listeners::images[0].save(Listeners::save_path + ".bmp");
-				else for (int i = 0; i < Listeners::images.size(); i++) Listeners::images[i].save(Listeners::save_path + int_str(i) + ".bmp");
+				else for (int i = 0; i < Listeners::images.size(); i++) {
+					std::string str;
+					for (int j = i; j > 0; j /= 10) str = char(j % 10 + 48) + str;
+					Listeners::images[i].save(Listeners::save_path + str + ".bmp");
+				}
 			}
 			catch (std::exception exp) {
 				throw std::invalid_argument(Arg("Listeners::Main->") + exp.what());

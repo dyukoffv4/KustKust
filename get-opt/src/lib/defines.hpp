@@ -3,5 +3,7 @@
 #include <string>
 #include <vector>
 
-typedef std::string Arg;
-typedef std::vector<Arg> Args;
+namespace GetOpt {
+    typedef std::string Arg;
+    typedef std::vector<Arg> Args;
+}

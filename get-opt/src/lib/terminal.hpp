@@ -2,31 +2,32 @@
 
 #include <map>
 #include <iostream>
-#include "defines.hpp"
 #include "key.hpp"
 
-class Terminal {
-private:
-	void (*last)(Args) = nullptr;
-	std::map<Key, void (*)(Args)> binds;
+namespace GetOpt {
+	class Terminal {
+	private:
+		void (*last)(Args) = nullptr;
+		std::map<Key, void (*)(Args)> binds;
 
-public:
-	Terminal();
-	Terminal(const Terminal& term);
+	public:
+		Terminal();
+		Terminal(const Terminal& term);
 
-	Terminal& operator=(const Terminal& term);
+		Terminal& operator=(const Terminal& term);
 
-	void setKey(Key key, void (*lnr)(Args) = nullptr);
-	void delKey(Key key);
+		void setKey(Key key, void (*lnr)(Args) = nullptr);
+		void delKey(Key key);
 
-	void setRoot(void (*lnr)(Args));
-	void delRoot();
+		void setRoot(void (*lnr)(Args));
+		void delRoot();
 
-	void setFinal(void (*lnr)(Args));
-	void delFinal();
+		void setFinal(void (*lnr)(Args));
+		void delFinal();
 
-	void cleanBinds();
-	
-	void execute(int argc, char* argv[]);
-	void execute(Args input);
-};
+		void cleanBinds();
+		
+		void execute(int argc, char* argv[]);
+		void execute(Args input);
+	};
+}
