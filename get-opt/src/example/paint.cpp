@@ -1,6 +1,4 @@
 #include "paint.hpp"
-#include "utils.hpp"
-
 
 Paint::Image::Image() : BM(nullptr) {}
 
@@ -95,16 +93,16 @@ bool Paint::Image::save(std::string path) {
 }
 
 
-std::vector<Paint::Image> Paint::cut_the_crap(CutLines lines, const Image& image) {
+std::vector<Paint::Image> Paint::slice_image(const Image& image, int x_lines, int y_lines) {
+    if (x_lines < 1 || y_lines < 1) throw std::invalid_argument("# Paint::slice_image: Cut lines should be larger then zero!");
+
     std::vector<Image> images;
-    if (lines.x_num < 1 || lines.y_num < 1) throw std::invalid_argument("# Paint::cut_the_crap: Cut lines should be larger then zero!");
-
     Image n_image(image);
-    int H = n_image.BIH.height /= lines.y_num;
-    int W = n_image.BIH.width /= lines.x_num;
+    int H = n_image.BIH.height /= y_lines;
+    int W = n_image.BIH.width /= x_lines;
 
-    for (int i = 0; i < lines.y_num; i++) {
-        for (int j = 0; j < lines.x_num; j++) {
+    for (int i = 0; i < y_lines; i++) {
+        for (int j = 0; j < x_lines; j++) {
             n_image.BM = new BGR*[H];
             for (int k = 0; k < H; k++) {
                 n_image.BM[k] = new BGR[W];
@@ -116,68 +114,54 @@ std::vector<Paint::Image> Paint::cut_the_crap(CutLines lines, const Image& image
     return images;
 }
 
-Paint::Image Paint::set_component(Component color, const Image& image) {
-    Image n_image(image);
+Paint::Image Paint::set_component(const Image& image, char index, unsigned char value) {
+    if (index != 'r' && index != 'g' && index != 'b')
+        throw std::invalid_argument("# Paint::set_component: Component name should be 'r', 'g' or 'b'!");
 
+    Image n_image(image);
     for (int i = 0; i < n_image.BIH.height; i++) {
         for (int j = 0; j < n_image.BIH.width; j++) {
-            switch (color.index) {
-            case 'r':
-                n_image.BM[i][j].r = color.value;
-                break;
-            case 'g':
-                n_image.BM[i][j].g = color.value;
-                break;
-            case 'b':
-                n_image.BM[i][j].b = color.value;
-                break;
-            }
+            if (index == 'r') n_image.BM[i][j].r = value;
+            else if (index == 'g') n_image.BM[i][j].g = value;
+            else n_image.BM[i][j].b = value;
         }
     }
     return n_image;
 }
 
-Paint::Image Paint::put_circle(Circle circle, const Image& image) {
+Paint::Image Paint::put_circle(const Image& image, int x, int y, int radius, BGR f_color, int border, BGR b_color) {
+    if (border < 0 || radius < 0) throw std::invalid_argument("# Paint::put_circle: Border and Radius should be positive!");
+    if (border > radius) throw std::invalid_argument("# Paint::put_circle: Border should be lower then Radius!");
+
     Image n_image(image);
-
-    int x0 = circle.x0, y0 = circle.y0, rad_b = circle.rad_b;
-    int rad_s = rad_b - circle.width;
-    BGR l_color = circle.l_color, f_color = circle.f_color;
-
     for (int i = 0; i < n_image.BIH.height; i++) {
         for (int j = 0; j < n_image.BIH.width; j++) {
-            if ((circle.f_flag) && ((x0 - j) * (x0 - j) + (y0 - i) * (y0 - i) - rad_b * rad_b < 0))
-                n_image.BM[i][j] = f_color;
-            if (((x0 - j) * (x0 - j) + (y0 - i) * (y0 - i) - rad_b * rad_b < rad_b) && ((x0 - j) * (x0 - j) + (y0 - i) * (y0 - i) - rad_s * rad_s > -rad_s))
-                n_image.BM[i][j] = l_color;
+            int S2 = pow(x - j, 2) + pow(y - i, 2), sR2 = pow(radius - border, 2), R2 = pow(radius, 2);
+            if (S2 < sR2) n_image.BM[i][j] = f_color;
+            if (S2 > sR2 && S2 < R2) n_image.BM[i][j] = b_color;
         }
     }
     return n_image;
 }
 
-Paint::Image Paint::put_rectangle(Rectangle rect, const Image& image) {
+Paint::Image Paint::put_square(const Image& image, int x1, int y1, int x2, int y2, int x_d, int y_d) {
+    int H = image.BIH.height, W = image.BIH.width;
+    if (x1 < 0 || x1 > W || y1 < 0 || y1 > H || x2 < x1 || x2 > W || y2 < y1 || y2 > H)
+        throw std::invalid_argument("# Paint::put_square: Square should be inside image!");
+    
+    if (x2 > W - x_d) x2 = W - x_d;
+    if (y2 > H - y_d) y2 = H - y_d;
+    if (x1 < -x_d) x1 = -x_d;
+    if (y1 < -y_d) y1 = -y_d;
+    if (x1 > x2 || y1 > y2) return Image(image);
+
     Image n_image(image);
-
-    int x1 = rect.x1, x2 = rect.x2, y1 = rect.y1, y2 = rect.y2, x_to = rect.x_to, y_to = rect.y_to;
-    int H = n_image.BIH.height;
-    int W = n_image.BIH.width;
-
-    if ((x1 < 0) || (x1 > W) || (y1 < 0) || (y1 > H) || (x2 < x1) || (x2 > W) || (y2 < y1) || (y2 > H))
-        throw std::invalid_argument("# Paint::put_rectangle: Rectangle should be inside image!");
-
-    BGR** new_BM = new BGR*[y2 - y1];
+    BGR** BM = new BGR*[y2 - y1];
     for (int i = 0; i < y2 - y1; i++) {
-        new_BM[i] = new BGR[x2 - x1];
-        for (int j = 0; j < (x2 - x1); j++) {
-            new_BM[i][j] = n_image.BM[i + y1][j + x1];
-        }
+        BM[i] = new BGR[x2 - x1];
+        for (int j = 0; j < (x2 - x1); j++) BM[i][j] = n_image.BM[i + y1][j + x1];
     }
-    for (int i = 0; i < y2 - y1; i++) {
-        for (int j = 0; j < x2 - x1; j++) {
-            if ((i + y_to < H) && (i + y_to > -1) && (j + x_to < W) && (j + x_to > -1))
-                n_image.BM[i + y_to][j + x_to] = new_BM[i][j];
-        }
-    }
+    for (int i = 0; i < y2 - y1; i++) for (int j = 0; j < x2 - x1; j++) n_image.BM[i + y_d][j + x_d] = BM[i][j];
     return n_image;
 }
 

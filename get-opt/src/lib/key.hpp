@@ -4,7 +4,6 @@
 #include <exception>
 #include <stdexcept>
 
-
 class Key {
 private:
 	char s_data;

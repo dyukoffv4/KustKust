@@ -4,9 +4,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
+#include <cmath>
 
 namespace Paint {
+    using std::pow;
+
 #pragma pack(push, 1)
 
     struct BitmapFileHeader {
@@ -37,35 +39,6 @@ namespace Paint {
         unsigned char r;
     };
 
-    struct Rectangle {
-        int x1;
-        int y1;
-        int x2;
-        int y2;
-        int x_to;
-        int y_to;
-    };
-
-    struct CutLines {
-        int x_num;
-        int y_num;
-    };
-
-    struct Component {
-        char index;
-        int value;
-    };
-
-    struct Circle {
-        int x0;
-        int y0;
-        int rad_b;
-        int width;
-        BGR l_color;
-        int f_flag;
-        BGR f_color;
-    };
-
 #pragma pack(pop)
 
     class Image {
@@ -84,13 +57,13 @@ namespace Paint {
         bool save(std::string path);
     };
 
-    std::vector<Image> cut_the_crap(CutLines lines, const Image& image);
+    std::vector<Image> slice_image(const Image& image, int x_lines, int y_lines);
 
-    Image set_component(Component color, const Image& image);
+    Image set_component(const Image& image, char index, unsigned char value);
 
-    Image put_circle(Circle circle, const Image& image);
+    Image put_circle(const Image& image, int x, int y, int radius, BGR f_color, int border, BGR b_color);
 
-    Image put_rectangle(Rectangle rectangle, const Image& image);
+    Image put_square(const Image& image, int x1, int y1, int x2, int y2, int x_d, int y_d);
 
     std::ostream &operator<<(std::ostream &out, const BitmapFileHeader &bfh);
 

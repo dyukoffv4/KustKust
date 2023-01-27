@@ -1,6 +1,5 @@
 #include "key.hpp"
 
-
 Key::Key(const std::string &l_data) {
     if (l_data.empty()) throw std::invalid_argument("# Key.Key: Name of key can't be empty!");
     this->s_data = '-';
