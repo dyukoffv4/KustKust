@@ -63,23 +63,23 @@ void GetOpt::Terminal::execute(Args input) {
 
     for (auto &i : input) {
         if (i[0] == '-') {
-            // extra key checkout
+            // Option Key
             if ((i.size() == 3 && i[1] == '-') || (i.size() >= 3 && i[1] == '-' && i[2] == '-')) {
                 curr_a.push_back(i.substr(1));
                 continue;
             }
 
-            // previous task execute
+            // Task Execute
             try {
                 if (binds[curr_k]) binds[curr_k](curr_a);
             }
             catch (std::invalid_argument e) {
                 std::cout << "# Terminal.execute->" << e.what() << "\n";
             }
+
+            // New Key
             curr_a.clear();
             curr_k = Key::getNull();
-
-            // new key finding
             if (i.size() == 1) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
             else {
                 if (i.size() > 1 && i[1] == '-') {
