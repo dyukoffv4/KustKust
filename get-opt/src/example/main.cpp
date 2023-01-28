@@ -21,6 +21,7 @@ namespace Listeners {
 
 	namespace Color {
 		char index, value;
+		bool is_help = false;
 
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Color: Only two arguments expected after \"c/color\" key!");
@@ -34,6 +35,7 @@ namespace Listeners {
 		}
 
 		void onHelp(Args opts) {
+			is_help = true;
 			std::cout << "Справочная информация по -c / --color:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - изменяемый компонент.\n";
@@ -41,6 +43,7 @@ namespace Listeners {
 		}
 
 		void onFinal(Args opts) {
+			if (is_help) return;
 			try {
 				for (auto& i : images) i = Paint::set_component(i, index, value);
 			}
@@ -53,6 +56,7 @@ namespace Listeners {
 	namespace Circle {
 		Paint::BGR fill_color, border_color = {0, 0, 0};
 		int x, y, radius, border = 0;
+		bool is_help = false;
 
 		void onRoot(Args opts) {
 			if (opts.size() != 3) throw std::invalid_argument("Listeners::Circle: Only three root arguments expected after \"r/circle\" key!");
@@ -92,6 +96,7 @@ namespace Listeners {
 		}
 
 		void onHelp(Args opts) {
+			is_help = true;
 			std::cout << "Справочная информация по -r (--circle):\n";
 			std::cout << "Флаги:\n";
 			std::cout << "\t-f (--fill):\t\n";
@@ -106,6 +111,7 @@ namespace Listeners {
 		}
 
 		void onFinal(Args opts) {
+			if (is_help) return;
 			try {
 				for (auto& i : images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
 			}
@@ -117,6 +123,7 @@ namespace Listeners {
 
 	namespace Slice {
 		int x_lines, y_lines;
+		bool is_help = false;
 
 		void onRoot(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Slice: Only two arguments expected after \"x/slice\" key!");
@@ -130,6 +137,7 @@ namespace Listeners {
 		}
 
 		void onHelp(Args opts) {
+			is_help = true;
 			std::cout << "Справочная информация по -x / --slice:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - число вертикальных изображений.\n";
@@ -137,6 +145,7 @@ namespace Listeners {
 		}
 
 		void onFinal(Args opts) {
+			if (is_help) return;
 			try {
 				for (auto& i : Paint::slice_image(images[0], x_lines, y_lines)) images.push_back(i);
 				images.erase(images.begin());
@@ -149,6 +158,7 @@ namespace Listeners {
 
 	namespace Square {
 		int x1, y1, x2, y2, x_d, y_d;
+		bool is_help = false;
 
 		void onRoot(Args opts) {
 			if (opts.size() != 6) throw std::invalid_argument("Listeners::Square: Only six arguments expected after \"s/square\" key!");
@@ -163,6 +173,7 @@ namespace Listeners {
 		}
 
 		void onHelp(Args opts) {
+			is_help = true;
 			std::cout << "Справочная информация по -s / --square:\n";
 			std::cout << "Обязательные параметры:\n";
 			std::cout << "\t1 параметр - положение нижнего левого угла по горизонтали.\n";
@@ -174,6 +185,7 @@ namespace Listeners {
 		}
 
 		void onFinal(Args opts) {
+			if (is_help) return;
 			try {
 				for (auto& i : images) i = Paint::put_square(i, x1, y1, x2, y2, x_d, y_d);
 			}
@@ -184,6 +196,8 @@ namespace Listeners {
 	}
 
 	namespace Main {
+		bool is_help = false;
+
 		void set_load_path(Args opts) {
 			if (opts.size() != 2) throw std::invalid_argument("Listeners::Main: No working file specified!");
 			try {
@@ -244,6 +258,7 @@ namespace Listeners {
 		}
 
 		void onHelp(Args opts) {
+			is_help = true;
 			std::cout << "Справочная информация по программе:\n";
 			std::cout << "Вызов:\t<программа> <файл> [-o (--out), -c (--color), -r (--circle), -x (--slice), -s (--square), -h (--help)]\n";
 			std::cout << "Флаги:\n";
@@ -256,6 +271,7 @@ namespace Listeners {
 		}
 
 		void onFinal(Args opts) {
+			if (is_help) return;
 			try {
 				if (Listeners::images.size() == 1) Listeners::images[0].save(Listeners::save_path + ".bmp");
 				else for (int i = 0; i < Listeners::images.size(); i++) {
