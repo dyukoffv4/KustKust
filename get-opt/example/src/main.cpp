@@ -1,4 +1,4 @@
-#include "../../lib/src/terminal.hpp"
+#include <keyparser/terminal.hpp>
 #include "paint.hpp"
 
 using namespace GetOpt;
