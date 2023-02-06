@@ -38,11 +38,8 @@ echo "Essential: no"        >> $PKG_DEB/control
 # echo $DEB_DEPN >> $PKG_DEB/control
 
 DEB_SIZE=$(du -k bin/$ELNAME | awk '{print $1}')
-for i in $(ls src)
-do
-    if [ "$(echo $i | awk '/.hpp$/')" ]
-    then DEB_SIZE=$(( $(du -k src/$i | awk '{print $1}') + $DEB_SIZE ))
-    fi
+for i in $(ls src | awk '/.hpp$/')
+do DEB_SIZE=$(( $(du -k src/$i | awk '{print $1}') + $DEB_SIZE ))
 done
 echo "Installed-Size: $DEB_SIZE" >> $PKG_DEB/control
 
