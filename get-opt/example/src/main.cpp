@@ -1,7 +1,7 @@
 #include <keyparser/terminal.hpp>
 #include "paint.hpp"
 
-using namespace GetOpt;
+using namespace KP;
 
 int atoi(std::string str) {
 	int minus = 0, num = 0;

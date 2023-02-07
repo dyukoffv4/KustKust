@@ -4,7 +4,7 @@
 #include <iostream>
 #include "key.hpp"
 
-namespace GetOpt {
+namespace KP {
 	class Terminal {
 	private:
 		void (*last)(Args) = nullptr;

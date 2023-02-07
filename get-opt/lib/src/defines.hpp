@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace GetOpt {
+namespace KP {
     typedef std::string Arg;
     typedef std::vector<Arg> Args;
 }

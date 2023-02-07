@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include "defines.hpp"
 
-namespace GetOpt {
+namespace KP {
 	class Key {
 	private:
 		char s_data;

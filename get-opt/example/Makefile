@@ -1,6 +1,5 @@
 SRC = src/
 DST = bin/
-NAME = PE
 
 
 all: $(DST)main.o $(DST)paint.o

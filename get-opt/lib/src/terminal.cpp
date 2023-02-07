@@ -1,21 +1,21 @@
 #include "terminal.hpp"
 
-GetOpt::Terminal::Terminal() {
+KP::Terminal::Terminal() {
     binds[Key::getRoot()] = nullptr;
     binds[Key::getNull()] = nullptr;
 }
 
-GetOpt::Terminal::Terminal(const Terminal &term) {
+KP::Terminal::Terminal(const Terminal &term) {
     for (auto &i : term.binds) binds[i.first] = i.second;
 }
 
-GetOpt::Terminal &GetOpt::Terminal::operator=(const Terminal &term) {
+KP::Terminal &KP::Terminal::operator=(const Terminal &term) {
     binds.clear();
     for (auto &i : term.binds) binds[i.first] = i.second;
     return *this;
 }
 
-void GetOpt::Terminal::setKey(Key key, void (*lnr)(Args)) {
+void KP::Terminal::setKey(Key key, void (*lnr)(Args)) {
     if (key.getState() == Key::State::A) {
         binds[Key(key.lname())] = lnr;
         binds[Key(key.sname())] = lnr;
@@ -23,7 +23,7 @@ void GetOpt::Terminal::setKey(Key key, void (*lnr)(Args)) {
     else binds[key] = lnr;
 }
 
-void GetOpt::Terminal::delKey(Key key) {
+void KP::Terminal::delKey(Key key) {
     if (key.getState() == Key::State::A) {
         if (binds.count(Key(key.lname()))) binds.erase(binds.find(Key(key.lname())));
         if (binds.count(Key(key.sname()))) binds.erase(binds.find(Key(key.sname())));
@@ -31,33 +31,33 @@ void GetOpt::Terminal::delKey(Key key) {
     else if (binds.count(key)) binds.erase(binds.find(key));
 }
 
-void GetOpt::Terminal::setRoot(void (*lnr)(Args)) {
+void KP::Terminal::setRoot(void (*lnr)(Args)) {
     binds[Key::getRoot()] = lnr;
 }
 
-void GetOpt::Terminal::delRoot() {
+void KP::Terminal::delRoot() {
     binds[Key::getRoot()] = nullptr;
 }
 
-void GetOpt::Terminal::setFinal(void (*lnr)(Args)) {
+void KP::Terminal::setFinal(void (*lnr)(Args)) {
     last = lnr;
 }
 
-void GetOpt::Terminal::delFinal() {
+void KP::Terminal::delFinal() {
     last = nullptr;
 }
 
-void GetOpt::Terminal::cleanBinds() {
+void KP::Terminal::cleanBinds() {
     binds.clear();
 }
 
-void GetOpt::Terminal::execute(int argc, char* argv[]) {
+void KP::Terminal::execute(int argc, char* argv[]) {
     Args data;
 	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
     execute(data);
 }
 
-void GetOpt::Terminal::execute(Args input) {
+void KP::Terminal::execute(Args input) {
     Key curr_k = Key::getRoot();
     Args curr_a;
 
