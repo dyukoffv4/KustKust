@@ -32,7 +32,6 @@ then
     fi
 fi
 
-
 # PERSONAL CODE
 SRC=example
 NAME=PE

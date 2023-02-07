@@ -28,7 +28,7 @@ namespace Color {
 			value = atoi(opts[1]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Color->") + exp.what());
+			throw std::invalid_argument(std::string("Color->") + exp.what());
 		}
 	}
 
@@ -46,7 +46,7 @@ namespace Color {
 			for (auto &i : Main::images) i = Paint::set_component(i, index, value);
 		}
 		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Color->") + exp.what());
+			throw std::invalid_argument(std::string("Color->") + exp.what());
 		}
 	}
 }
@@ -64,7 +64,7 @@ namespace Circle {
 			radius = atoi(opts[2]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
@@ -76,7 +76,7 @@ namespace Circle {
 			fill_color.b = atoi(opts[2]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
@@ -89,7 +89,7 @@ namespace Circle {
 			border_color.b = atoi(opts[3]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
@@ -114,7 +114,7 @@ namespace Circle {
 			for (auto &i : Main::images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
 		}
 		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 }
@@ -130,7 +130,7 @@ namespace Slice {
 			y_lines = atoi(opts[1]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Slice->") + exp.what());
+			throw std::invalid_argument(std::string("Slice->") + exp.what());
 		}
 	}
 
@@ -149,7 +149,7 @@ namespace Slice {
 			Main::images.erase(Main::images.begin());
 		}
 		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Slice->") + exp.what());
+			throw std::invalid_argument(std::string("Slice->") + exp.what());
 		}
 	}
 }
@@ -166,7 +166,7 @@ namespace Square {
 			x_d = atoi(opts[4]); y_d = atoi(opts[5]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Square->") + exp.what());
+			throw std::invalid_argument(std::string("Square->") + exp.what());
 		}
 	}
 
@@ -188,7 +188,7 @@ namespace Square {
 			for (auto &i : Main::images) i = Paint::put_square(i, x1, y1, x2, y2, x_d, y_d);
 		}
 		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Square->") + exp.what());
+			throw std::invalid_argument(std::string("Square->") + exp.what());
 		}
 	}
 }
@@ -206,7 +206,7 @@ namespace Main {
 			if (pos) save_path = opts[1].substr(0, pos) + "_0";
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 
@@ -218,7 +218,7 @@ namespace Main {
 			if (pos) save_path = opts[0].substr(0, pos);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 
@@ -280,7 +280,7 @@ namespace Main {
 			}
 		}
 		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 }

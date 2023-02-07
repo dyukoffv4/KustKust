@@ -48,7 +48,10 @@ void KP::Terminal::delFinal() {
 }
 
 void KP::Terminal::cleanBinds() {
+    last = nullptr;
     binds.clear();
+    binds[Key::getRoot()] = nullptr;
+    binds[Key::getNull()] = nullptr;
 }
 
 void KP::Terminal::execute(int argc, char* argv[]) {
@@ -93,7 +96,7 @@ void KP::Terminal::execute(Args input) {
                     if (i.size() > 2) std::cout << "# Terminal.execute: Short key expected after \"-\"!\n";
                     else {
                         if (binds.count(Key(i[1]))) curr_k = Key(i[1]);
-                        else std::cout << Arg("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
+                        else std::cout << std::string("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
                     }
                 }
             }
