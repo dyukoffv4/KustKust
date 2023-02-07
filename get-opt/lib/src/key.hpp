@@ -14,19 +14,18 @@ namespace KP {
 		static Key getNull();
 		static Key getRoot();
 
-		void setDiapozon(int f, int s);
-
 	public:
 		enum State{E, S, L, A};
+		enum Dind{l, e, h};
 
-		explicit Key(const char& s_data, int num = -1, int hnum = -1);
-		explicit Key(const std::string& l_data, int num = -1, int hnum = -1);
-		explicit Key(const char& s_data, const std::string& l_data, int num = -1, int hnum = -1);
+		explicit Key(const char& s_data, int f_num = -1, int s_num = -1);
+		explicit Key(const std::string& l_data, int f_num = -1, int s_num = -1);
+		explicit Key(const char& s_data, const std::string& l_data, int f_num = -1, int s_num = -1);
 
 		State getState() const;
 
 		bool operator<(const Key& key) const;
-		bool operator[](const int& num) const;
+		Dind operator[](const int& num) const;
 
 		char sname() const;
 		std::string lname() const;

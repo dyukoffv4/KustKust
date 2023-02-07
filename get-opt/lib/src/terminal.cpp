@@ -63,6 +63,7 @@ void KP::Terminal::execute(int argc, char* argv[]) {
 void KP::Terminal::execute(Args input) {
     Key curr_k = Key::getRoot();
     Args curr_a;
+    int curr_i = 0;
 
     for (auto &i : input) {
         if (i[0] == '-') {
@@ -73,14 +74,18 @@ void KP::Terminal::execute(Args input) {
             }
 
             // Task Execute
-            try {
-                if (binds[curr_k]) binds[curr_k](curr_a);
+            if (curr_k[curr_i] == Key::Dind::e) {
+                try {
+                    if (binds[curr_k]) binds[curr_k](curr_a);
+                }
+                catch (std::invalid_argument e) {
+                    std::cout << "# Terminal.execute->" << e.what() << "\n";
+                }
             }
-            catch (std::invalid_argument e) {
-                std::cout << "# Terminal.execute->" << e.what() << "\n";
-            }
+            else std::cout << "# Terminal.execute: Wrong number of parametrs!\n";
 
             // New Key
+            curr_i = 0;
             curr_a.clear();
             curr_k = Key::getNull();
             if (i.size() == 1) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
@@ -88,23 +93,50 @@ void KP::Terminal::execute(Args input) {
                 if (i.size() > 1 && i[1] == '-') {
                     if (i.size() == 2) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
                     else {
-                        if (binds.count(Key(i.substr(2)))) curr_k = Key(i.substr(2));
+                        if (binds.count(Key(i.substr(2)))) curr_k = binds.find(Key(i.substr(2)))->first;
                         else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2) + "\" doesn't exist!\n";
                     }
                 }
                 else {
                     if (i.size() > 2) std::cout << "# Terminal.execute: Short key expected after \"-\"!\n";
                     else {
-                        if (binds.count(Key(i[1]))) curr_k = Key(i[1]);
+                        if (binds.count(Key(i[1]))) curr_k = binds.find(Key(i[1]))->first;
                         else std::cout << std::string("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
                     }
                 }
             }
         }
-        else curr_a.push_back(i);
+        else {
+            curr_i++;
+            if (curr_k[curr_i] == Key::Dind::h) {
+                try {
+                    if (binds[curr_k]) binds[curr_k](curr_a);   // Task Execute
+                }
+                catch (std::invalid_argument e) {
+                    std::cout << "# Terminal.execute->" << e.what() << "\n";
+                }
+                std::cout << "# Terminal.execute: Wrong number of parametrs!\n";
+                curr_i = 1;
+                curr_a.clear();
+                curr_k = Key::getNull();
+            }
+            curr_a.push_back(i);
+        }
     }
+
+    // Task Execute
+    if (curr_k[curr_i] == Key::Dind::e) {
+        try {
+            if (binds[curr_k]) binds[curr_k](curr_a);
+        }
+        catch (std::invalid_argument e) {
+            std::cout << "# Terminal.execute->" << e.what() << "\n";
+        }
+    }
+    else std::cout << "# Terminal.execute: Wrong number of parametrs!\n";
+
+    // Final Execute
     try {
-        if (binds[curr_k]) binds[curr_k](curr_a);
         if (last) last(curr_a);
     }
     catch (std::invalid_argument e) {
