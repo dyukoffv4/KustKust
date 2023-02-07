@@ -1,10 +1,10 @@
 SRC = src/
 DST = bin/
-NAME = getopt
+NAME = PE
 
 
 all: $(DST)main.o $(DST)paint.o
-	g++ $(DST)main.o $(DST)paint.o -o $(DST)$(NAME)
+	g++ $(DST)main.o $(DST)paint.o -l$(LNAME) -o $(DST)$(NAME)
 
 $(DST)main.o: $(SRC)main.cpp $(SRC)paint.hpp
 	mkdir -p $(DST)

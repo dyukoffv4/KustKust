@@ -15,4 +15,4 @@ cd ..
 
 # PERSONAL CODE
 echo "Example assembly ..."
-make -C example >&-
+make -C example LNAME=$LNAME >&-
