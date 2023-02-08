@@ -3,10 +3,12 @@
 KP::Terminal::Terminal(rootState state) : state(state) {
     binds[Key::getRoot()] = nullptr;
     binds[Key::getNull()] = nullptr;
+    last = nullptr;
 }
 
 KP::Terminal &KP::Terminal::operator=(const Terminal &term) {
     this->state = term.state;
+    this->last = term.last;
     binds.clear();
     for (auto &i : term.binds) binds[i.first] = i.second;
     return *this;
@@ -47,6 +49,14 @@ void KP::Terminal::delRoot() {
     binds[Key::getRoot()] = nullptr;
 }
 
+void KP::Terminal::setFinal(void (*lnr)(void)) {
+    last = lnr;
+}
+
+void KP::Terminal::delFinal() {
+    last = nullptr;
+}
+
 void KP::Terminal::cleanBinds() {
     Key r_key = binds.find(Key::getRoot())->first;
     Key n_key = binds.find(Key::getNull())->first;
@@ -62,7 +72,7 @@ void KP::Terminal::execute(int argc, char* argv[]) {
 }
 
 void KP::Terminal::execute(Args input) {
-    std::vector<std::pair<const Key&, Args>> tasks = {{binds.find(Key::getRoot())->first, Args()}};
+    std::vector<std::pair<Key, Args>> tasks = {{binds.find(Key::getRoot())->first, Args()}};
 
     // Arguments parsing
     for (auto &i : input) {
@@ -101,7 +111,7 @@ void KP::Terminal::execute(Args input) {
     for (int i = 1; i < tasks.size(); i++) {
         if (tasks[i].first == Key::getRoot()) {
             if (state == RS_S) tasks[0].second.insert(tasks[0].second.end(), tasks[i].second.begin(), tasks[i].second.end());
-            if (state == RS_F || state == RS_S) tasks.erase(tasks.begin() + i--);
+            if (state != RS_A) tasks.erase(tasks.begin() + i--);
         }
     }
     if (state == RS_S) {
@@ -118,5 +128,11 @@ void KP::Terminal::execute(Args input) {
             }
         }
         else std::cout << "# Terminal.execute: Key " << i.first.fname() << " could minimum take " << i.first.lk_num << " parametrs!\n";
+    }
+    try {
+        if (last) last();
+    }
+    catch (std::invalid_argument e) {
+        std::cout << "# Terminal.execute->" << e.what() << "\n";
     }
 }

@@ -54,7 +54,9 @@ std::string KP::Key::lname() const {
 }
 
 std::string KP::Key::fname() const {
-    return s_data + "/" + l_data;
+    if (getState() == A) return std::string() + s_data + "/" + l_data;
+    if (getState() == L) return l_data;
+    return std::string() + s_data;
 }
 
 KP::Key KP::Key::getNull(int f_num, int s_num) {
