@@ -34,11 +34,15 @@ bool KP::Key::operator<(const Key& key) const {
     return s_data < key.s_data;
 }
 
-KP::Key::Dind KP::Key::operator[](const int& num) const {
-    if (lk_num < 0 && hk_num < 0) return Dind::e;
-    if (lk_num < 0) return num <= hk_num ? Dind::e : Dind::h;
-    if (hk_num < 0) return num >= lk_num ? Dind::e : Dind::l;
-    return num < lk_num ? Dind::l : (num >= lk_num && num <= hk_num ? Dind::e : Dind::h);
+bool KP::Key::operator==(const Key& key) const {
+    return s_data == key.s_data && l_data == key.l_data;
+}
+
+KP::Key::zoneState KP::Key::operator[](const int& num) const {
+    if (lk_num < 0 && hk_num < 0) return ZS_I;
+    if (lk_num < 0) return num <= hk_num ? ZS_I : ZS_H;
+    if (hk_num < 0) return num >= lk_num ? ZS_I : ZS_L;
+    return num < lk_num ? ZS_L : (num >= lk_num && num <= hk_num ? ZS_I : ZS_H);
 }
 
 char KP::Key::sname() const {
@@ -49,14 +53,18 @@ std::string KP::Key::lname() const {
     return l_data;
 }
 
-KP::Key KP::Key::getNull() {
-    Key key('N', 0, 0);
+std::string KP::Key::fname() const {
+    return s_data + "/" + l_data;
+}
+
+KP::Key KP::Key::getNull(int f_num, int s_num) {
+    Key key('N', f_num, s_num);
     key.s_data = '-';
     return key;
 }
 
-KP::Key KP::Key::getRoot() {
-    Key key('N');
+KP::Key KP::Key::getRoot(int f_num, int s_num) {
+    Key key('N', f_num, s_num);
     key.s_data = '~';
     return key;
 }
