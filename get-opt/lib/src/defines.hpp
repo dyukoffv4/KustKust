@@ -2,8 +2,11 @@
 
 #include <string>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 
-namespace GetOpt {
-    typedef std::string Arg;
-    typedef std::vector<Arg> Args;
+namespace KP {
+    typedef std::vector<std::string> Args;
+    class Key;
+    class Terminal;
 }

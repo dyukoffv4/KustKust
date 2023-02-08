@@ -1,7 +1,7 @@
 #include <keyparser/terminal.hpp>
 #include "paint.hpp"
 
-using namespace GetOpt;
+using namespace KP;
 
 int atoi(std::string str) {
 	int minus = 0, num = 0;
@@ -18,17 +18,19 @@ int atoi(std::string str) {
 namespace Main { std::vector<Paint::Image> images(1); }
 
 namespace Color {
-	char index, value;
 	bool is_help = false;
 
 	void onRoot(Args opts) {
-		if (opts.size() != 2) throw std::invalid_argument("Color: Only two arguments expected after \"c/color\" key!");
+		if (is_help) return;
 		try {
-			index = opts[0][0];
-			value = atoi(opts[1]);
+			char index = opts[0][0], value = atoi(opts[1]);
+			for (auto &i : Main::images) i = Paint::set_component(i, index, value);
+		}
+		catch (std::invalid_argument exp) {
+			throw std::invalid_argument(std::string("Color->") + exp.what());
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Color->") + exp.what());
+			throw std::invalid_argument(std::string("Color->") + exp.what());
 		}
 	}
 
@@ -39,49 +41,39 @@ namespace Color {
 		std::cout << "\t1 параметр - изменяемый компонент.\n";
 		std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
 	}
-
-	void onFinal(Args opts) {
-		if (is_help) return;
-		try {
-			for (auto &i : Main::images) i = Paint::set_component(i, index, value);
-		}
-		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Color->") + exp.what());
-		}
-	}
 }
 
 namespace Circle {
 	Paint::BGR fill_color, border_color = {0, 0, 0};
-	int x, y, radius, border = 0;
+	int border = 0;
 	bool is_help = false;
 
 	void onRoot(Args opts) {
-		if (opts.size() != 3) throw std::invalid_argument("Circle: Only three root arguments expected after \"r/circle\" key!");
+		if (is_help) return;
 		try {
-			x = atoi(opts[0]);
-			y = atoi(opts[1]);
-			radius = atoi(opts[2]);
+			int x = atoi(opts[0]), y = atoi(opts[1]), radius = atoi(opts[2]);
+			for (auto &i : Main::images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
+		}
+		catch (std::invalid_argument exp) {
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
 	void onFill(Args opts) {
-		if (opts.size() != 3) throw std::invalid_argument("Circle: Only three arguments expected after \"f/fill\" key!");
 		try {
 			fill_color.r = atoi(opts[0]);
 			fill_color.g = atoi(opts[1]);
 			fill_color.b = atoi(opts[2]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
 	void onBorder(Args opts) {
-		if (opts.size() != 4) throw std::invalid_argument("Circle: Only four arguments expected after \"b/border\" key!");
 		try {
 			border = atoi(opts[0]);
 			border_color.r = atoi(opts[1]);
@@ -89,7 +81,7 @@ namespace Circle {
 			border_color.b = atoi(opts[3]);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
+			throw std::invalid_argument(std::string("Circle->") + exp.what());
 		}
 	}
 
@@ -107,30 +99,23 @@ namespace Circle {
 		std::cout << "Необязательные параметры:\t\n";
 		std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
 	}
-
-	void onFinal(Args opts) {
-		if (is_help) return;
-		try {
-			for (auto &i : Main::images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
-		}
-		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Circle->") + exp.what());
-		}
-	}
 }
 
 namespace Slice {
-	int x_lines, y_lines;
 	bool is_help = false;
 
 	void onRoot(Args opts) {
-		if (opts.size() != 2) throw std::invalid_argument("Slice: Only two arguments expected after \"x/slice\" key!");
+		if (is_help) return;
 		try {
-			x_lines = atoi(opts[0]);
-			y_lines = atoi(opts[1]);
+			int x_lines = atoi(opts[0]), y_lines = atoi(opts[1]);
+			for (auto &i : Paint::slice_image(Main::images[0], x_lines, y_lines)) Main::images.push_back(i);
+			Main::images.erase(Main::images.begin());
+		}
+		catch (std::invalid_argument exp) {
+			throw std::invalid_argument(std::string("Slice->") + exp.what());
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Slice->") + exp.what());
+			throw std::invalid_argument(std::string("Slice->") + exp.what());
 		}
 	}
 
@@ -141,32 +126,23 @@ namespace Slice {
 		std::cout << "\t1 параметр - число вертикальных изображений.\n";
 		std::cout << "\t2 параметр - число горизонтальных изображений.\n";
 	}
-
-	void onFinal(Args opts) {
-		if (is_help) return;
-		try {
-			for (auto &i : Paint::slice_image(Main::images[0], x_lines, y_lines)) Main::images.push_back(i);
-			Main::images.erase(Main::images.begin());
-		}
-		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Slice->") + exp.what());
-		}
-	}
 }
 
 namespace Square {
-	int x1, y1, x2, y2, x_d, y_d;
 	bool is_help = false;
 
 	void onRoot(Args opts) {
-		if (opts.size() != 6) throw std::invalid_argument("Square: Only six arguments expected after \"s/square\" key!");
+		if (is_help) return;
 		try {
-			x1 = atoi(opts[0]); y1 = atoi(opts[1]);
-			x2 = atoi(opts[2]); y2 = atoi(opts[3]);
-			x_d = atoi(opts[4]); y_d = atoi(opts[5]);
+			std::vector<int> D;
+			for (auto &i : opts) D.push_back(atoi(i));
+			for (auto &i : Main::images) i = Paint::put_square(i, D[0], D[1], D[2], D[3], D[4], D[5]);
+		}
+		catch (std::invalid_argument exp) {
+			throw std::invalid_argument(std::string("Square->") + exp.what());
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Square->") + exp.what());
+			throw std::invalid_argument(std::string("Square->") + exp.what());
 		}
 	}
 
@@ -180,16 +156,6 @@ namespace Square {
 		std::cout << "\t4 параметр - положение верхнего правого угла по вертикали.\n";
 		std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
 		std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
-	}
-
-	void onFinal(Args opts) {
-		if (is_help) return;
-		try {
-			for (auto &i : Main::images) i = Paint::put_square(i, x1, y1, x2, y2, x_d, y_d);
-		}
-		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Square->") + exp.what());
-		}
 	}
 }
 
@@ -206,7 +172,7 @@ namespace Main {
 			if (pos) save_path = opts[1].substr(0, pos) + "_0";
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 
@@ -218,41 +184,41 @@ namespace Main {
 			if (pos) save_path = opts[0].substr(0, pos);
 		}
 		catch (std::domain_error exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 
 	void onColor(Args opts) {
-		Terminal terminal;
+		Terminal terminal(Terminal::RS_S);
+		terminal.setRootRange(2, 2);
 		terminal.setRoot(Color::onRoot);
-		terminal.setFinal(Color::onFinal);
-		terminal.setKey(Key('h', "help"), Color::onHelp);
+		terminal.setKey(Key('h', "help",	0, 0),	Color::onHelp);
 		terminal.execute(opts);
 	}
 
 	void onCircle(Args opts) {
-		Terminal terminal;
+		Terminal terminal(Terminal::RS_S);
+		terminal.setRootRange(3, 3);
 		terminal.setRoot(Circle::onRoot);
-		terminal.setFinal(Circle::onFinal);
-		terminal.setKey(Key('f', "fill"), Circle::onFill);
-		terminal.setKey(Key('b', "border"), Circle::onBorder);
-		terminal.setKey(Key('h', "help"), Circle::onHelp);
+		terminal.setKey(Key('f', "fill",	3, 3),	Circle::onFill);
+		terminal.setKey(Key('b', "border",	4, 4),	Circle::onBorder);
+		terminal.setKey(Key('h', "help",	0, 0),	Circle::onHelp);
 		terminal.execute(opts);
 	}
 
 	void onSlice(Args opts) {
-		Terminal terminal;
+		Terminal terminal(Terminal::RS_S);
+		terminal.setRootRange(2, 2);
 		terminal.setRoot(Slice::onRoot);
-		terminal.setFinal(Slice::onFinal);
-		terminal.setKey(Key('h', "help"), Slice::onHelp);
+		terminal.setKey(Key('h', "help",	0, 0),	Slice::onHelp);
 		terminal.execute(opts);
 	}
 
 	void onSquare(Args opts) {
-		Terminal terminal;
+		Terminal terminal(Terminal::RS_S);
+		terminal.setRootRange(6, 6);
 		terminal.setRoot(Square::onRoot);
-		terminal.setFinal(Square::onFinal);
-		terminal.setKey(Key('h', "help"), Square::onHelp);
+		terminal.setKey(Key('h', "help",	0, 0),	Square::onHelp);
 		terminal.execute(opts);
 	}
 
@@ -269,7 +235,7 @@ namespace Main {
 		std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
 	}
 
-	void onFinal(Args opts) {
+	void onFinal() {
 		if (is_help) return;
 		try {
 			if (images.size() == 1) images[0].save(save_path + ".bmp");
@@ -279,8 +245,8 @@ namespace Main {
 				images[i].save(save_path + str + ".bmp");
 			}
 		}
-		catch (std::exception exp) {
-			throw std::invalid_argument(Arg("Main->") + exp.what());
+		catch (std::invalid_argument exp) {
+			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 }
@@ -288,14 +254,15 @@ namespace Main {
 int main(int argc, char *argv[]) {
 	try {
 		Terminal terminal;
+		terminal.setRootRange(2, 2);
 		terminal.setRoot(Main::set_load_path);
+		terminal.setKey(Key('o', "output",	1, 1),	Main::set_save_path);
+		terminal.setKey(Key('c', "color",	2),		Main::onColor);
+		terminal.setKey(Key('r', "circle",	3),		Main::onCircle);
+		terminal.setKey(Key('x', "slice",	2),		Main::onSlice);
+		terminal.setKey(Key('s', "square",	6),		Main::onSquare);
+		terminal.setKey(Key('h', "help",	0, 0),	Main::onHelp);
 		terminal.setFinal(Main::onFinal);
-		terminal.setKey(Key('o', "out"), Main::set_save_path);
-		terminal.setKey(Key('c', "color"), Main::onColor);
-		terminal.setKey(Key('r', "circle"), Main::onCircle);
-		terminal.setKey(Key('x', "slice"), Main::onSlice);
-		terminal.setKey(Key('s', "square"), Main::onSquare);
-		terminal.setKey(Key('h', "help"), Main::onHelp);
 		terminal.execute(argc, argv);
 	}
 	catch (std::invalid_argument e) {

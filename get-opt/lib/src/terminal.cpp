@@ -1,21 +1,21 @@
 #include "terminal.hpp"
 
-GetOpt::Terminal::Terminal() {
+KP::Terminal::Terminal(rootState state) : state(state) {
     binds[Key::getRoot()] = nullptr;
     binds[Key::getNull()] = nullptr;
+    last = nullptr;
 }
 
-GetOpt::Terminal::Terminal(const Terminal &term) {
-    for (auto &i : term.binds) binds[i.first] = i.second;
-}
-
-GetOpt::Terminal &GetOpt::Terminal::operator=(const Terminal &term) {
+KP::Terminal &KP::Terminal::operator=(const Terminal &term) {
+    this->state = term.state;
+    this->last = term.last;
     binds.clear();
     for (auto &i : term.binds) binds[i.first] = i.second;
     return *this;
 }
 
-void GetOpt::Terminal::setKey(Key key, void (*lnr)(Args)) {
+void KP::Terminal::setKey(Key key, void (*lnr)(Args)) {
+    delKey(key);
     if (key.getState() == Key::State::A) {
         binds[Key(key.lname())] = lnr;
         binds[Key(key.sname())] = lnr;
@@ -23,7 +23,7 @@ void GetOpt::Terminal::setKey(Key key, void (*lnr)(Args)) {
     else binds[key] = lnr;
 }
 
-void GetOpt::Terminal::delKey(Key key) {
+void KP::Terminal::delKey(Key key) {
     if (key.getState() == Key::State::A) {
         if (binds.count(Key(key.lname()))) binds.erase(binds.find(Key(key.lname())));
         if (binds.count(Key(key.sname()))) binds.erase(binds.find(Key(key.sname())));
@@ -31,78 +31,106 @@ void GetOpt::Terminal::delKey(Key key) {
     else if (binds.count(key)) binds.erase(binds.find(key));
 }
 
-void GetOpt::Terminal::setRoot(void (*lnr)(Args)) {
+void KP::Terminal::setRootRange(int f_num, int s_num) {
+    void (*lnr)(Args) = binds.find(Key::getRoot())->second;
+    binds.erase(binds.find(Key::getRoot()));
+    binds[Key::getRoot(f_num, s_num)] = lnr;
+}
+
+void KP::Terminal::setRootState(rootState state) {
+    this->state = state;
+}
+
+void KP::Terminal::setRoot(void (*lnr)(Args)) {
     binds[Key::getRoot()] = lnr;
 }
 
-void GetOpt::Terminal::delRoot() {
+void KP::Terminal::delRoot() {
     binds[Key::getRoot()] = nullptr;
 }
 
-void GetOpt::Terminal::setFinal(void (*lnr)(Args)) {
+void KP::Terminal::setFinal(void (*lnr)(void)) {
     last = lnr;
 }
 
-void GetOpt::Terminal::delFinal() {
+void KP::Terminal::delFinal() {
     last = nullptr;
 }
 
-void GetOpt::Terminal::cleanBinds() {
+void KP::Terminal::cleanBinds() {
+    Key r_key = binds.find(Key::getRoot())->first;
+    Key n_key = binds.find(Key::getNull())->first;
     binds.clear();
+    binds[r_key] = nullptr;
+    binds[n_key] = nullptr;
 }
 
-void GetOpt::Terminal::execute(int argc, char* argv[]) {
+void KP::Terminal::execute(int argc, char* argv[]) {
     Args data;
 	for (int i = 0; i < argc; i++) data.push_back(argv[i]);
     execute(data);
 }
 
-void GetOpt::Terminal::execute(Args input) {
-    Key curr_k = Key::getRoot();
-    Args curr_a;
+void KP::Terminal::execute(Args input) {
+    std::vector<std::pair<Key, Args>> tasks = {{binds.find(Key::getRoot())->first, Args()}};
 
+    // Arguments parsing
     for (auto &i : input) {
-        if (i[0] == '-') {
-            // Option Key
-            if ((i.size() == 3 && i[1] == '-') || (i.size() >= 3 && i[1] == '-' && i[2] == '-')) {
-                curr_a.push_back(i.substr(1));
-                continue;
+        if ((i.size() == 3 && i[1] == '-') || (i.size() >= 3 && i.substr(0, 2) == "--") || i[0] != '-') {
+            if (i[0] == '-') tasks[tasks.size() - 1].second.push_back(i.substr(1));
+            else {
+                int esize = tasks[tasks.size() - 1].second.size() + 1;
+                if (tasks[tasks.size() - 1].first[esize] == Key::zoneState::ZS_H) tasks.push_back({binds.find(Key::getRoot())->first, Args()});
+                tasks[tasks.size() - 1].second.push_back(i);
             }
-
-            // Task Execute
-            try {
-                if (binds[curr_k]) binds[curr_k](curr_a);
-            }
-            catch (std::invalid_argument e) {
-                std::cout << "# Terminal.execute->" << e.what() << "\n";
-            }
-
-            // New Key
-            curr_a.clear();
-            curr_k = Key::getNull();
+        }
+        else {
             if (i.size() == 1) std::cout << "# Terminal.execute: Key expected after \"-\"!\n";
             else {
                 if (i.size() > 1 && i[1] == '-') {
                     if (i.size() == 2) std::cout << "# Terminal.execute: Key expected after \"--\"!\n";
                     else {
-                        if (binds.count(Key(i.substr(2)))) curr_k = Key(i.substr(2));
-                        else std::cout << "# Terminal.execute: Key with name \"" + i.substr(2) + "\" doesn't exist!\n";
+                        auto key = binds.find(Key(i.substr(2)));
+                        if (key != binds.end()) tasks.push_back({key->first, Args()});
+                        else std::cout << "# Terminal.execute: Key with name \"" << i.substr(2) << "\" doesn't exist!\n";
                     }
                 }
                 else {
                     if (i.size() > 2) std::cout << "# Terminal.execute: Short key expected after \"-\"!\n";
                     else {
-                        if (binds.count(Key(i[1]))) curr_k = Key(i[1]);
-                        else std::cout << Arg("# Terminal.execute: Key with name \"") + i[1] + "\" doesn't exist!\n";
+                        auto key = binds.find(Key(i[1]));
+                        if (key != binds.end()) tasks.push_back({key->first, Args()});
+                        else std::cout << "# Terminal.execute: Key with name \"" << i[1] << "\" doesn't exist!\n";
                     }
                 }
             }
         }
-        else curr_a.push_back(i);
+    }
+
+    // Tasks execute
+    for (int i = 1; i < tasks.size(); i++) {
+        if (tasks[i].first == Key::getRoot()) {
+            if (state == RS_S) tasks[0].second.insert(tasks[0].second.end(), tasks[i].second.begin(), tasks[i].second.end());
+            if (state != RS_A) tasks.erase(tasks.begin() + i--);
+        }
+    }
+    if (state == RS_S) {
+        tasks.push_back(tasks[0]);
+        tasks.erase(tasks.begin());
+    }
+    for (auto &i : tasks) {
+        if (i.first[i.second.size()] == Key::zoneState::ZS_I) {
+            try {
+                if (binds[i.first]) binds[i.first](i.second);
+            }
+            catch (std::invalid_argument e) {
+                std::cout << "# Terminal.execute->" << e.what() << "\n";
+            }
+        }
+        else std::cout << "# Terminal.execute: Key " << i.first.fname() << " could minimum take " << i.first.lk_num << " parametrs!\n";
     }
     try {
-        if (binds[curr_k]) binds[curr_k](curr_a);
-        if (last) last(curr_a);
+        if (last) last();
     }
     catch (std::invalid_argument e) {
         std::cout << "# Terminal.execute->" << e.what() << "\n";

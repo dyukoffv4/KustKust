@@ -15,7 +15,7 @@ echo "Package creating ..."
 
 PKG_DEB=$PNAME/DEBIAN
 PKG_LIB=$PNAME/usr/local/lib
-PKG_INC=$PNAME/usr/local/include/keyparser
+PKG_INC=$PNAME/usr/local/include/$LNAME
 
 DEB_MAIN="Maintainer: dyukoffv4 <net998art@gmail.com>"
 DEB_DESC="Description: Key Parsing DL for C++ applications"
@@ -24,7 +24,7 @@ mkdir -p $PKG_DEB
 mkdir -p $PKG_LIB
 mkdir -p $PKG_INC
 
-echo "Package: keyparser"   > $PKG_DEB/control
+echo "Package: $LNAME"   > $PKG_DEB/control
 echo "Version: 1.0"         >> $PKG_DEB/control
 echo "Section: unknown"     >> $PKG_DEB/control
 echo "Priority: optional"   >> $PKG_DEB/control
