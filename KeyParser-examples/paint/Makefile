@@ -1,5 +1,6 @@
 SRC = src/
 DST = bin/
+NAME = paint
 
 
 all: $(DST)main.o $(DST)paint.o
