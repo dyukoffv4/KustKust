@@ -10,4 +10,4 @@ part: $(HPP) $(CPP) $(SRC_DEF)
 	g++ -c $(CPP) -o $(OUT)$(NAME).o
 
 clean:
-	rm -rf $(DST)*.o
+	rm -rf $(OUT)*.o
