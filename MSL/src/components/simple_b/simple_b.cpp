@@ -1,4 +1,4 @@
-#include "Simple_B.h"
+#include "simple_b.hpp"
 
 mgl::Simple_B::Simple_B() : Button() {}
 

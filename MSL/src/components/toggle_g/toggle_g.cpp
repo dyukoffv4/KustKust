@@ -1,4 +1,4 @@
-#include "Toggle_G.h"
+#include "toggle_g.hpp"
 
 mgl::Toggle_G::Toggle_G() : Group() {};
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mgl.h"
+#include "../../definitions/mgl.hpp"
 
 namespace mgl {
 

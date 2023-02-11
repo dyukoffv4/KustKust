@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Group.h"
+#include "../group/group.hpp"
 
 namespace mgl {
 
-	class Simple_G : public Group {
+	class Toggle_G : public Group {
 
 	public:
-		Simple_G();
-		Simple_G(int, vect<short>, vect<byte_2>);
+		Toggle_G();
+		Toggle_G(int, vect<short>, vect<byte_2>);
 
 		/// <defined>
 		/// 	int getID();
@@ -22,7 +22,7 @@ namespace mgl {
 		///		void draw(layout&);
 		///		void update(sf::Event&);
 		/// </defined>
-		
+
 		virtual char getSN();
 		virtual bool getStat();
 

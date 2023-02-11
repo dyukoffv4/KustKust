@@ -1,4 +1,4 @@
-#include "Texture_I.h"
+#include "texture.hpp"
 
 mgl::Texture_I::Texture_I() {
 

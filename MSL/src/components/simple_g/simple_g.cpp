@@ -1,4 +1,4 @@
-#include "Simple_G.h"
+#include "simple_g.hpp"
 
 mgl::Simple_G::Simple_G() : Group() {};
 

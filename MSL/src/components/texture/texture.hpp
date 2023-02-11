@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vect.h"
+#include "../vector/vector.hpp"
 
 namespace mgl {
 

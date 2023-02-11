@@ -1,10 +1,9 @@
 #pragma once
 
-#include "vect.h"
-#include "vect.cpp"
+#include "../components/vector/vector.hpp"
+#include "../components/vector/vector.cpp"
 
 namespace mgl {
-
 	template class vect<byte_1>;
 	template class vect<byte_2>;
 	template class vect<byte_4>;

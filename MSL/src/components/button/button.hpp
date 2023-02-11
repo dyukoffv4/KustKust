@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Object.h"
-#include "Texture_I.h"
+#include "../object/object.hpp"
+#include "../texture/texture.hpp"
 
 namespace mgl {
 

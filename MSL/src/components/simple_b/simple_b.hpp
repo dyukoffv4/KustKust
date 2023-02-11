@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Button.h"
+#include "../button/button.hpp"
 
 namespace mgl {
 
-	class Toggle_B : public Button {
+	class Simple_B : public Button {
 
 	public:
-		Toggle_B();
-		Toggle_B(int i, vect<short> p, vect<byte_2> s, Texture_I*);
+		Simple_B();
+		Simple_B(int, vect<short>, vect<byte_2>, Texture_I*);
 
 		virtual char getSN();
 
@@ -27,11 +27,11 @@ namespace mgl {
 		///		void setKey(short);
 		///		short getKey(void);
 		/// </defined>
-		 
+
 		virtual void draw(layout&);
 		virtual void update(sf::Event&);
 		virtual bool getStat();
 
-		// 32 (-0) size
+		// 32 (-0);
 	};
 }

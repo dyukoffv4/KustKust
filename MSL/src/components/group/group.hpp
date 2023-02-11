@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object.h"
+#include "../object/object.hpp"
 
 namespace mgl {
 

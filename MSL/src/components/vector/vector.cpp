@@ -1,4 +1,4 @@
-#include "vect.h"
+#include "vector.hpp"
 
 template <class T>
 mgl::vect<T> mgl::vect<T>::operator+(const vect<T>& v) {

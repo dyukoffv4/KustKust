@@ -1,4 +1,4 @@
-#include "Object.h"
+#include "object.hpp"
 
 mgl::Object::Object() {
 

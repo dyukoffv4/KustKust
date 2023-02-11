@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "button.hpp"
 
 mgl::Button::Button() : Object() {
 

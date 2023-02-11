@@ -1,6 +1,6 @@
-#include "Sprite_I.h"
-#include "Toggle_B.h"
-#include "Simple_B.h"
+#include "components/sprite/sprite.hpp"
+#include "components/toggle_b/toggle_b.hpp"
+#include "components/simple_b/simple_b.hpp"
 
 int main() {
 

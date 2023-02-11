@@ -1,4 +1,4 @@
-#include "Sprite_I.h"
+#include "sprite.hpp"
 
 mgl::Sprite_I::Sprite_I() : Texture_I() {
 

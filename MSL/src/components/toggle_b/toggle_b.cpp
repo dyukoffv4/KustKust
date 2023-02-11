@@ -1,4 +1,4 @@
-#include "Toggle_B.h"
+#include "toggle_b.hpp"
 
 mgl::Toggle_B::Toggle_B() : Button() {}
 

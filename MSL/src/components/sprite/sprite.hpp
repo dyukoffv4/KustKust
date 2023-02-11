@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Texture_I.h"
+#include "../texture/texture.hpp"
 
 namespace mgl {
 

@@ -1,4 +1,4 @@
-#include "Group.h"
+#include "group.hpp"
 
 mgl::Group::Group() : Object() {
 

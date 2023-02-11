@@ -1,6 +1,6 @@
 #pragma once
 
-#include "template.h"
+#include "../../definitions/template.hpp"
 
 namespace mgl {
 
