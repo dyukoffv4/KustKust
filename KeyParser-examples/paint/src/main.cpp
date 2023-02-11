@@ -160,30 +160,34 @@ namespace Square {
 }
 
 namespace Main {
-	std::string save_path;
+	std::string load_path;
 	bool is_help = false;
 
-	void set_load_path(Args opts) {
-		if (opts.size() != 2) throw std::invalid_argument("Main: No working file specified!");
+	void loadImage(Args opts) {
 		try {
-			images[0].load(opts[1]);
-			save_path = opts[1];
-			int pos = opts[1].find(".bmp");
-			if (pos) save_path = opts[1].substr(0, pos) + "_0";
+			images[0].load(opts[0]);
+			int pos = opts[0].find(".bmp");
+			if (pos) load_path = opts[0].substr(0, pos) + "_0";
 		}
 		catch (std::domain_error exp) {
 			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
 
-	void set_save_path(Args opts) {
-		if (opts.size() != 1) throw std::invalid_argument("Main: Only one arguments expected after \"o/out\" key!");
+	void saveImage(Args opts) {
 		try {
-			save_path = opts[0];
-			int pos = opts[0].find(".bmp");
-			if (pos) save_path = opts[0].substr(0, pos);
+			std::string path = opts.empty() ? load_path : opts[0].substr(0, opts[0].find(".bmp"));
+			if (images.size() == 1) images[0].save(path + ".bmp");
+			else for (int i = 0; i < images.size(); i++) {
+				std::string str;
+				for (int j = i; j > 0; j /= 10) str = char(j % 10 + 48) + str;
+				images[i].save(path + str + ".bmp");
+			}
 		}
 		catch (std::domain_error exp) {
+			throw std::invalid_argument(std::string("Main->") + exp.what());
+		}
+		catch (std::invalid_argument exp) {
 			throw std::invalid_argument(std::string("Main->") + exp.what());
 		}
 	}
@@ -192,7 +196,7 @@ namespace Main {
 		Terminal terminal(Terminal::RS_S);
 		terminal.setRootRange(2, 2);
 		terminal.setRoot(Color::onRoot);
-		terminal.setKey(Key('h', "help",	0, 0),	Color::onHelp);
+		terminal.setKey(Key('h', "help", 0, 0), Color::onHelp);
 		terminal.execute(opts);
 	}
 
@@ -200,9 +204,9 @@ namespace Main {
 		Terminal terminal(Terminal::RS_S);
 		terminal.setRootRange(3, 3);
 		terminal.setRoot(Circle::onRoot);
-		terminal.setKey(Key('f', "fill",	3, 3),	Circle::onFill);
-		terminal.setKey(Key('b', "border",	4, 4),	Circle::onBorder);
-		terminal.setKey(Key('h', "help",	0, 0),	Circle::onHelp);
+		terminal.setKey(Key('f', "fill", 3, 3),		Circle::onFill);
+		terminal.setKey(Key('b', "border", 4, 4),	Circle::onBorder);
+		terminal.setKey(Key('h', "help", 0, 0),		Circle::onHelp);
 		terminal.execute(opts);
 	}
 
@@ -210,7 +214,7 @@ namespace Main {
 		Terminal terminal(Terminal::RS_S);
 		terminal.setRootRange(2, 2);
 		terminal.setRoot(Slice::onRoot);
-		terminal.setKey(Key('h', "help",	0, 0),	Slice::onHelp);
+		terminal.setKey(Key('h', "help", 0, 0), Slice::onHelp);
 		terminal.execute(opts);
 	}
 
@@ -218,7 +222,7 @@ namespace Main {
 		Terminal terminal(Terminal::RS_S);
 		terminal.setRootRange(6, 6);
 		terminal.setRoot(Square::onRoot);
-		terminal.setKey(Key('h', "help",	0, 0),	Square::onHelp);
+		terminal.setKey(Key('h', "help", 0, 0), Square::onHelp);
 		terminal.execute(opts);
 	}
 
@@ -234,35 +238,19 @@ namespace Main {
 		std::cout << "\t-s (--square):\tКопирование и перемещения части изображения в другое место.\n";
 		std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
 	}
-
-	void onFinal() {
-		if (is_help) return;
-		try {
-			if (images.size() == 1) images[0].save(save_path + ".bmp");
-			else for (int i = 0; i < images.size(); i++) {
-				std::string str;
-				for (int j = i; j > 0; j /= 10) str = char(j % 10 + 48) + str;
-				images[i].save(save_path + str + ".bmp");
-			}
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
-	}
 }
 
 int main(int argc, char *argv[]) {
 	try {
 		Terminal terminal;
-		terminal.setRootRange(2, 2);
-		terminal.setRoot(Main::set_load_path);
-		terminal.setKey(Key('o', "output",	1, 1),	Main::set_save_path);
-		terminal.setKey(Key('c', "color",	2),		Main::onColor);
-		terminal.setKey(Key('r', "circle",	3),		Main::onCircle);
-		terminal.setKey(Key('x', "slice",	2),		Main::onSlice);
-		terminal.setKey(Key('s', "square",	6),		Main::onSquare);
-		terminal.setKey(Key('h', "help",	0, 0),	Main::onHelp);
-		terminal.setFinal(Main::onFinal);
+		terminal.setRootRange(1, 1);
+		terminal.setRoot(Main::loadImage);
+		terminal.setKey(Key("save", 0, 1),	Main::saveImage);
+		terminal.setKey(Key('c', "color"),	Main::onColor);
+		terminal.setKey(Key('r', "circle"),	Main::onCircle);
+		terminal.setKey(Key('x', "slice"),	Main::onSlice);
+		terminal.setKey(Key('s', "square"),	Main::onSquare);
+		terminal.setKey(Key('h', "help", 0, 0),	Main::onHelp);
 		terminal.execute(argc, argv);
 	}
 	catch (std::invalid_argument e) {
