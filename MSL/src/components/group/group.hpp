@@ -2,24 +2,22 @@
 
 #include "../object/object.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Group : public Object {
-
 	public:
 		Group();
-		Group(int id, vect<short>, vect<byte_2>);
+		Group(int id, Vector<short>, Vector<byte_2>);
 		virtual ~Group();
 
 		/// <defined>
 		/// 	int getID();
 		/// 
-		///		void setPosition(vect<short>);
-		///		vect<short> getPosition(void);
+		///		void setPosition(Vector<short>);
+		///		Vector<short> getPosition(void);
 		/// </defined>
 		
-		virtual void setSize(vect<byte_2>);
-		virtual vect<byte_2> getSize(void);
+		virtual void setSize(Vector<byte_2>);
+		virtual Vector<byte_2> getSize(void);
 		virtual void draw(layout&);
 		virtual void update(sf::Event&);
 
@@ -29,9 +27,9 @@ namespace mgl {
 
 	protected:
 		Object*** grid;
-		vect<byte_2>** chest_s;
-		vect<byte_2> size;
-		vect<byte_2> osize;
+		Vector<byte_2>** chest_s;
+		Vector<byte_2> size;
+		Vector<byte_2> osize;
 		byte_4 n;
 
 		// 48 (-4) size.

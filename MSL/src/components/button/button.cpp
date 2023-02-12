@@ -1,7 +1,6 @@
 #include "button.hpp"
 
-mgl::Button::Button() : Object() {
-
+MGL::Button::Button() : Object() {
 	static Texture_I default_img;
 	image = &default_img;
 	size = { 64, 64 };
@@ -9,40 +8,33 @@ mgl::Button::Button() : Object() {
 	stat = { 0, 0 };
 };
 
-mgl::Button::Button(int i, vect<short> p, vect<byte_2> s, Texture_I* im) : Object(i, p) {
-
+MGL::Button::Button(int i, Vector<short> p, Vector<byte_2> s, Texture_I* im) : Object(i, p) {
 	image = im;
 	size = s;
 	key = -1;
 	stat = { 0, 0 };
 };
 
-void mgl::Button::setSize(vect<byte_2> s) {
-
+void MGL::Button::setSize(Vector<byte_2> s) {
 	size = s;
 }
 
-mgl::vect<mgl::byte_2> mgl::Button::getSize() {
-
+MGL::Vector<MGL::byte_2> MGL::Button::getSize() {
 	return size;
 }
 
-void mgl::Button::setImage(Texture_I* im) {
-
+void MGL::Button::setImage(Texture_I* im) {
 	image = im;
 }
 
-mgl::Texture_I* mgl::Button::getImage() {
-
+MGL::Texture_I* MGL::Button::getImage() {
 	return image;
 }
 
-void mgl::Button::setKey(short k) {
-
+void MGL::Button::setKey(short k) {
 	key = k;
 }
 
-short mgl::Button::getKey() {
-
+short MGL::Button::getKey() {
 	return key;
 }

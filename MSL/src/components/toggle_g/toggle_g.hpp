@@ -2,13 +2,11 @@
 
 #include "../group/group.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Toggle_G : public Group {
-
 	public:
 		Toggle_G();
-		Toggle_G(int, vect<short>, vect<byte_2>);
+		Toggle_G(int, Vector<short>, Vector<byte_2>);
 
 		/// <defined>
 		/// 	int getID();

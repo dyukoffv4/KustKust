@@ -1,21 +1,18 @@
 #include "sprite.hpp"
 
-mgl::Sprite_I::Sprite_I() : Texture_I() {
-
+MGL::Sprite_I::Sprite_I() : Texture_I() {
 	len_s = 1;
 	tick = 0;
 	spd = 1;
 }
 
-mgl::Sprite_I::Sprite_I(vect<byte_2> s, vect<byte_2> c, sf::Texture* t) : Texture_I(s, { 0, c.y }, t) {
-
+MGL::Sprite_I::Sprite_I(Vector<byte_2> s, Vector<byte_2> c, sf::Texture* t) : Texture_I(s, { 0, c.y }, t) {
 	len_s = c.x;
 	tick = 0;
 	spd = 1;
 }
 
-sf::RectangleShape mgl::Sprite_I::getImage(vect<byte_2> s) {
-
+sf::RectangleShape MGL::Sprite_I::getImage(Vector<byte_2> s) {
 	this->update();
 
 	sf::RectangleShape rect;
@@ -25,21 +22,17 @@ sf::RectangleShape mgl::Sprite_I::getImage(vect<byte_2> s) {
 	return rect;
 }
 
-char mgl::Sprite_I::getSN() {
-
+char MGL::Sprite_I::getSN() {
 	return SPR_I;
 }
 
-void mgl::Sprite_I::setSpeed(float s) {
-
+void MGL::Sprite_I::setSpeed(float s) {
 	spd = s;
 }
 
-void mgl::Sprite_I::update() {
-
+void MGL::Sprite_I::update() {
 	if (spd == 0) return;
 	if (abs(byte_2(clock()) - tick) > short(SEC / spd)) {
-
 		tick = (byte_2)clock();
 		curr.x++;
 		if (curr.x >= len_s) curr.x = 0;

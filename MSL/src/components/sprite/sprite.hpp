@@ -2,15 +2,13 @@
 
 #include "../texture/texture.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Sprite_I : public Texture_I {
-
 	public:
 		Sprite_I();
-		Sprite_I(vect<byte_2>, vect<byte_2>, sf::Texture*);
+		Sprite_I(Vector<byte_2>, Vector<byte_2>, sf::Texture*);
 
-		virtual sf::RectangleShape getImage(vect<byte_2>);
+		virtual sf::RectangleShape getImage(Vector<byte_2>);
 		virtual char getSN();
 
 		void setSpeed(float);

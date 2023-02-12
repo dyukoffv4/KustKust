@@ -2,24 +2,22 @@
 
 #include "../button/button.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Simple_B : public Button {
-
 	public:
 		Simple_B();
-		Simple_B(int, vect<short>, vect<byte_2>, Texture_I*);
+		Simple_B(int, Vector<short>, Vector<byte_2>, Texture_I*);
 
 		virtual char getSN();
 
 		/// <defined>
 		/// 	int getID();
 		/// 
-		///		void setPosition(vect<short>);
-		///		vect<short> getPosition(void);
+		///		void setPosition(Vector<short>);
+		///		Vector<short> getPosition(void);
 		/// 
-		///		void setSize(vect<byte_2>);
-		///		vect<byte_2> getSize(void);
+		///		void setSize(Vector<byte_2>);
+		///		Vector<byte_2> getSize(void);
 		/// 
 		///		void setImage(Image*);
 		///		Image* getImage(void);

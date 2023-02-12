@@ -1,23 +1,21 @@
 #pragma once
 
-#include "../../definitions/template.hpp"
+#include "../definitions.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Object {
-
 	public:
 		Object();
-		Object(int, vect<short>);
+		Object(int, Vector<short>);
 		virtual ~Object() {};
 
 		int getID();
-		void setPosition(vect<short>);
-		vect<short> getPosition(void);
+		void setPosition(Vector<short>);
+		Vector<short> getPosition(void);
 
 		virtual char getSN() = 0;
-		virtual void setSize(vect<byte_2>) = 0;
-		virtual vect<byte_2> getSize(void) = 0;
+		virtual void setSize(Vector<byte_2>) = 0;
+		virtual Vector<byte_2> getSize(void) = 0;
 
 		virtual void draw(layout&) = 0;
 		virtual void update(sf::Event&) = 0;
@@ -27,6 +25,6 @@ namespace mgl {
 
 	protected:
 		int id;
-		vect<short> cord;
+		Vector<short> cord;
 	};
 }

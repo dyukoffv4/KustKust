@@ -2,13 +2,11 @@
 
 #include "../group/group.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Simple_G : public Group {
-
 	public:
 		Simple_G();
-		Simple_G(int, vect<short>, vect<byte_2>);
+		Simple_G(int, Vector<short>, Vector<byte_2>);
 
 		/// <defined>
 		/// 	int getID();

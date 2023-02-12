@@ -3,23 +3,21 @@
 #include "../object/object.hpp"
 #include "../texture/texture.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Button : public Object {
-
 	public:
 		Button();
-		Button(int id, vect<short>, vect<byte_2>, Texture_I*);
+		Button(int id, Vector<short>, Vector<byte_2>, Texture_I*);
 
 		/// <defined>
 		/// 	int getID();
 		/// 
-		///		void setPosition(vect<short>);
-		///		vect<short> getPosition(void);
+		///		void setPosition(Vector<short>);
+		///		Vector<short> getPosition(void);
 		/// </defined>
 
-		virtual void setSize(vect<byte_2>);
-		virtual vect<byte_2> getSize(void);
+		virtual void setSize(Vector<byte_2>);
+		virtual Vector<byte_2> getSize(void);
 
 		void setImage(Texture_I*);
 		Texture_I* getImage(void);
@@ -28,8 +26,8 @@ namespace mgl {
 
 	protected:
 		Texture_I* image;
-		vect<byte_2> size;
-		vect<bool> stat;
+		Vector<byte_2> size;
+		Vector<bool> stat;
 		short key;
 
 		// 32 (-0) size

@@ -2,13 +2,11 @@
 
 #include "../button/button.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Toggle_B : public Button {
-
 	public:
 		Toggle_B();
-		Toggle_B(int i, vect<short> p, vect<byte_2> s, Texture_I*);
+		Toggle_B(int i, Vector<short> p, Vector<byte_2> s, Texture_I*);
 
 		virtual char getSN();
 

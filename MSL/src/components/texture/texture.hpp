@@ -1,29 +1,27 @@
 #pragma once
 
-#include "../vector/vector.hpp"
+#include "../definitions.hpp"
 
-namespace mgl {
-
+namespace MGL {
 	class Texture_I {
-
 	public:
 		Texture_I();
-		Texture_I(vect<byte_2>, vect<byte_2>, sf::Texture*);
+		Texture_I(Vector<byte_2>, Vector<byte_2>, sf::Texture*);
 
-		virtual sf::RectangleShape getImage(vect<byte_2>);
+		virtual sf::RectangleShape getImage(Vector<byte_2>);
 		virtual char getSN();
 
-		virtual void setCurr(vect<byte_2>);
-		virtual vect<byte_2> getCurr();
-		virtual void setSize(vect<byte_2>);
-		virtual vect<byte_2> getSize();
+		virtual void setCurr(Vector<byte_2>);
+		virtual Vector<byte_2> getCurr();
+		virtual void setSize(Vector<byte_2>);
+		virtual Vector<byte_2> getSize();
 		virtual void setTexture(sf::Texture*);
 
 		enum SN {SIM_I, SPR_I};
 
 	protected:
 		sf::Texture* texture;
-		vect<byte_2> size;
-		vect<byte_2> curr;
+		Vector<byte_2> size;
+		Vector<byte_2> curr;
 	};
 }
