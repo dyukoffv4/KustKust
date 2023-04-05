@@ -10,3 +10,4 @@ then
 fi
 
 make LNAME=$LNAME
+sudo cp bin/count /usr/local/bin/count
