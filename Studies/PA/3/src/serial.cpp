@@ -1,42 +1,6 @@
-#include <iostream>
-#include <iomanip>
-#include <vector>
+#include "shared.hpp"
 #include <omp.h>
 
-// Generation functions
-
-typedef std::vector<double> vector;
-typedef std::vector<vector> matrix;
-
-matrix matrixSLAE(vector x) {
-    matrix m(x.size(), vector(x.size() + 1, 0));
-    int s = x.size();
-    double b = 0;
-
-    for (int i = 0; i < s; i++) {
-        m[i][i] += 1;
-        for (int j = 0; j < s; j++) b += (m[i][j] += i + j) * x[j];
-        m[i][s] += b;
-        b = 0;
-    }
-
-    return m;
-}
-
-std::ostream &operator<<(std::ostream &out, const matrix &m) {
-    for (auto &i : m) {
-        for (auto &j : i) out << std::setw(6) << j << "  ";
-        out << "\n";
-    }
-    return out;
-}
-
-std::ostream &operator<<(std::ostream &out, const vector &v) {
-    for (auto &i : v) out << std::setw(6) << i << "  ";
-    return out << "\n";
-}
-
-// Algorithm functions
 
 double determinant(const matrix m, int y, std::vector<int> xs) {
     if (xs.size() == 2) return m[y][xs[0]] * m[y + 1][xs[1]] - m[y][xs[1]] * m[y + 1][xs[0]];
@@ -58,7 +22,7 @@ double determinant(const matrix m, int y, std::vector<int> xs) {
     return result;
 }
 
-void kramerSLAE(const matrix m, vector &result) {
+void kramerSLAE(const matrix &m, vector &result) {
     std::vector<int> xs(m.size());
     for (int i = 0; i < m.size(); i++) xs[i] = i;
     double det = determinant(m, 0, xs);
@@ -70,7 +34,6 @@ void kramerSLAE(const matrix m, vector &result) {
     }
 }
 
-// Main
 
 int main() {
     vector ex{0, 1, 2, 3}, x(4);
