@@ -1,9 +1,10 @@
 #include "shared.hpp"
+#include <iomanip>
 
 matrix matrixSLAE(vector x) {
     matrix m(x.size(), vector(x.size() + 1, 0));
     int s = x.size();
-    double b = 0;
+    long b = 0;
 
     for (int i = 0; i < s; i++) {
         m[i][i] += 1;

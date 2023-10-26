@@ -2,7 +2,7 @@
 #include <omp.h>
 
 
-double determinant(const matrix &m) {
+long determinant(const matrix &m) {
     int m_size = m.size(), e_size = m.size() + 1, sign = 1;
 
     matrix nm(e_size, vector(e_size, 1));
@@ -44,7 +44,7 @@ void kramerSLAE(const matrix &m, vector &result) {
     vector b(m.size());
     for (int i = 0; i < m.size(); i++) b[i] = m[i][m.size()];
 
-    double det = determinant(m2);
+    long det = determinant(m2);
 
     matrix m2_t = m2;
     for (int i = 0; i < m.size(); i++) {
@@ -56,24 +56,34 @@ void kramerSLAE(const matrix &m, vector &result) {
 
 
 int main() {
+    double t_point;
     vector ex(5), x(5);
     for (int j = 0; j < 5; j++) ex[j] = j;
     matrix m = matrixSLAE(ex);
 
     std::cout << "Work test:\nSLAE for 5 variables:\n" << m << '\n';
-    std::cout << "Expected: " << ex << '\n';
+    std::cout << "Expected: " << ex;
     kramerSLAE(m, x);
     std::cout << "Actual:   " << x << "\n\n";
 
-    std::cout << "Timetests:\n";
+    std::cout << "Timetests:\n\n";
     for (int i = 5; i <= 625; i *= 5) {
         ex = x = vector(i);
         for (int j = 0; j < i; j++) ex[j] = j;
         m = matrixSLAE(ex);
 
-        double t_start = omp_get_wtime();
+        t_point = omp_get_wtime();
         kramerSLAE(m, x);
-        std::cout << "Variables: " << std::setw(3) << i << "\t\tTime (ms): " << std::setw(12) << (omp_get_wtime() - t_start) * 1000 << '\n';
+        t_point = (omp_get_wtime() - t_point) * 1000;
+        
+        for (int j = 0; j < i; j++) {
+            if (x[j] != j) {
+                std::cout << "Wrong answer below!\n";
+                break;
+            }
+        }
+
+        std::printf("Variables: %3d\t\tTime (ms): %10.3f\n", i, t_point);
     }
 
     return 0;

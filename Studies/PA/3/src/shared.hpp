@@ -1,8 +1,7 @@
 #include <iostream>
-#include <iomanip>
 #include <vector>
 
-typedef std::vector<int> vector;
+typedef std::vector<long> vector;
 typedef std::vector<vector> matrix;
 
 // Create matrix of System of Linear Equlites from Xs
