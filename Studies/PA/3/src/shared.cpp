@@ -17,13 +17,13 @@ matrix matrixSLAE(vector x) {
 
 std::ostream &operator<<(std::ostream &out, const matrix &m) {
     for (auto &i : m) {
-        for (auto &j : i) out << std::setw(6) << j << "  ";
+        for (auto &j : i) out << std::setw(5) << j << "  ";
         out << "\n";
     }
     return out;
 }
 
 std::ostream &operator<<(std::ostream &out, const vector &v) {
-    for (auto &i : v) out << std::setw(6) << i << "  ";
+    for (auto &i : v) out << std::setw(5) << i << "  ";
     return out << "\n";
 }

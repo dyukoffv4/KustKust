@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <vector>
 
-typedef std::vector<double> vector;
+typedef std::vector<int> vector;
 typedef std::vector<vector> matrix;
 
 // Create matrix of System of Linear Equlites from Xs
