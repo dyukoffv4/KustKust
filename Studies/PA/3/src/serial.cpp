@@ -1,84 +1,90 @@
-#include <iostream>
-#include <iomanip>
-#include <vector>
+#include "shared.hpp"
 #include <omp.h>
 
-// Generation functions
 
-typedef std::vector<double> vector;
-typedef std::vector<vector> matrix;
+long determinant(const matrix &m) {
+    int m_size = m.size(), e_size = m.size() + 1, sign = 1;
 
-matrix matrixSLAE(vector x) {
-    matrix m(x.size(), vector(x.size() + 1, 0));
-    int s = x.size();
-    double b = 0;
+    matrix nm(e_size, vector(e_size, 1));
+    for (int i = 0; i < m_size; i++) for (int j = 0; j < m_size; j++) nm[i + 1][j + 1] = m[i][j];
 
-    for (int i = 0; i < s; i++) {
-        m[i][i] += 1;
-        for (int j = 0; j < s; j++) b += (m[i][j] += i + j) * x[j];
-        m[i][s] += b;
-        b = 0;
+    // Main diagonal without zeros
+    vector temp;
+    for (int k = 1; k < e_size - 1; k++) {
+        if (!nm[k][k]) {
+            for (int i = k + 1; i < e_size; i++) {
+                if (nm[i][k - 1]) {
+                    temp = nm[i];
+                    nm[i] = nm[k];
+                    nm[k] = temp;
+                    sign *= -1;
+                    break;
+                }
+            }
+            if (!nm[k - 1][k - 1]) return 0;
+        }
     }
 
-    return m;
-}
-
-std::ostream &operator<<(std::ostream &out, const matrix &m) {
-    for (auto &i : m) {
-        for (auto &j : i) out << std::setw(6) << j << "  ";
-        out << "\n";
-    }
-    return out;
-}
-
-std::ostream &operator<<(std::ostream &out, const vector &v) {
-    for (auto &i : v) out << std::setw(6) << i << "  ";
-    return out << "\n";
-}
-
-// Algorithm functions
-
-double determinant(const matrix m, int y, std::vector<int> xs) {
-    if (xs.size() == 2) return m[y][xs[0]] * m[y + 1][xs[1]] - m[y][xs[1]] * m[y + 1][xs[0]];
-    double result = 0.0;
-    std::vector<int> nxs;
-
-    for (int i = 0; i < xs.size(); i += 2) {
-        nxs = xs;
-        nxs.erase(nxs.begin() + i);
-        result += m[y][xs[i]] * determinant(m, y + 1, nxs);
+    // Bareis method
+    for (int k = 1; k < e_size - 1; k++) {
+        for (int i = k + 1; i < e_size; i++) {
+            for (int j = k + 1; j < e_size; j++) {
+                nm[i][j] = (nm[i][j] * nm[k][k] - nm[i][k] * nm[k][j]) / nm[k - 1][k - 1];
+            }
+        }
     }
 
-    for (int i = 1; i < xs.size(); i += 2) {
-        nxs = xs;
-        nxs.erase(nxs.begin() + i);
-        result -= m[y][xs[i]] * determinant(m, y + 1, nxs);
-    }
-
-    return result;
+    return sign * nm[m_size][m_size];
 }
 
-void kramerSLAE(const matrix m, vector &result) {
-    std::vector<int> xs(m.size());
-    for (int i = 0; i < m.size(); i++) xs[i] = i;
-    double det = determinant(m, 0, xs);
+void kramerSLAE(const matrix &m, vector &result) {
+    matrix m2(m.size(), vector(m.size()));
+    for (int i = 0; i < m.size(); i++) for (int j = 0; j < m.size(); j++) m2[i][j] = m[i][j];
 
+    vector b(m.size());
+    for (int i = 0; i < m.size(); i++) b[i] = m[i][m.size()];
+
+    long det = determinant(m2);
+
+    matrix m2_t = m2;
     for (int i = 0; i < m.size(); i++) {
-        xs[i] = m.size();
-        result[i] = determinant(m, 0, xs) / det;
-        xs[i] = i;
+        for (int j = 0; j < m.size(); j++) m2_t[i][j] = b[j];
+        result[i] = determinant(m2_t) / det;
+        for (int j = 0; j < m.size(); j++) m2_t[i][j] = m2[i][j];
     }
 }
 
-// Main
 
 int main() {
-    vector ex{0, 1, 2, 3}, x(4);
+    double t_point;
+    vector ex(5), x(5);
+    for (int j = 0; j < 5; j++) ex[j] = j;
     matrix m = matrixSLAE(ex);
 
-    std::cout << m << ex;
+    std::cout << "Work test:\nSLAE for 5 variables:\n" << m << '\n';
+    std::cout << "Expected: " << ex;
     kramerSLAE(m, x);
-    std::cout << '\n' << m << x;
+    std::cout << "Actual:   " << x << "\n\n";
+
+    std::cout << "Timetests:\n\n";
+    for (int i = 5; i <= 625; i *= 5) {
+        ex = x = vector(i);
+        for (int j = 0; j < i; j++) ex[j] = j;
+        m = matrixSLAE(ex);
+
+        t_point = omp_get_wtime();
+        kramerSLAE(m, x);
+        t_point = (omp_get_wtime() - t_point) * 1000;
+        
+        for (int j = 0; j < i; j++) {
+            if (x[j] != j) {
+                std::cout << "Wrong answer below!\n";
+                break;
+            }
+        }
+
+        std::printf("Variables: %3d\t\tTime (ms): %10.3f\n", i, t_point);
+    }
 
     return 0;
 }
