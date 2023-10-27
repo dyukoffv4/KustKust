@@ -58,31 +58,35 @@ void kramerSLAE(const matrix &m, const vector &b, vector &result) {
 int main() {
     omp_set_num_threads(4);
 
-    double t_point;
-    matrix m = get_matrix(4);
-    vector x = get_vector(4), b = m * x;
+    double t_point, t_medium;
+    int start = 4, step = 4, end = 256, repeat = 10;
+
+    matrix m = get_matrix(start);
+    vector x = get_vector(start), b = m * x;
 
     // Work test
-    std::printf("Work test:\nSLAE for %2d variables:\n", 4);
-    for (int i = 0; i < 4; i++) std::cout << m[i] << " |   " << b[i] << "\n";
+    std::printf("Work test:\nSLAE for %2d variables:\n", start);
+    for (int i = 0; i < start; i++) std::cout << m[i] << " |   " << b[i] << "\n";
     std::cout << "\nExpected: " << x;
     kramerSLAE(m, b, x);
     std::cout << "\nActual:   " << x << "\n\n";
 
     // Time test
     std::cout << "Time test:\n\n";
-    for (int i = 4; i <= 256; i *= 4) {
+    for (int i = start; i <= end; i *= step) {
         m = get_matrix(i);
         b = m * get_vector(i);
         x = get_vector(i, 0);
 
-        t_point = omp_get_wtime();
-        kramerSLAE(m, b, x);
-        t_point = (omp_get_wtime() - t_point) * 1000;
+        t_medium = 0;
+        for (int j = 0; j < repeat; i++) {
+            t_point = omp_get_wtime();
+            kramerSLAE(m, b, x);
+            t_medium += (omp_get_wtime() - t_point) * 1000;
+        }
         
         if (x != get_vector(i)) std::cout << "Wrong answer below!\n";
-
-        std::printf("Variables: %4d\t\tTime (ms): %10.3f\n", i, t_point);
+        std::printf("Variables: %4d\t\tTime (ms): %10.3f\n", i, t_medium / repeat);
     }
 
     return 0;
