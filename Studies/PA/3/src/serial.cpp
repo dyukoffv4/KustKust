@@ -70,7 +70,7 @@ int main() {
         x = get_vector(i, 0);
 
         t_medium = 0;
-        for (int j = 0; j < repeat; i++) {
+        for (int j = 0; j < repeat; j++) {
             t_point = omp_get_wtime();
             kramerSLAE(m, b, x);
             t_medium += (omp_get_wtime() - t_point) * 1000;
