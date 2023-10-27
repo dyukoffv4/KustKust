@@ -41,7 +41,7 @@ void kramerSLAE(const matrix &m, const vector &b, vector &result) {
 
     matrix m2_t = m;
 
-    #pragma omp parallel for
+    #pragma omp parallel for firstprivate(m2_t)
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) m2_t[j][i] = b[j];
         result[i] = determinant(m2_t) / det;
@@ -52,7 +52,7 @@ void kramerSLAE(const matrix &m, const vector &b, vector &result) {
 
 int main() {
     omp_set_num_threads(4);
-    
+
     double t_point;
     matrix m = get_matrix(5);
     vector x = get_vector(5), b = m * x;

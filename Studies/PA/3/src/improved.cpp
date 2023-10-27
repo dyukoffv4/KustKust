@@ -41,7 +41,7 @@ void kramerSLAE(const matrix &m, const vector &b, vector &result) {
 
     matrix m2_t = m;
     
-    #pragma omp parallel
+    #pragma omp parallel firstprivate(m2_t)
     {
         int from = size * omp_get_thread_num() / omp_get_num_threads();
         int to = size * (omp_get_thread_num() + 1) / omp_get_num_threads();
@@ -59,12 +59,12 @@ int main() {
     omp_set_num_threads(4);
 
     double t_point;
-    matrix m = get_matrix(5);
-    vector x = get_vector(5), b = m * x;
+    matrix m = get_matrix(4);
+    vector x = get_vector(4), b = m * x;
 
     // Work test
-    std::printf("Work test:\nSLAE for %2d variables:\n", 5);
-    for (int i = 0; i < 5; i++) std::cout << m[i] << " |   " << b[i] << "\n";
+    std::printf("Work test:\nSLAE for %2d variables:\n", 4);
+    for (int i = 0; i < 4; i++) std::cout << m[i] << " |   " << b[i] << "\n";
     std::cout << "\nExpected: " << x;
     kramerSLAE(m, b, x);
     std::cout << "\nActual:   " << x << "\n\n";
