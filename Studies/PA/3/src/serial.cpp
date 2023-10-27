@@ -2,18 +2,15 @@
 #include <omp.h>
 
 
-long determinant(const matrix &m) {
-    int m_size = m.size(), e_size = m.size() + 1, sign = 1;
+int determinant(const matrix &m) {
+    int m_size = m.size(), sign = 1, A = 1;
+    matrix nm = m;
 
-    matrix nm(e_size, vector(e_size, 1));
-    for (int i = 0; i < m_size; i++) for (int j = 0; j < m_size; j++) nm[i + 1][j + 1] = m[i][j];
-
-    // Main diagonal without zeros
     vector temp;
-    for (int k = 1; k < e_size - 1; k++) {
+    for (int k = 0; k < m_size - 1; k++) {
         if (!nm[k][k]) {
-            for (int i = k + 1; i < e_size; i++) {
-                if (nm[i][k - 1]) {
+            for (int i = k + 1; i < m_size; i++) {
+                if (nm[i][k]) {
                     temp = nm[i];
                     nm[i] = nm[k];
                     nm[k] = temp;
@@ -21,69 +18,62 @@ long determinant(const matrix &m) {
                     break;
                 }
             }
-            if (!nm[k - 1][k - 1]) return 0;
         }
-    }
+        if (!nm[k][k]) return 0;
 
-    // Bareis method
-    for (int k = 1; k < e_size - 1; k++) {
-        for (int i = k + 1; i < e_size; i++) {
-            for (int j = k + 1; j < e_size; j++) {
-                nm[i][j] = (nm[i][j] * nm[k][k] - nm[i][k] * nm[k][j]) / nm[k - 1][k - 1];
+        for (int i = k + 1; i < m_size; i++) {
+            for (int j = k + 1; j < m_size; j++) {
+                nm[i][j] = (nm[i][j] * nm[k][k] - nm[i][k] * nm[k][j]) / A;
             }
         }
+        A = nm[k][k];
     }
 
-    return sign * nm[m_size][m_size];
+    return sign * nm[m_size - 1][m_size - 1];
 }
 
-void kramerSLAE(const matrix &m, vector &result) {
-    matrix m2(m.size(), vector(m.size()));
-    for (int i = 0; i < m.size(); i++) for (int j = 0; j < m.size(); j++) m2[i][j] = m[i][j];
+void kramerSLAE(const matrix &m, const vector &b, vector &result) {
+    int det = determinant(m);
+    if (det == 0) {
+        std::cout << "Determinant equal to 0!\n";
+        return;
+    }
 
-    vector b(m.size());
-    for (int i = 0; i < m.size(); i++) b[i] = m[i][m.size()];
-
-    long det = determinant(m2);
-
-    matrix m2_t = m2;
+    matrix m2_t = m;
     for (int i = 0; i < m.size(); i++) {
-        for (int j = 0; j < m.size(); j++) m2_t[i][j] = b[j];
+        for (int j = 0; j < m.size(); j++) m2_t[j][i] = b[j];
         result[i] = determinant(m2_t) / det;
-        for (int j = 0; j < m.size(); j++) m2_t[i][j] = m2[i][j];
+        for (int j = 0; j < m.size(); j++) m2_t[j][i] = m[j][i];
     }
 }
 
 
 int main() {
     double t_point;
-    vector ex(5), x(5);
-    for (int j = 0; j < 5; j++) ex[j] = j;
-    matrix m = matrixSLAE(ex);
+    matrix m = get_matrix(5);
+    vector x = get_vector(5), b = m * x;
 
-    std::cout << "Work test:\nSLAE for 5 variables:\n" << m << '\n';
-    std::cout << "Expected: " << ex;
-    kramerSLAE(m, x);
-    std::cout << "Actual:   " << x << "\n\n";
+    // Work test
+    std::printf("Work test:\nSLAE for %2d variables:\n", 5);
+    for (int i = 0; i < 5; i++) std::cout << m[i] << " |   " << b[i] << "\n";
+    std::cout << "\nExpected: " << x;
+    kramerSLAE(m, b, x);
+    std::cout << "\nActual:   " << x << "\n\n";
 
-    std::cout << "Timetests:\n\n";
-    for (int i = 5; i <= 625; i *= 5) {
-        ex = x = vector(i);
-        for (int j = 0; j < i; j++) ex[j] = j;
-        m = matrixSLAE(ex);
+    // Time test
+    std::cout << "Time test:\n\n";
+    for (int i = 4; i <= 256; i *= 4) {
+        m = get_matrix(i);
+        b = m * get_vector(i);
+        x = get_vector(i, 0);
 
         t_point = omp_get_wtime();
-        kramerSLAE(m, x);
+        kramerSLAE(m, b, x);
         t_point = (omp_get_wtime() - t_point) * 1000;
         
-        for (int j = 0; j < i; j++) {
-            if (x[j] != j) {
-                std::cout << "Wrong answer below!\n";
-                break;
-            }
-        }
+        if (x != get_vector(i)) std::cout << "Wrong answer below!\n";
 
-        std::printf("Variables: %3d\t\tTime (ms): %10.3f\n", i, t_point);
+        std::printf("Variables: %4d\t\tTime (ms): %10.3f\n", i, t_point);
     }
 
     return 0;
