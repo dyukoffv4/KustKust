@@ -1,7 +1,7 @@
 BIN = bin/
 SRC = src/
 
-all:		serial # parallel improved
+all:		serial parallel improved
 
 serial:		$(SRC)serial.cpp $(BIN)shared.o
 	g++ -fopenmp $(SRC)serial.cpp $(BIN)shared.o -o $(BIN)serial
