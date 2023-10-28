@@ -5,7 +5,7 @@
 
 ## Run
 
-`bin/main -s`
+`bin/main`
 
 ## Clean
 
