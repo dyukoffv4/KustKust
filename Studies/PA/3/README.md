@@ -5,11 +5,7 @@
 
 ## Run
 
-`bin/serial`
-
-`bin/parallel`
-
-`bin/improved`
+`bin/main -s`
 
 ## Clean
 

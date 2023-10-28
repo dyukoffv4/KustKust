@@ -1,8 +1,6 @@
-#include "shared.hpp"
-#include <omp.h>
+#include "serial.hpp"
 
-
-int determinant(const matrix &m) {
+int serial::determinant(const matrix &m) {
     int m_size = m.size(), sign = 1, A = 1;
     matrix nm = m;
 
@@ -32,12 +30,9 @@ int determinant(const matrix &m) {
     return sign * nm[m_size - 1][m_size - 1];
 }
 
-void kramerSLAE(const matrix &m, const vector &b, vector &result) {
+void serial::kramerSLAE(const matrix &m, const vector &b, vector &result) {
     int det = determinant(m);
-    if (det == 0) {
-        std::cout << "Determinant equal to 0!\n";
-        return;
-    }
+    if (!det) return;
 
     matrix m2_t = m;
     for (int i = 0; i < m.size(); i++) {
@@ -45,40 +40,4 @@ void kramerSLAE(const matrix &m, const vector &b, vector &result) {
         result[i] = determinant(m2_t) / det;
         for (int j = 0; j < m.size(); j++) m2_t[j][i] = m[j][i];
     }
-}
-
-
-int main() {
-    double t_point, t_medium;
-    int start = 4, step = 4, end = 256, repeat = 10;
-
-    matrix m = get_matrix(start);
-    vector x = get_vector(start), b = m * x;
-
-    // Work test
-    std::printf("Work test:\nSLAE for %2d variables:\n", start);
-    for (int i = 0; i < start; i++) std::cout << m[i] << " |   " << b[i] << "\n";
-    std::cout << "\nExpected: " << x;
-    kramerSLAE(m, b, x);
-    std::cout << "\nActual:   " << x << "\n\n";
-
-    // Time test
-    std::cout << "Time test:\n\n";
-    for (int i = start; i <= end; i *= step) {
-        m = get_matrix(i);
-        b = m * get_vector(i);
-        x = get_vector(i, 0);
-
-        t_medium = 0;
-        for (int j = 0; j < repeat; j++) {
-            t_point = omp_get_wtime();
-            kramerSLAE(m, b, x);
-            t_medium += (omp_get_wtime() - t_point) * 1000;
-        }
-        
-        if (x != get_vector(i)) std::cout << "Wrong answer below!\n";
-        std::printf("Variables: %4d\t\tTime (ms): %10.3f\n", i, t_medium / repeat);
-    }
-
-    return 0;
 }

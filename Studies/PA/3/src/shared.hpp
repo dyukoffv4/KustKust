@@ -6,9 +6,9 @@ typedef std::vector<vector> matrix;
 
 matrix get_matrix(int);
 
-vector get_vector(int);
-
 vector get_vector(int, int);
+
+vector get_vector(int, int, int);
 
 vector operator*(const matrix &, const vector &);
 

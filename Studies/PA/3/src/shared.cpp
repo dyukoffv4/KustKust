@@ -7,15 +7,16 @@ matrix get_matrix(int size) {
     return m;
 }
 
-vector get_vector(int size) {
-    vector v(size);
-    for (int i = 0; i < size; i++) v[i] = i;
-    return v;
-}
-
 vector get_vector(int size, int fill) {
     vector v(size);
     for (int i = 0; i < size; i++) v[i] = fill;
+    return v;
+}
+
+vector get_vector(int size, int f, int t) {
+    vector v(size);
+    double step = double(t - f) / size;
+    for (int i = 0; i < size; i++) v[i] = f + int(i * step);
     return v;
 }
 
