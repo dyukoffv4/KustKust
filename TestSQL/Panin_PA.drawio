@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-10-24T12:59:51.705Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="yf-X2CSvABv7C14228-J" version="22.0.6" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2023-10-27T15:57:06.553Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="IYbm77Mcj6O10SfIlTbC" version="22.0.8" type="github" pages="2">
   <diagram name="Страница — 1" id="oyt1punC4fpAUDzVChK5">
-    <mxGraphModel dx="4118" dy="1244" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3099" dy="622" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -270,8 +270,8 @@
         <mxCell id="VabuEo_jZUHKde7YtSgk-81" value="Инициализация&lt;br&gt;matrix, vector, result размером N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
           <mxGeometry x="-990" y="360" width="110" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="rjdcKRhCKsss8g98Zgu5-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Распределение проводится между 4-мя потоками. Каждый поток обрабатывает одну четвертую часть матрицы и записывает одну четвертую часть вектора в результате.&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-834" y="379" width="305" height="105" as="geometry" />
+        <mxCell id="rjdcKRhCKsss8g98Zgu5-1" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;При распределении матрица делится по строкам на 4 равные части. Строки берутся подряд (например от 0 до N / 4). Таким образом каждый поток записывает одну четвертую часть вектора в результате.&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-830" y="340" width="330" height="141" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
