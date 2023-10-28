@@ -32,26 +32,14 @@ int main() {
     std::cin >> repeat;
     if (repeat < 1) repeat = 10;
     
-    matrix m;
-    vector x, b;
-    std::printf("\nDo you want to see presentation of work of programm for SLAE for %d variables? (1. YES  |  0. NO) -> ", start);
-    std::cin >> setup;
-
-    if (setup) {
-        m = get_matrix(start);
-        b = m * (x = get_vector(start, 0, start));
-
-        std::cout << "\nSLAE:\n";
-        for (int i = 0; i < start; i++) std::cout << m[i] << " |   " << b[i] << "\n";
-        std::cout << "\nExpected: " << x;
-        function(m, b, x);
-        std::cout << "\nActual:   " << x;
-    }
-    std::cout << "\n\n";
 
     // Time test
     std::cout << "--> Time test <--\n\n";
+
+    matrix m;
+    vector x, b;
     double t_point, t_medium;
+
     for (int i = start; i <= stop; i *= step) {
         m = get_matrix(i);
         b = m * get_vector(i, 0, i);
