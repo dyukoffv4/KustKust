@@ -1,7 +1,7 @@
 #include "serial.hpp"
 
 int serial::determinant(const matrix &m) {
-    int m_size = m.size(), sign = 1, A = 1;
+    int m_size = m.size(), sign = 1, A = 1, T;
     matrix nm = m;
 
     vector temp;
@@ -17,14 +17,15 @@ int serial::determinant(const matrix &m) {
                 }
             }
         }
-        if (!nm[k][k]) return 0;
+        if (!(T = nm[k][k])) return 0;
 
         for (int i = k + 1; i < m_size; i++) {
+            vector &nmi = nm[i], &nmk = nm[k];
             for (int j = k + 1; j < m_size; j++) {
-                nm[i][j] = (nm[i][j] * nm[k][k] - nm[i][k] * nm[k][j]) / A;
+                nmi[j] = (nmi[j] * T - nmi[k] * nmk[j]) / A;
             }
         }
-        A = nm[k][k];
+        A = T;
     }
 
     return sign * nm[m_size - 1][m_size - 1];
