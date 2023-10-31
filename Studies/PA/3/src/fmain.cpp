@@ -15,15 +15,34 @@ int main(int argc, char* argv[]) {
     auto function = args.count("-S") ? serial::kramerSLAE : (args.count("-P") ? parallel::kramerSLAE : improved::kramerSLAE);
     int start = 10, stop = 160, step = 2, repeat = 10;
 
+    if (args.count("-c") && args["-c"].size() == 1) {
+        if (std::stoi(args["-c"][0]) < 1) return 1;
+        omp_set_num_threads(std::stoi(args["-c"][0]));
+    }
+    else omp_set_num_threads(4);
+
     if (args.count("-r") && args["-r"].size() == 1) {
         repeat = std::stoi(args["-r"][0]);
         if (repeat < 1) return 1;
     }
 
-    if (args.count("-d") && args["-d"].size() == 3) {
-        start = std::stoi(args["-d"][0]);
-        stop = std::stoi(args["-d"][1]);
-        step = std::stoi(args["-d"][2]);
+    if (args.count("-d")) {
+        if (args["-d"].size() == 0) return 1;
+
+        if (args["-d"].size() == 1) {
+            start = stop = std::stoi(args["-d"][0]);
+        }
+        else if (args["-d"].size() == 2) {
+            start = std::stoi(args["-d"][0]);
+            stop = std::stoi(args["-d"][1]);
+        }
+        else if (args["-d"].size() == 3) {
+            start = std::stoi(args["-d"][0]);
+            stop = std::stoi(args["-d"][1]);
+            step = std::stoi(args["-d"][2]);
+        }
+        else return 1;
+
         if (start < 2 || stop < 2 || step < 2) return 1;
     }
 
