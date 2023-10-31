@@ -10,21 +10,31 @@ int main(int argc, char* argv[]) {
         if (argv[i][0] == '-') args[argv[j = i]] = {};
         else args[argv[j]].push_back(argv[i]);
     }
-    if (args.size() < 1 || (args.count("-S") + args.count("-P") + args.count("-I")) != 1) return 1;
+    if (args.size() < 1 || (args.count("-P") + args.count("-I")) > 1) return 1;
 
-    auto function = args.count("-S") ? serial::kramerSLAE : (args.count("-P") ? parallel::kramerSLAE : improved::kramerSLAE);
+    auto function = serial::kramerSLAE;
     int start = 10, stop = 160, step = 2, repeat = 10;
 
-    if (args.count("-r") && args["-r"].size() == 1) {
-        repeat = std::stoi(args["-r"][0]);
-        if (repeat < 1) return 1;
+    if (args.count("-P")) {
+        function = parallel::kramerSLAE;
+        if (args["-P"].size() == 1 && std::stoi(args["-P"][0]) < 1 || args["-P"].size() > 1) return 1;
+        if (args["-P"].size() == 0) omp_set_num_threads(4);
+        else omp_set_num_threads(std::stoi(args["-P"][0]));
+    }
+    else if (args.count("-I")) {
+        function = improved::kramerSLAE;
+        if (args["-I"].size() == 1 && std::stoi(args["-I"][0]) < 1 || args["-I"].size() > 1) return 1;
+        if (args["-I"].size() == 0) omp_set_num_threads(4);
+        else omp_set_num_threads(std::stoi(args["-I"][0]));
     }
 
-    if (args.count("-d") && args["-d"].size() == 3) {
-        start = std::stoi(args["-d"][0]);
-        stop = std::stoi(args["-d"][1]);
-        step = std::stoi(args["-d"][2]);
-        if (start < 2 || stop < 2 || step < 2) return 1;
+    if (args.count("-r") && (args["-r"].size() != 1 || (repeat = std::stoi(args["-r"][0])) < 1)) return 1;
+
+    if (args.count("-d")) {
+        if (args["-d"].size() > 0) start = stop = std::stoi(args["-d"][0]);
+        if (args["-d"].size() > 1) stop = std::stoi(args["-d"][1]);
+        if (args["-d"].size() > 2) step = std::stoi(args["-d"][2]);
+        if (args["-d"].size() < 1 || args["-d"].size() > 3 || start < 2 || stop < 2 || step < 2) return 1;
     }
 
     matrix m;

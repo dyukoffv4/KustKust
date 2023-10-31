@@ -1,8 +1,13 @@
 BIN = bin/
 SRC = src/
 
-all:		$(SRC)$(MAIN) shared serial parallel improved
-	g++ -fopenmp $(SRC)$(MAIN) $(BIN)shared.o $(BIN)serial.o $(BIN)parallel.o $(BIN)improved.o -o $(BIN)main
+all:		cmain fmain
+
+cmain:		$(SRC)main.cpp shared serial parallel improved
+	g++ -fopenmp $(SRC)main.cpp $(BIN)shared.o $(BIN)serial.o $(BIN)parallel.o $(BIN)improved.o -o $(BIN)cmain
+
+fmain:		$(SRC)main.cpp shared serial parallel improved
+	g++ -fopenmp $(SRC)fmain.cpp $(BIN)shared.o $(BIN)serial.o $(BIN)parallel.o $(BIN)improved.o -o $(BIN)fmain
 
 serial:		$(SRC)serial.cpp shared
 	g++ -c -fopenmp $(SRC)serial.cpp $(BIN)shared.o -o $(BIN)serial.o
