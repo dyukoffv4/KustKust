@@ -10,22 +10,22 @@ int main(int argc, char* argv[]) {
         if (argv[i][0] == '-') args[argv[j = i]] = {};
         else args[argv[j]].push_back(argv[i]);
     }
-    if (args.size() < 1 || (args.count("-P") + args.count("-I")) > 1) return 1;
+    if ((args.count("-P") + args.count("-I")) > 1) return 1;
 
     auto function = serial::kramerSLAE;
-    int start = 10, stop = 160, step = 2, repeat = 10;
+    int start = 10, stop = 160, step = 2, repeat = 10, cores = 4;
 
     if (args.count("-P")) {
         function = parallel::kramerSLAE;
-        if (args["-P"].size() == 1 && std::stoi(args["-P"][0]) < 1 || args["-P"].size() > 1) return 1;
-        if (args["-P"].size() == 0) omp_set_num_threads(4);
-        else omp_set_num_threads(std::stoi(args["-P"][0]));
+        if (args["-P"].size() == 1 && (cores = std::stoi(args["-P"][0])) < 1) return 1;
+        if (args["-P"].size() > 1) return 1;
+        omp_set_num_threads(cores);
     }
     else if (args.count("-I")) {
         function = improved::kramerSLAE;
-        if (args["-I"].size() == 1 && std::stoi(args["-I"][0]) < 1 || args["-I"].size() > 1) return 1;
-        if (args["-I"].size() == 0) omp_set_num_threads(4);
-        else omp_set_num_threads(std::stoi(args["-I"][0]));
+        if (args["-I"].size() == 1 && (cores = std::stoi(args["-I"][0])) < 1) return 1;
+        if (args["-I"].size() > 1) return 1;
+        omp_set_num_threads(cores);
     }
 
     if (args.count("-r") && (args["-r"].size() != 1 || (repeat = std::stoi(args["-r"][0])) < 1)) return 1;
@@ -37,10 +37,12 @@ int main(int argc, char* argv[]) {
         if (args["-d"].size() < 1 || args["-d"].size() > 3 || start < 2 || stop < 2 || step < 2) return 1;
     }
 
+    // TESTS ARE BELOW
+
     matrix m;
     vector x, b;
     double t_point, t_medium;
-
+    
     for (int i = start; i <= stop; i *= step) {
         m = get_matrix(i);
         b = m * get_vector(i, 0, i);
