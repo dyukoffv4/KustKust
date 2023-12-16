@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-10T12:04:00.845Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="rkwaI0tZiLM_lL5qbyCi" version="22.1.0" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2023-12-16T17:48:27.609Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="ZIDbSTEtkTcHyM0zwEPV" version="22.1.11" type="github" pages="2">
   <diagram name="Страница — 1" id="oyt1punC4fpAUDzVChK5">
-    <mxGraphModel dx="3081" dy="732" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3537" dy="940" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,50 +8,40 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ZVkbYp2zaswtVWapne0v-1" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="585" y="270" width="100" height="60" as="geometry" />
+          <mxGeometry x="775" y="200" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-7" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-7" target="iArHU8ds86V-gur1m3t9-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="VabuEo_jZUHKde7YtSgk-7" value="Генерация матрицы множителей M и вектора решений B" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="755" y="290" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="VabuEo_jZUHKde7YtSgk-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-13" edge="1" target="VabuEo_jZUHKde7YtSgk-18">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="635" y="459.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-7" value="Инициализация&lt;br&gt;matrix, vector, result размером N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="580" y="370" width="110" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-13" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="635" y="559.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-13" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="635" y="690" as="targetPoint" />
+            <mxPoint x="825" y="690" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="750" y="490" />
-              <mxPoint x="750" y="650" />
-              <mxPoint x="635" y="650" />
+              <mxPoint x="920" y="490" />
+              <mxPoint x="920" y="775" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-13" value="j = 0; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="585" y="460" width="100" height="60" as="geometry" />
+        <mxCell id="iArHU8ds86V-gur1m3t9-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-13" target="VabuEo_jZUHKde7YtSgk-15">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-15" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="550" y="560" width="170" height="70" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-13" value="i = 0; i &amp;lt; N; i++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="775" y="460" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-15" target="VabuEo_jZUHKde7YtSgk-13" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="520" y="595" />
-              <mxPoint x="520" y="490" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="iArHU8ds86V-gur1m3t9-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-15" target="iArHU8ds86V-gur1m3t9-3">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-18" value="return result" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="585" y="690" width="100" height="50" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-15" value="Поиск определителя матрицы Mi, где i столбец заменен на вектор B (det(Mi))" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="760" y="560" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="VabuEo_jZUHKde7YtSgk-18" value="return X" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="775" y="750" width="100" height="50" as="geometry" />
         </mxCell>
         <mxCell id="VabuEo_jZUHKde7YtSgk-21" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="585" y="770" width="100" height="60" as="geometry" />
+          <mxGeometry x="775" y="830" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="VabuEo_jZUHKde7YtSgk-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-18" target="VabuEo_jZUHKde7YtSgk-21" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -60,224 +50,287 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="VabuEo_jZUHKde7YtSgk-24" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-55" y="260" width="100" height="60" as="geometry" />
+          <mxGeometry x="35" y="165" width="100" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-26" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-5" y="539.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-26" target="VabuEo_jZUHKde7YtSgk-39" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-35" target="iArHU8ds86V-gur1m3t9-17">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-26" target="VabuEo_jZUHKde7YtSgk-43" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-26" value="Инициализация&lt;br&gt;matrix, vector, result размером N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-60" y="450" width="110" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-29" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-5" y="639.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-29" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-5" y="770" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="110" y="570" />
-              <mxPoint x="110" y="730" />
-              <mxPoint x="-5" y="730" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-29" value="j = 0; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-55" y="540" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-30" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-90" y="640" width="170" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-30" target="VabuEo_jZUHKde7YtSgk-29" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="-120" y="675" />
-              <mxPoint x="-120" y="570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-32" value="return result" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-55" y="770" width="100" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-33" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-55" y="850" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-32" target="VabuEo_jZUHKde7YtSgk-33" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-35" target="VabuEo_jZUHKde7YtSgk-26" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-35" value="omp_set_num_threads(4)" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-90" y="360" width="170" height="60" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-35" value="На вход поступает матрица M размера N * N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="-10" y="265" width="190" height="50" as="geometry" />
         </mxCell>
         <mxCell id="VabuEo_jZUHKde7YtSgk-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-39" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-245" y="639.9999999999998" as="targetPoint" />
+            <mxPoint x="-41.25" y="644.9999999999998" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-39" target="VabuEo_jZUHKde7YtSgk-32" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-39" target="iArHU8ds86V-gur1m3t9-28">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="-140" y="570" />
-              <mxPoint x="-140" y="795" />
+              <mxPoint x="85" y="575" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-39" value="j = 0; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-295" y="540" width="100" height="60" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-39" value="i = k + 1; i &amp;lt; N; i++&lt;br&gt;j = k + 1; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="-98.75" y="545" width="115" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-40" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-330" y="640" width="170" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-40" target="VabuEo_jZUHKde7YtSgk-39" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="-360" y="675" />
-              <mxPoint x="-360" y="570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-43" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="245" y="639.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-43" target="VabuEo_jZUHKde7YtSgk-32" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="350" y="570" />
-              <mxPoint x="350" y="795" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-43" value="j = 0; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="195" y="540" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-44" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="160" y="640" width="170" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-44" target="VabuEo_jZUHKde7YtSgk-43" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="130" y="675" />
-              <mxPoint x="130" y="570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-52" target="VabuEo_jZUHKde7YtSgk-66" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-95" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-43" target="VabuEo_jZUHKde7YtSgk-44">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-52" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-985" y="180" width="100" height="60" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-43" value="i = k + 1; i &amp;lt; N; i++&lt;br&gt;j = k + 1; j &amp;lt; N; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="167.5" y="545" width="115" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-56" target="VabuEo_jZUHKde7YtSgk-69" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-56" target="VabuEo_jZUHKde7YtSgk-74" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-56" value="f1 = 0, t4 = N,&lt;br&gt;t1 = f2 = N / threads,&lt;br&gt;t2 = f3 = 2 * N / threads,&lt;br&gt;t3 = f4 = 3 * N / threads" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-1010" y="450" width="150" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-62" value="return result" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-985" y="770" width="100" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-63" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-985" y="850" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-62" target="VabuEo_jZUHKde7YtSgk-63" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-82" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-66" target="VabuEo_jZUHKde7YtSgk-81" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-66" value="threads = 4&lt;br&gt;omp_set_num_threads(threads)" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-1030" y="280" width="190" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-69" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-1125" y="639.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-78" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-69" target="VabuEo_jZUHKde7YtSgk-62" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-98" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-44" target="iArHU8ds86V-gur1m3t9-28">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="-1010" y="570" />
-              <mxPoint x="-1010" y="795" />
+              <mxPoint x="225" y="770" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-69" value="j = f1; j &amp;lt; t1; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-1175" y="540" width="100" height="60" as="geometry" />
+        <mxCell id="VabuEo_jZUHKde7YtSgk-44" value="Вычисление M[ i ][ j ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="160" y="645" width="130" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-70" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-1210" y="640" width="170" height="70" as="geometry" />
+        <mxCell id="rjdcKRhCKsss8g98Zgu5-1" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;При распределении части матрицы делится по строкам на 4 равные части. Строки берутся подряд (например от 0 до N / 4). Таким образом каждый поток вычисляет 1/4 часть значений части матрицы.&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-870" y="545" width="280" height="165.5" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-70" target="VabuEo_jZUHKde7YtSgk-69" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-3" value="Xi = det(Mi) / det(M)" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="760" y="670" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-3" target="VabuEo_jZUHKde7YtSgk-13">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="-1240" y="675" />
-              <mxPoint x="-1240" y="570" />
+              <mxPoint x="730" y="695" />
+              <mxPoint x="730" y="490" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="VabuEo_jZUHKde7YtSgk-74" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-725" y="639.9999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-74" target="VabuEo_jZUHKde7YtSgk-62" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="-620" y="570" />
-              <mxPoint x="-620" y="795" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-74" value="j = f4; j &amp;lt; t4; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="-775" y="540" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-75" value="Скалярное умножение векторов&lt;br&gt;result[ j ] = matrix[ j ] * vector" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-810" y="640" width="170" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-75" target="VabuEo_jZUHKde7YtSgk-74" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="-840" y="675" />
-              <mxPoint x="-840" y="570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-77" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.parallel_mode;pointerEvents=1" parent="1" vertex="1">
-          <mxGeometry x="-979" y="620" width="95" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-80" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;x 4&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="-956.5" y="580" width="50" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-84" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="VabuEo_jZUHKde7YtSgk-81" target="VabuEo_jZUHKde7YtSgk-56" edge="1">
+        <mxCell id="iArHU8ds86V-gur1m3t9-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-6" target="VabuEo_jZUHKde7YtSgk-13">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="VabuEo_jZUHKde7YtSgk-81" value="Инициализация&lt;br&gt;matrix, vector, result размером N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="-990" y="360" width="110" height="60" as="geometry" />
+        <mxCell id="iArHU8ds86V-gur1m3t9-6" value="Поиск определителя матрицы M (det(M))" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="755" y="375.5" width="140" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="rjdcKRhCKsss8g98Zgu5-1" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;При распределении матрица делится по строкам на 4 равные части. Строки берутся подряд (например от 0 до N / 4). Таким образом каждый поток записывает одну четвертую часть вектора в результате.&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-830" y="340" width="330" height="141" as="geometry" />
+        <mxCell id="iArHU8ds86V-gur1m3t9-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-11" target="VabuEo_jZUHKde7YtSgk-43">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="225" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-11" value="Необходимые перестановки строк со сменой знака&lt;br&gt;A = 1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="445" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-17" target="iArHU8ds86V-gur1m3t9-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-17" target="iArHU8ds86V-gur1m3t9-38">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-230" y="380" />
+              <mxPoint x="-230" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-17" value="k = 0; k &amp;lt; N - 1; k++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry y="355" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-26" value="Вычисление M[ i ][ j ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-106.25" y="645" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-28" value="A = M[ k ][ k ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="35" y="745" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-26" target="VabuEo_jZUHKde7YtSgk-39">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-126.25" y="675" />
+              <mxPoint x="-126.25" y="575" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-28">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="395" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-200" y="770" />
+              <mxPoint x="-200" y="395" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-38" value="return M[N - 1][N - 1]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="23.75" y="825" width="122.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-39" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="35" y="905" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-38" target="iArHU8ds86V-gur1m3t9-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-44" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Вход в параллельный регион&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="270" y="405" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-49" value="" style="endArrow=baseDash;dashed=1;html=1;rounded=0;startArrow=baseDash;startFill=0;endFill=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="354.5" y="745" as="sourcePoint" />
+            <mxPoint x="355" y="485" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-50" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Параллельный регион&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="575" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-52" target="iArHU8ds86V-gur1m3t9-54">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-52" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-1215" y="125" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-54" target="iArHU8ds86V-gur1m3t9-67">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-54" value="На вход поступает матрица M размера N * N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1260" y="225" width="190" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-84" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-57" target="iArHU8ds86V-gur1m3t9-70">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1250" y="650" />
+              <mxPoint x="-1250" y="835" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-90" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-57" target="iArHU8ds86V-gur1m3t9-89">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-57" value="i = f1; i &amp;lt; t1; i++&lt;br&gt;j = f1; j &amp;lt; t1; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-1385.5" y="620" width="115" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-58" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-59">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-1008.06" y="719.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-59" target="iArHU8ds86V-gur1m3t9-70">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-930" y="650" />
+              <mxPoint x="-930" y="835" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-59" value="i = f4; i &amp;lt; t4; i++&lt;br&gt;j = f4; j &amp;lt; t4; j++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-1065.56" y="620" width="115" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-61" value="Вычисление M[ i ][ j ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1070.51" y="720" width="124.91" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-64" target="iArHU8ds86V-gur1m3t9-79">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-64" value="Необходимые перестановки строк со сменой знака&lt;br&gt;A = 1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1260.51" y="395" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-67" target="iArHU8ds86V-gur1m3t9-64">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-67" target="iArHU8ds86V-gur1m3t9-73">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1450" y="340" />
+              <mxPoint x="-1450" y="955" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-67" value="k = 0; k &amp;lt; N - 1; k++" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-1250" y="315" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-70" value="A = M[ k ][ k ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1215" y="810" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-70">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-1250" y="355" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-1165" y="890" />
+              <mxPoint x="-1430" y="890" />
+              <mxPoint x="-1430" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-73" value="return M[N - 1][N - 1]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1226.25" y="930" width="122.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-74" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-1215" y="1010" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-75" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-73" target="iArHU8ds86V-gur1m3t9-74">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-76" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;Вход в параллельный регион&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-980" y="395" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-77" value="" style="endArrow=baseDash;dashed=1;html=1;rounded=0;startArrow=baseDash;startFill=0;endFill=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-890" y="775" as="sourcePoint" />
+            <mxPoint x="-890" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-81" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-79" target="iArHU8ds86V-gur1m3t9-57">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-79" value="D = N - k - 1&lt;br&gt;f1 = k + 1&lt;br&gt;t1 = f2 = k + 1 + 1D / threads&lt;br&gt;t2 = f3 = k + 1 + 2D / threads&lt;br&gt;t3 = f4 = k + 1 + 3D / threads&lt;br&gt;t4 = N" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1260" y="485" width="190" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-86" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.parallel_mode;pointerEvents=1" vertex="1" parent="1">
+          <mxGeometry x="-1212.5" y="690" width="95" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-87" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;x 4&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-1190" y="650" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-61" target="iArHU8ds86V-gur1m3t9-59">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1090" y="745" />
+              <mxPoint x="-1090" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-89" value="Вычисление M[ i ][ j ]" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="-1390.45" y="720" width="124.91" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-91" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-89" target="iArHU8ds86V-gur1m3t9-57">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1410" y="745" />
+              <mxPoint x="-1410" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-96" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.006;entryY=0.584;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="VabuEo_jZUHKde7YtSgk-44" target="VabuEo_jZUHKde7YtSgk-43">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="670" />
+              <mxPoint x="140" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-97" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-11" target="VabuEo_jZUHKde7YtSgk-39">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-41" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iArHU8ds86V-gur1m3t9-99" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="iArHU8ds86V-gur1m3t9-79" target="iArHU8ds86V-gur1m3t9-59">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1008" y="535" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="ndfa4LcXgih02gsptpcR" name="Страница — 2">
-    <mxGraphModel dx="3537" dy="957" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3906" dy="940" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
