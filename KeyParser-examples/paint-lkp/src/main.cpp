@@ -1,257 +1,182 @@
-#include <keyparser/terminal.hpp>
+#include <lkeyparser/parser.hpp>
 #include "paint.hpp"
 
-using namespace KP;
+using namespace keyparser;
 
-int atoi(std::string str) {
-	int minus = 0, num = 0;
-	if (!str.empty()) {
-		minus = str[0] == '-' ? 1 : 0;
-		for (int i = minus; i < str.size(); i++) {
-			if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
-			num = num * 10 + (str[i] - 48);
-		}
+
+// Handlers for Tasks
+
+void color(std::vector<Paint::Image> &images, char index, char value) {
+	try {
+		for (auto &i : images) i = Paint::set_component(i, index, value);
 	}
-	return minus ? -1 * num : num;
-}
-
-namespace Main { std::vector<Paint::Image> images(1); }
-
-namespace Color {
-	bool is_help = false;
-
-	void onRoot(Args opts) {
-		if (is_help) return;
-		try {
-			char index = opts[0][0], value = atoi(opts[1]);
-			for (auto &i : Main::images) i = Paint::set_component(i, index, value);
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Color->") + exp.what());
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Color->") + exp.what());
-		}
+	catch (std::invalid_argument exp) {
+		throw std::invalid_argument(std::string("Color->") + exp.what());
 	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по -c / --color:\n";
-		std::cout << "Обязательные параметры:\n";
-		std::cout << "\t1 параметр - изменяемый компонент.\n";
-		std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("Color->") + exp.what());
 	}
 }
 
-namespace Circle {
-	Paint::BGR fill_color, border_color = {0, 0, 0};
-	int border = 0;
-	bool is_help = false;
+void colorHelp() {
+	std::cout << "Справочная информация по -c / --color:\n";
+	std::cout << "Обязательные параметры:\n";
+	std::cout << "\t1 параметр - изменяемый компонент.\n";
+	std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
+}
 
-	void onRoot(Args opts) {
-		if (is_help) return;
-		try {
-			int x = atoi(opts[0]), y = atoi(opts[1]), radius = atoi(opts[2]);
-			for (auto &i : Main::images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Circle->") + exp.what());
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Circle->") + exp.what());
-		}
+void round(std::vector<Paint::Image> &images, int x, int y, int r, Paint::BGR fill_color, int border = 0, Paint::BGR border_color = {0, 0, 0}) {
+	try {
+		for (auto &i : images) i = Paint::put_circle(i, x, y, r, fill_color, border, border_color);
 	}
-
-	void onFill(Args opts) {
-		try {
-			fill_color.r = atoi(opts[0]);
-			fill_color.g = atoi(opts[1]);
-			fill_color.b = atoi(opts[2]);
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Circle->") + exp.what());
-		}
+	catch (std::invalid_argument exp) {
+		throw std::invalid_argument(std::string("Round->") + exp.what());
 	}
-
-	void onBorder(Args opts) {
-		try {
-			border = atoi(opts[0]);
-			border_color.r = atoi(opts[1]);
-			border_color.g = atoi(opts[2]);
-			border_color.b = atoi(opts[3]);
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Circle->") + exp.what());
-		}
-	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по -r (--circle):\n";
-		std::cout << "Флаги:\n";
-		std::cout << "\t-f (--fill):\t\n";
-		std::cout << "\t-b (--border):\t\n";
-		std::cout << "Обязательные параметры:\t\n";
-		std::cout << "\tФлаг -f (--fill): параметры - RGB компонент: <r> <g> <b>.\n";
-		std::cout << "\t1 параметр - положение центра по горизонтали.\n";
-		std::cout << "\t2 параметр - положение центра по вертикали.\n";
-		std::cout << "\t3 параметр - радиус окружности.\n";
-		std::cout << "Необязательные параметры:\t\n";
-		std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("Round->") + exp.what());
 	}
 }
 
-namespace Slice {
-	bool is_help = false;
+void roundHelp(Args opts) {
+	std::cout << "Справочная информация по -r (--round):\n";
+	std::cout << "Флаги:\n";
+	std::cout << "\t-f (--fill):\t\n";
+	std::cout << "\t-b (--border):\t\n";
+	std::cout << "Обязательные параметры:\t\n";
+	std::cout << "\tФлаг -f (--fill): параметры - RGB компонент: <r> <g> <b>.\n";
+	std::cout << "\t1 параметр - положение центра по горизонтали.\n";
+	std::cout << "\t2 параметр - положение центра по вертикали.\n";
+	std::cout << "\t3 параметр - радиус окружности.\n";
+	std::cout << "Необязательные параметры:\t\n";
+	std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
+}
 
-	void onRoot(Args opts) {
-		if (is_help) return;
-		try {
-			int x_lines = atoi(opts[0]), y_lines = atoi(opts[1]);
-			for (auto &i : Paint::slice_image(Main::images[0], x_lines, y_lines)) Main::images.push_back(i);
-			Main::images.erase(Main::images.begin());
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Slice->") + exp.what());
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Slice->") + exp.what());
-		}
+void slice(std::vector<Paint::Image> &images, int x_lines, int y_lines) {
+	try {
+		int to_erase = images.size();
+		for (auto &i : images) for (auto &j : Paint::slice_image(i, x_lines, y_lines)) images.push_back(j);
+		images.erase(images.begin(), images.begin() + to_erase);
 	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по -x / --slice:\n";
-		std::cout << "Обязательные параметры:\n";
-		std::cout << "\t1 параметр - число вертикальных изображений.\n";
-		std::cout << "\t2 параметр - число горизонтальных изображений.\n";
+	catch (std::invalid_argument exp) {
+		throw std::invalid_argument(std::string("Slice->") + exp.what());
+	}
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("Slice->") + exp.what());
 	}
 }
 
-namespace Square {
-	bool is_help = false;
+void sliceHelp() {
+	std::cout << "Справочная информация по -x / --slice:\n";
+	std::cout << "Обязательные параметры:\n";
+	std::cout << "\t1 параметр - число вертикальных изображений.\n";
+	std::cout << "\t2 параметр - число горизонтальных изображений.\n";
+}
 
-	void onRoot(Args opts) {
-		if (is_help) return;
-		try {
-			std::vector<int> D;
-			for (auto &i : opts) D.push_back(atoi(i));
-			for (auto &i : Main::images) i = Paint::put_square(i, D[0], D[1], D[2], D[3], D[4], D[5]);
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Square->") + exp.what());
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Square->") + exp.what());
-		}
+void squad(std::vector<Paint::Image> &images, int x0, int y0, int x1, int y1, int dx, int dy) {
+	try {
+		for (auto &i : images) i = Paint::put_square(i, x0, y0, x1, y1, dx, dy);
 	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по -s / --square:\n";
-		std::cout << "Обязательные параметры:\n";
-		std::cout << "\t1 параметр - положение нижнего левого угла по горизонтали.\n";
-		std::cout << "\t2 параметр - положение нижнего левого угла по вертикали.\n";
-		std::cout << "\t3 параметр - положение верхнего правого угла по горизонтали.\n";
-		std::cout << "\t4 параметр - положение верхнего правого угла по вертикали.\n";
-		std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
-		std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
+	catch (std::invalid_argument exp) {
+		throw std::invalid_argument(std::string("Squad->") + exp.what());
+	}
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("Squad->") + exp.what());
 	}
 }
 
-namespace Main {
-	std::string load_path;
-	bool is_help = false;
+void squadHelp() {
+	std::cout << "Справочная информация по -q / --squad:\n";
+	std::cout << "Обязательные параметры:\n";
+	std::cout << "\t1 параметр - положение нижнего левого угла по горизонтали.\n";
+	std::cout << "\t2 параметр - положение нижнего левого угла по вертикали.\n";
+	std::cout << "\t3 параметр - положение верхнего правого угла по горизонтали.\n";
+	std::cout << "\t4 параметр - положение верхнего правого угла по вертикали.\n";
+	std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
+	std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
+}
 
-	void loadImage(Args opts) {
-		try {
-			images[0].load(opts[0]);
-			int pos = opts[0].find(".bmp");
-			if (pos) load_path = opts[0].substr(0, pos) + "_0";
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
+void loadImage(std::string path, Paint::Image &image) {
+	try {
+		image.load(path);
 	}
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("LoadImage->") + exp.what());
+	}
+}
 
-	void saveImage(Args opts) {
-		try {
-			std::string path = opts.empty() ? load_path : opts[0].substr(0, opts[0].find(".bmp"));
-			if (images.size() == 1) images[0].save(path + ".bmp");
-			else for (int i = 0; i < images.size(); i++) {
+void saveImage(std::string path, std::vector<Paint::Image> &images) {
+	try {
+		std::string path = path.substr(0, path.find(".bmp"));
+		if (images.size() == 1) images[0].save(path + ".bmp");
+		else {
+			for (int i = 0; i < images.size(); i++) {
 				std::string str;
 				for (int j = i; j > 0; j /= 10) str = char(j % 10 + 48) + str;
 				images[i].save(path + str + ".bmp");
 			}
 		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
 	}
-
-	void onColor(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(2, 2);
-		terminal.setRoot(Color::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Color::onHelp);
-		terminal.execute(opts);
+	catch (std::domain_error exp) {
+		throw std::invalid_argument(std::string("SaveImage->") + exp.what());
 	}
-
-	void onCircle(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(3, 3);
-		terminal.setRoot(Circle::onRoot);
-		terminal.setKey(Key('f', "fill", 3, 3),		Circle::onFill);
-		terminal.setKey(Key('b', "border", 4, 4),	Circle::onBorder);
-		terminal.setKey(Key('h', "help", 0, 0),		Circle::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onSlice(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(2, 2);
-		terminal.setRoot(Slice::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Slice::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onSquare(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(6, 6);
-		terminal.setRoot(Square::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Square::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по программе:\n";
-		std::cout << "Вызов:\t<программа> <файл> [-o (--out), -c (--color), -r (--circle), -x (--slice), -s (--square), -h (--help)]\n";
-		std::cout << "Флаги:\n";
-		std::cout << "\t-o (--out):\tПуть и имя файла сохранения.\n";
-		std::cout << "\t-c (--color):\tИзменение значения RGB компонента.\n";
-		std::cout << "\t-r (--circle):\tРисование круга или круга с отверстием.\n";
-		std::cout << "\t-x (--slice):\tРазрезание исходного изображение на несколько.\n";
-		std::cout << "\t-s (--square):\tКопирование и перемещения части изображения в другое место.\n";
-		std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
+	catch (std::invalid_argument exp) {
+		throw std::invalid_argument(std::string("SaveImage->") + exp.what());
 	}
 }
 
+void rootHelp() {
+	std::cout << "Справочная информация по программе:\n";
+	std::cout << "Вызов:\t<программа> <файл> [-s (--save), -c (--color), -r (--round), -x (--slice), -q (--squad), -h (--help)]\n";
+	std::cout << "Флаги:\n";
+	std::cout << "\t-s (--save):\tПуть и имя файла сохранения.\n";
+	std::cout << "\t-c (--color):\tИзменение значения RGB компонента.\n";
+	std::cout << "\t-r (--round):\tРисование круга или круга с отверстием.\n";
+	std::cout << "\t-x (--slice):\tРазрезание исходного изображение на несколько.\n";
+	std::cout << "\t-q (--squad):\tКопирование и перемещения части изображения в другое место.\n";
+	std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
+}
+
+// Temorary show out function
+
+void task_print(std::ostream &out, const keyparser::Task &data, std::string offset = "") {
+    out << offset << data.name.fname() << " : ";
+	if (data.root.size() != 0) {
+		for (auto i = data.root.begin(); i != --data.root.end(); i++) out << *i << ", ";
+		out << data.root.back();
+	}
+	out << '\n';
+    for (auto &i : data.childs) task_print(out, i.second, offset + "  ");
+}
+
+// Setting up function (MAIN)
+
 int main(int argc, char *argv[]) {
 	try {
-		Terminal terminal;
-		terminal.setRootRange(1, 1);
-		terminal.setRoot(Main::loadImage);
-		terminal.setKey(Key("save", 0, 1),	Main::saveImage);
-		terminal.setKey(Key('c', "color"),	Main::onColor);
-		terminal.setKey(Key('r', "circle"),	Main::onCircle);
-		terminal.setKey(Key('x', "slice"),	Main::onSlice);
-		terminal.setKey(Key('s', "square"),	Main::onSquare);
-		terminal.setKey(Key('h', "help", 0, 0),	Main::onHelp);
-		terminal.execute(argc, argv);
+		Parser color(2);
+		color.addKey(Key('h', "help"), 0);
+
+		Parser round(3);
+		round.addKey(Key('f', "fill"), 3);
+		round.addKey(Key('b', "border"), 4);
+		round.addKey(Key('h', "help"), 0);
+
+		Parser slice(2);
+		slice.addKey(Key('h', "help"), 0);
+
+		Parser squad(6);
+		squad.addKey(Key('h', "help"), 0);
+
+		Parser root(0, 1);
+		root.addKey(Key('s', "save"), 0, 1);
+		root.addKey(Key('c', "color"), &color);
+		root.addKey(Key('r', "round"), &round);
+		root.addKey(Key('x', "slice"), &slice);
+		root.addKey(Key('q', "squad"), &squad);
+		root.addKey(Key('h', "help"), 0);
+
+		Task tasks = root.parse(argc, argv);
+
+		task_print(std::cout, tasks);
 	}
 	catch (std::invalid_argument e) {
 		std::cout << e.what() << "\n";

@@ -6,25 +6,28 @@ int parallel::determinant(const matrix &m) {
 
     vector temp;
     for (int k = 0; k < m_size - 1; k++) {
-        if (!nm[k][k]) {
+        vector &nmk = nm[k];
+        if (!nmk[k]) {
             for (int i = k + 1; i < m_size; i++) {
                 if (nm[i][k]) {
                     temp = nm[i];
-                    nm[i] = nm[k];
-                    nm[k] = temp;
+                    nm[i] = nmk;
+                    nmk = temp;
                     sign *= -1;
                     break;
                 }
             }
         }
-        if (!(T = nm[k][k])) return 0;
+        if (!(T = nmk[k])) return 0;
 
+        #pragma omp parallel for
         for (int i = k + 1; i < m_size; i++) {
-            vector &nmi = nm[i], &nmk = nm[k];
+            vector &nmi = nm[i];
             for (int j = k + 1; j < m_size; j++) {
                 nmi[j] = (nmi[j] * T - nmi[k] * nmk[j]) / A;
             }
         }
+
         A = T;
     }
 
@@ -36,8 +39,6 @@ void parallel::kramerSLAE(const matrix &m, const vector &b, vector &result) {
     if (!det) return;
 
     matrix m2_t = m;
-
-    #pragma omp parallel for firstprivate(m2_t)
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) m2_t[j][i] = b[j];
         result[i] = determinant(m2_t) / det;
