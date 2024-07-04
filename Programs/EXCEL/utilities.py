@@ -1,3 +1,4 @@
+import re
 import openpyxl
 from typing import Callable
 
@@ -24,8 +25,9 @@ class Correspondences:
 
     @staticmethod
     def _standard_worker(rules: dict[str, str], value: str):
+        value = value.split('>', 1)[1].strip()
         for i in rules.keys():
-            if value.find(i) != -1:
+            if re.search(i, value) is not None:
                 return rules[i]
         return None
 
