@@ -15,9 +15,9 @@ int atoi(std::string str) {
 	return num;
 }
 
-class my_error : public std::runtime_error {
+class help_error : public std::runtime_error {
 public:
-	my_error() : runtime_error(":D") {}
+	help_error() : runtime_error(":D") {}
 };
 
 // Callback functions
@@ -40,7 +40,7 @@ namespace Root {
 		std::cout << "\t-r (--round):\tDraw sircle.\n";
 		std::cout << "\t-x (--slice):\tSlice current image into many.\n";
 		std::cout << "\t-s (--square):\tCopy and paste rectangle area.\n";
-		throw my_error();
+		throw help_error();
 	}
 
 	void save(const Args& opts) {
@@ -48,9 +48,9 @@ namespace Root {
 			std::string path = opts.empty() ? img_filepath : opts[0];
 			if (path.substr(path.size() - 4) == ".bmp") path.erase(path.size() - 4);
 			
-			for (int i = 1; i <= images.size(); i++) {
+			for (int i = 0; i < images.size(); i++) {
 				std::string number;
-				for (int j = i; j > 0; j /= 10) number = char(j % 10 + 48) + number;
+				for (int j = i + 1; j > 0; j /= 10) number = char(j % 10 + 48) + number;
 				images[i].save(path + "-" + number + ".bmp");
 			}
 		}
@@ -79,7 +79,7 @@ namespace Color {
 		std::cout << "Обязательные параметры:\n";
 		std::cout << "\t1 параметр - изменяемый компонент.\n";
 		std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
-		throw my_error();
+		throw help_error();
 	}
 }
 
@@ -135,7 +135,7 @@ namespace Round {
 		std::cout << "\t3 параметр - радиус окружности.\n";
 		std::cout << "Необязательные параметры:\t\n";
 		std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
-		throw my_error();
+		throw help_error();
 	}
 }
 
@@ -159,7 +159,7 @@ namespace Slice {
 		std::cout << "Обязательные параметры:\n";
 		std::cout << "\t1 параметр - число вертикальных изображений.\n";
 		std::cout << "\t2 параметр - число горизонтальных изображений.\n";
-		throw my_error();
+		throw help_error();
 	}
 }
 
@@ -187,7 +187,7 @@ namespace Square {
 		std::cout << "\t4 параметр - положение верхнего правого угла по вертикали.\n";
 		std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
 		std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
-		throw my_error();
+		throw help_error();
 	}
 }
 
@@ -247,7 +247,7 @@ int main(int argc, char *argv[]) {
 	try {
 		binds.execute(parser.parse(argc, argv));
 	}
-	catch (my_error e) {}
+	catch (help_error e) {}
 
 	return 0;
 }

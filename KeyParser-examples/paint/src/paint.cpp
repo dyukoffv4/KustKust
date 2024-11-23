@@ -38,7 +38,7 @@ Paint::Image& Paint::Image::operator=(const Image& image) {
 void Paint::Image::load(std::string path) {
     std::ifstream file(path, std::ios_base::binary);
 
-    if (!file.is_open()) {
+    if (file.is_open()) {
         file.read((char*)&BFH, sizeof(BitmapFileHeader));
         if ((BFH.signature != 19778) || (BFH.reserved1 != 0) || (BFH.reserved2 != 0)) {
             file.close();
@@ -68,7 +68,7 @@ void Paint::Image::save(std::string path) {
     if (!BM) throw std::runtime_error("Invalid file format!");
     std::ofstream file(path, std::ios_base::binary);
 
-    if (!file.is_open()) {
+    if (file.is_open()) {
         file.write((char*)&BFH, sizeof(BitmapFileHeader));
         file.write((char*)&BIH, sizeof(BitmapInfoHeader));
 
@@ -171,5 +171,5 @@ std::ostream& Paint::operator<<(std::ostream& out, const BitmapInfoHeader& bih) 
 }
 
 std::ostream& Paint::operator<<(std::ostream& out, const BGR& bgr) {
-    return out << bgr.b << '\n' << bgr.g << '\n' << bgr.r << '\n';
+    return out << int(bgr.b) << ' ' << int(bgr.g) << ' ' << int(bgr.r) << '\n';
 }
