@@ -1,58 +1,96 @@
-#include <keyparser/terminal.hpp>
+#include <keyparser/parser.hpp>
+#include <keyparser/binds.hpp>
 #include "paint.hpp"
 
-using namespace KP;
+using namespace keyparser;
+
+// Other
 
 int atoi(std::string str) {
-	int minus = 0, num = 0;
-	if (!str.empty()) {
-		minus = str[0] == '-' ? 1 : 0;
-		for (int i = minus; i < str.size(); i++) {
-			if (str[i] < 48 || str[i] > 57) throw std::domain_error("str_num: Invalid number format!");
-			num = num * 10 + (str[i] - 48);
-		}
+	int num = 0;
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] < 48 || str[i] > 57) throw std::domain_error("Invalid number format: " + str + "!");
+		num = num * 10 + (str[i] - 48);
 	}
-	return minus ? -1 * num : num;
+	return num;
 }
 
-namespace Main { std::vector<Paint::Image> images(1); }
+class my_error : public std::runtime_error {
+public:
+	my_error() : runtime_error(":D") {}
+};
+
+// Callback functions
+
+namespace Root {
+	std::vector<Paint::Image> images(1);
+	std::string img_filepath;
+
+	void root(const Args& opts) {
+		img_filepath = opts[0];
+		images[0].load(img_filepath);
+	}
+
+	void help(const Args& opts) {
+		std::cout << "Input:\t<filename> [--save, --help, -c (--color), -r (--round), -x (--slice), -s (--square)]\n";
+		std::cout << "Options:\n";
+		std::cout << "\t--save:\tFilepath to save.\n";
+		std::cout << "\t--help:\tShow help message.\n";
+		std::cout << "\t-c (--color):\tChange value or RGB component.\n";
+		std::cout << "\t-r (--round):\tDraw sircle.\n";
+		std::cout << "\t-x (--slice):\tSlice current image into many.\n";
+		std::cout << "\t-s (--square):\tCopy and paste rectangle area.\n";
+		throw my_error();
+	}
+
+	void save(const Args& opts) {
+		try {
+			std::string path = opts.empty() ? img_filepath : opts[0];
+			if (path.substr(path.size() - 4) == ".bmp") path.erase(path.size() - 4);
+			
+			for (int i = 1; i <= images.size(); i++) {
+				std::string number;
+				for (int j = i; j > 0; j /= 10) number = char(j % 10 + 48) + number;
+				images[i].save(path + "-" + number + ".bmp");
+			}
+		}
+		catch (std::runtime_error e) {
+			throw std::invalid_argument(e.what());
+		}
+	}
+}
 
 namespace Color {
-	bool is_help = false;
-
-	void onRoot(Args opts) {
-		if (is_help) return;
+	void root(const Args& opts) {
 		try {
 			char index = opts[0][0], value = atoi(opts[1]);
-			for (auto &i : Main::images) i = Paint::set_component(i, index, value);
+			for (auto &i : Root::images) i = Paint::set_component(i, index, value);
 		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Color->") + exp.what());
+		catch (std::invalid_argument e) {
+			throw std::invalid_argument(e.what());
 		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Color->") + exp.what());
+		catch (std::domain_error e) {
+			throw std::invalid_argument(e.what());
 		}
 	}
 
-	void onHelp(Args opts) {
-		is_help = true;
+	void help(const Args& opts) {
 		std::cout << "Справочная информация по -c / --color:\n";
 		std::cout << "Обязательные параметры:\n";
 		std::cout << "\t1 параметр - изменяемый компонент.\n";
 		std::cout << "\t2 параметр - новое значение компонента (от 0 до 255).\n";
+		throw my_error();
 	}
 }
 
-namespace Circle {
+namespace Round {
 	Paint::BGR fill_color, border_color = {0, 0, 0};
-	int border = 0;
-	bool is_help = false;
+	int border_thick = 0;
 
-	void onRoot(Args opts) {
-		if (is_help) return;
+	void root(const Args& opts) {
 		try {
 			int x = atoi(opts[0]), y = atoi(opts[1]), radius = atoi(opts[2]);
-			for (auto &i : Main::images) i = Paint::put_circle(i, x, y, radius, fill_color, border, border_color);
+			for (auto &i : Root::images) i = Paint::put_circle(i, x, y, radius, fill_color, border_thick, border_color);
 		}
 		catch (std::invalid_argument exp) {
 			throw std::invalid_argument(std::string("Circle->") + exp.what());
@@ -62,7 +100,7 @@ namespace Circle {
 		}
 	}
 
-	void onFill(Args opts) {
+	void fill(const Args& opts) {
 		try {
 			fill_color.r = atoi(opts[0]);
 			fill_color.g = atoi(opts[1]);
@@ -73,9 +111,9 @@ namespace Circle {
 		}
 	}
 
-	void onBorder(Args opts) {
+	void border(const Args& opts) {
 		try {
-			border = atoi(opts[0]);
+			border_thick = atoi(opts[0]);
 			border_color.r = atoi(opts[1]);
 			border_color.g = atoi(opts[2]);
 			border_color.b = atoi(opts[3]);
@@ -85,8 +123,7 @@ namespace Circle {
 		}
 	}
 
-	void onHelp(Args opts) {
-		is_help = true;
+	void help(const Args& opts) {
 		std::cout << "Справочная информация по -r (--circle):\n";
 		std::cout << "Флаги:\n";
 		std::cout << "\t-f (--fill):\t\n";
@@ -98,18 +135,16 @@ namespace Circle {
 		std::cout << "\t3 параметр - радиус окружности.\n";
 		std::cout << "Необязательные параметры:\t\n";
 		std::cout << "\tФлаг -b (--border): параметры - ширина края и RGB компонент: <border> <r> <g> <b>.\n";
+		throw my_error();
 	}
 }
 
 namespace Slice {
-	bool is_help = false;
-
-	void onRoot(Args opts) {
-		if (is_help) return;
+	void root(const Args& opts) {
 		try {
 			int x_lines = atoi(opts[0]), y_lines = atoi(opts[1]);
-			for (auto &i : Paint::slice_image(Main::images[0], x_lines, y_lines)) Main::images.push_back(i);
-			Main::images.erase(Main::images.begin());
+			for (auto &i : Paint::slice_image(Root::images[0], x_lines, y_lines)) Root::images.push_back(i);
+			Root::images.erase(Root::images.begin());
 		}
 		catch (std::invalid_argument exp) {
 			throw std::invalid_argument(std::string("Slice->") + exp.what());
@@ -119,24 +154,21 @@ namespace Slice {
 		}
 	}
 
-	void onHelp(Args opts) {
-		is_help = true;
+	void help(const Args& opts) {
 		std::cout << "Справочная информация по -x / --slice:\n";
 		std::cout << "Обязательные параметры:\n";
 		std::cout << "\t1 параметр - число вертикальных изображений.\n";
 		std::cout << "\t2 параметр - число горизонтальных изображений.\n";
+		throw my_error();
 	}
 }
 
 namespace Square {
-	bool is_help = false;
-
-	void onRoot(Args opts) {
-		if (is_help) return;
+	void root(const Args& opts) {
 		try {
 			std::vector<int> D;
 			for (auto &i : opts) D.push_back(atoi(i));
-			for (auto &i : Main::images) i = Paint::put_square(i, D[0], D[1], D[2], D[3], D[4], D[5]);
+			for (auto &i : Root::images) i = Paint::put_square(i, D[0], D[1], D[2], D[3], D[4], D[5]);
 		}
 		catch (std::invalid_argument exp) {
 			throw std::invalid_argument(std::string("Square->") + exp.what());
@@ -146,8 +178,7 @@ namespace Square {
 		}
 	}
 
-	void onHelp(Args opts) {
-		is_help = true;
+	void help(const Args& opts) {
 		std::cout << "Справочная информация по -s / --square:\n";
 		std::cout << "Обязательные параметры:\n";
 		std::cout << "\t1 параметр - положение нижнего левого угла по горизонтали.\n";
@@ -156,106 +187,67 @@ namespace Square {
 		std::cout << "\t4 параметр - положение верхнего правого угла по вертикали.\n";
 		std::cout << "\t5 параметр - место по горизонтали для перемещения нижнего левого угла.\n";
 		std::cout << "\t6 параметр - место по вертиакли для перемещения нижнего левого угла.\n";
+		throw my_error();
 	}
 }
 
-namespace Main {
-	std::string load_path;
-	bool is_help = false;
-
-	void loadImage(Args opts) {
-		try {
-			images[0].load(opts[0]);
-			int pos = opts[0].find(".bmp");
-			if (pos) load_path = opts[0].substr(0, pos) + "_0";
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
-	}
-
-	void saveImage(Args opts) {
-		try {
-			std::string path = opts.empty() ? load_path : opts[0].substr(0, opts[0].find(".bmp"));
-			if (images.size() == 1) images[0].save(path + ".bmp");
-			else for (int i = 0; i < images.size(); i++) {
-				std::string str;
-				for (int j = i; j > 0; j /= 10) str = char(j % 10 + 48) + str;
-				images[i].save(path + str + ".bmp");
-			}
-		}
-		catch (std::domain_error exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
-		catch (std::invalid_argument exp) {
-			throw std::invalid_argument(std::string("Main->") + exp.what());
-		}
-	}
-
-	void onColor(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(2, 2);
-		terminal.setRoot(Color::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Color::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onCircle(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(3, 3);
-		terminal.setRoot(Circle::onRoot);
-		terminal.setKey(Key('f', "fill", 3, 3),		Circle::onFill);
-		terminal.setKey(Key('b', "border", 4, 4),	Circle::onBorder);
-		terminal.setKey(Key('h', "help", 0, 0),		Circle::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onSlice(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(2, 2);
-		terminal.setRoot(Slice::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Slice::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onSquare(Args opts) {
-		Terminal terminal(Terminal::RS_S);
-		terminal.setRootRange(6, 6);
-		terminal.setRoot(Square::onRoot);
-		terminal.setKey(Key('h', "help", 0, 0), Square::onHelp);
-		terminal.execute(opts);
-	}
-
-	void onHelp(Args opts) {
-		is_help = true;
-		std::cout << "Справочная информация по программе:\n";
-		std::cout << "Вызов:\t<программа> <файл> [-o (--out), -c (--color), -r (--circle), -x (--slice), -s (--square), -h (--help)]\n";
-		std::cout << "Флаги:\n";
-		std::cout << "\t-o (--out):\tПуть и имя файла сохранения.\n";
-		std::cout << "\t-c (--color):\tИзменение значения RGB компонента.\n";
-		std::cout << "\t-r (--circle):\tРисование круга или круга с отверстием.\n";
-		std::cout << "\t-x (--slice):\tРазрезание исходного изображение на несколько.\n";
-		std::cout << "\t-s (--square):\tКопирование и перемещения части изображения в другое место.\n";
-		std::cout << "\t-h (--help):\tПолучение справочной информации.\n";
-	}
-}
+// Main function
 
 int main(int argc, char *argv[]) {
+	// Parser set up
+
+	Parser q_parser(6);
+	q_parser.addKey(Key("help"));
+	
+	Parser s_parser(2);
+	s_parser.addKey(Key("help"));
+	
+	Parser r_parser(3);
+	r_parser.addKey(Key("help"));
+	r_parser.addKey(Key('f', "fill"), 3);
+	r_parser.addKey(Key('b', "border"), 4);
+	
+	Parser c_parser(2);
+	c_parser.addKey(Key("help"));
+
+	Parser parser(1);
+	parser.addKey(Key("help"));
+	parser.addKey(Key("save"), 0, 1);
+	parser.addKey(Key('c', "color"), &c_parser);
+	parser.addKey(Key('r', "round"), &r_parser);
+	parser.addKey(Key('s', "slice"), &s_parser);
+	parser.addKey(Key('q', "square"), &q_parser);
+
+	// Binds set up
+
+	Binds q_binds(Square::root);
+	q_binds.bind(Key("help"), Square::help, true);
+
+	Binds s_binds(Slice::root);
+	s_binds.bind(Key("help"), Slice::help, true);
+
+	Binds r_binds(Round::root);
+	r_binds.bind(Key("help"), Round::help, true);
+	r_binds.bind(Key('f', "fill"), Round::fill, true);
+	r_binds.bind(Key('b', "border"), Round::border, true);
+
+	Binds c_binds(Color::root);
+	c_binds.bind(Key("help"), Color::help, true);
+
+	Binds binds(Root::root);
+	binds.bind(Key("help"), Root::help, true);
+	binds.bind(Key("save"), Root::save);
+	binds.bind(Key('c', "color"), c_binds);
+	binds.bind(Key('r', "round"), r_binds);
+	binds.bind(Key('s', "slice"), s_binds);
+	binds.bind(Key('q', "square"), q_binds);
+
+	// Work
+
 	try {
-		Terminal terminal;
-		terminal.setRootRange(1, 1);
-		terminal.setRoot(Main::loadImage);
-		terminal.setKey(Key("save", 0, 1),	Main::saveImage);
-		terminal.setKey(Key('c', "color"),	Main::onColor);
-		terminal.setKey(Key('r', "circle"),	Main::onCircle);
-		terminal.setKey(Key('x', "slice"),	Main::onSlice);
-		terminal.setKey(Key('s', "square"),	Main::onSquare);
-		terminal.setKey(Key('h', "help", 0, 0),	Main::onHelp);
-		terminal.execute(argc, argv);
+		binds.execute(parser.parse(argc, argv));
 	}
-	catch (std::invalid_argument e) {
-		std::cout << e.what() << "\n";
-	}
+	catch (my_error e) {}
 
 	return 0;
 }

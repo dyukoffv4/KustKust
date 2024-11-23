@@ -1,12 +1,11 @@
 #!/usr/bin/bash
 
-LNAME=keyparser
-
-if [[ ! $(dpkg -l | grep $LNAME) ]]
+if [[ ! $(dpkg -l | grep keyparser) ]]
 then
-    wget https://github.com/dyukoffv4/KeyParser/releases/download/0.1.1/$LNAME.deb
-    sudo apt install ./$LNAME.deb
-    rm ./$LNAME.deb
+    wget https://github.com/dyukoffv4/KeyParser/releases/download/1.0.1/keyparser.deb
+    sudo apt install ./keyparser.deb
+    rm ./keyparser.deb
 fi
 
-make LNAME=$LNAME
+mkdir -p bin
+g++ src/paint.cpp src/main.cpp -lkeyparser -o bin/paint

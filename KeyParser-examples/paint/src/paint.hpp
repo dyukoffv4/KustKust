@@ -53,8 +53,8 @@ namespace Paint {
 
         Image& operator=(const Image& image);
 
-        bool load(std::string path);
-        bool save(std::string path);
+        void load(std::string path);
+        void save(std::string path);
     };
 
     std::vector<Image> slice_image(const Image& image, int x_lines, int y_lines);

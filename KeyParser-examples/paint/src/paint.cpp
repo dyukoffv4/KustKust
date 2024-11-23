@@ -35,22 +35,20 @@ Paint::Image& Paint::Image::operator=(const Image& image) {
     return *this;
 }
 
-bool Paint::Image::load(std::string path) {
+void Paint::Image::load(std::string path) {
     std::ifstream file(path, std::ios_base::binary);
 
-    if (!file.bad()) {
+    if (!file.is_open()) {
         file.read((char*)&BFH, sizeof(BitmapFileHeader));
         if ((BFH.signature != 19778) || (BFH.reserved1 != 0) || (BFH.reserved2 != 0)) {
-            std::cout << "Файл не поддерживается!\n";
             file.close();
-            return false;
+            throw std::runtime_error("File is not supporting!");
         }
 
         file.read((char*)&BIH, sizeof(BitmapInfoHeader));
         if ((BIH.headerSize != 40) || (BIH.bitsPerPixel != 24) || (BIH.colorsInColorTable != 0) || (BIH.importantColorCount != 0)) {
-            std::cout << "Файл не поддерживается!\n";
             file.close();
-            return false;
+            throw std::runtime_error("File is not supporting!");
         }
 
         char temp;
@@ -62,17 +60,15 @@ bool Paint::Image::load(std::string path) {
         }
 
         file.close();
-        return true;
     }
-    std::cout << "Не верный путь до файла!\n";
-    return false;
+    else throw std::runtime_error("Have not access to file!");
 }
 
-bool Paint::Image::save(std::string path) {
-    if (!BM) throw std::invalid_argument("# Image.save: Empty BitMap!");
+void Paint::Image::save(std::string path) {
+    if (!BM) throw std::runtime_error("Invalid file format!");
     std::ofstream file(path, std::ios_base::binary);
 
-    if (!file.bad()) {
+    if (!file.is_open()) {
         file.write((char*)&BFH, sizeof(BitmapFileHeader));
         file.write((char*)&BIH, sizeof(BitmapInfoHeader));
 
@@ -86,10 +82,8 @@ bool Paint::Image::save(std::string path) {
         }
 
         file.close();
-        return true;
     }
-    std::cout << "Не верный путь до файла!\n";
-    return false;
+    else throw std::runtime_error("Have not access to file!");
 }
 
 
