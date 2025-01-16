@@ -1,11 +1,9 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-if [[ ! $(dpkg -l | grep keyparser) ]]
-then
-    wget https://github.com/dyukoffv4/KeyParser/releases/download/1.1.0/keyparser.deb
-    sudo apt install ./keyparser.deb
-    rm ./keyparser.deb
-fi
+cd $(dirname $(realpath ${BASH_SOURCE[0]}))
 
-mkdir -p bin
-g++ code/xml/tag.cpp code/main.cpp -lkeyparser -o bin/wallmake
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
+cd ..
