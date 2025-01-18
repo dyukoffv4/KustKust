@@ -9,6 +9,7 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
 add_definitions(${GTKMM_CFLAGS_OTHER})
 
-add_executable(example source/main.cpp)
+include_directories(${CMAKE_SOURCE_DIR})
 
+add_executable(example source/main.cpp source/utilities/test.cpp)
 target_link_libraries(example ${GTKMM_LIBRARIES})
