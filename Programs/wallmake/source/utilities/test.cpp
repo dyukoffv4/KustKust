@@ -89,6 +89,7 @@ bool Sudoku::solve() {
         }
     }
 
+    for (auto& r : needed_r) if (!r.empty()) return false;
     return true;
 }
 
@@ -98,7 +99,12 @@ bool Sudoku::solve(map& table) {
     return true;
 }
 
+void Sudoku::clear() {
+    needed_q = needed_c = needed_r = setmap(9, {1, 2, 3, 4, 5, 6, 7, 8, 9});
+    for (auto &i : ddata) for (auto &j : i) j = 0;
+}
 
+/*
 int main(int argc, char* argv[]) {
     std::cout << "Enter sudoku template. Print zero in empty places.\n\n";
 
@@ -119,3 +125,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+*/

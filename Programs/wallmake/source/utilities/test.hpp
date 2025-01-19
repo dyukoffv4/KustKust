@@ -16,6 +16,8 @@ public:
     bool solve();
     bool solve(map& table);
 
+    void clear();
+
 private:
     map ddata;
     setmap needed_q;
