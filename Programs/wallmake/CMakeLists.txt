@@ -11,5 +11,5 @@ add_definitions(${GTKMM_CFLAGS_OTHER})
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_executable(example source/main.cpp source/utilities/sudoku.cpp)
+add_executable(example source/main.cpp source/utilities/sudoku.cpp source/widgets/mapcell.cpp)
 target_link_libraries(example ${GTKMM_LIBRARIES})

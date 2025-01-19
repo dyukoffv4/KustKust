@@ -1,8 +1,10 @@
 #include <gtkmm.h>
 #include <string>
 #include <thread>
+#include <iostream>
 
 #include "source/utilities/sudoku.hpp"
+#include "source/widgets/mapcell.hpp"
 
 #define SOLVE_BUTTON_DEFAULT "Solve"
 #define SOLVE_BUTTON_RUNNING "Solving..."
@@ -18,8 +20,7 @@ public:
         solve_button.set_label(SOLVE_BUTTON_DEFAULT);
         clear_button.set_label(CLEAR_BUTTON_DEFAULT);
 
-        buttons_map = std::vector<std::vector<Gtk::Button>>(9);
-        for (auto &i : buttons_map) i = std::vector<Gtk::Button>(9);
+        for (int i = 0; i < 9; i++) cells.push_back(std::vector<MapCell>(9));
         
         Gtk::Grid main_grid;
         main_grid.set_column_spacing(15);
@@ -31,10 +32,7 @@ public:
             temp_grid.set_column_spacing(5);
             temp_grid.set_row_spacing(5);
             for (int j = 0; j < 9; j++) {
-                Gtk::Button& slot = buttons_map[i / 3 * 3 + j / 3][i % 3 * 3 + j % 3];
-                slot.set_label(std::to_string(i * 9 + j));
-                slot.set_size_request(50, 50);
-                temp_grid.attach(slot, j % 3, j / 3);
+                temp_grid.attach(cells[i / 3 * 3 + j / 3][i % 3 * 3 + j % 3], j % 3, j / 3);
             }
             main_grid.attach(temp_grid, i % 3, i / 3);
         }
@@ -60,8 +58,12 @@ protected:
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                std::string label = buttons_map[i][j].get_label();
-                if (!label.empty()) sudoku.set(i, j, std::stoi(label));
+                if (!sudoku.set(i, j, cells[i][j].get_value())) {
+                    sudoku.clear();
+                    std::cout << "something went wrong at " << i + 1 << ":" << j + 1 << " !\n\n";
+                    widgets_sensetive(true);
+                    return;
+                }
             }
         }
 
@@ -75,7 +77,7 @@ protected:
         if (success) {
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
-                    buttons_map[i][j].set_label(std::to_string(sudoku.get(i, j)));
+                    cells[i][j].set_text(std::to_string(sudoku.get(i, j)));
                 }
             }
         }
@@ -89,13 +91,13 @@ protected:
         else solve_button.set_label(SOLVE_BUTTON_RUNNING);
         solve_button.set_sensitive(value);
         clear_button.set_sensitive(value);
-        for (auto &i : buttons_map) for (auto &j : i) j.set_sensitive(value);
+        for (auto &i : cells) for (auto &j : i) j.set_sensitive(value);
     }
 
     Sudoku sudoku;
     bool success;
 
-    std::vector<std::vector<Gtk::Button>> buttons_map;
+    std::vector<std::vector<MapCell>> cells;
     Gtk::Button solve_button;
     Gtk::Button clear_button;
     Glib::Dispatcher dispatcher;
