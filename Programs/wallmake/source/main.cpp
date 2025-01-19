@@ -1,18 +1,18 @@
 #include <gtkmm.h>
 #include <string>
 #include <thread>
-#include <iostream>
 
-#include "source/utilities/test.hpp"
+#include "source/utilities/sudoku.hpp"
 
 #define SOLVE_BUTTON_DEFAULT "Solve"
 #define SOLVE_BUTTON_RUNNING "Solving..."
 #define CLEAR_BUTTON_DEFAULT "Clear"
+#define CLEAR_BUTTON_SUCCESS "Clear Answer"
 
 
 class MainWindow : public Gtk::Window {
 public:
-    MainWindow() : sudoku(nullptr) {
+    MainWindow() {
         set_title("Sudoku Solver");
 
         solve_button.set_label(SOLVE_BUTTON_DEFAULT);
@@ -43,60 +43,57 @@ public:
         main_grid.attach(clear_button, 2, 3);
 
         solve_button.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_solve_button_clicked) );
-        dispatcher.connect( sigc::mem_fun(*this, &MainWindow::with_task_finished) );
+        dispatcher.connect( sigc::mem_fun(*this, &MainWindow::sudoku_solve_finish) );
         
         set_child(main_grid);
-    }
 
-    ~MainWindow() {
-        if (sudoku != nullptr) delete sudoku;
+        success = false;
     }
 
 protected:
     void on_solve_button_clicked() {
-        with_task_started();
+        sudoku_solve_start();
+    }
 
-        auto data = Sudoku::map(9);
+    void sudoku_solve_start() {
+        widgets_sensetive(false);
+
         for (int i = 0; i < 9; i++) {
-            data[i] = std::vector<int>(9);
             for (int j = 0; j < 9; j++) {
                 std::string label = buttons_map[i][j].get_label();
-                data[i][j] = label.empty() ? 0 : std::stoi(label);
+                if (!label.empty()) sudoku.set(i, j, std::stoi(label));
             }
         }
 
-        if (sudoku != nullptr) delete sudoku;
-        sudoku = new Sudoku(data);
-
         std::thread([this]() {
-            try {
-                // some work
-                // bool health = sudoku->check_health();
-                // ...
-            }
-            catch (std::exception e) {
-                std::cout << e.what();
-            }
-
+            this->success = this->sudoku.solve();
             dispatcher.emit();
         }).detach();
     }
 
-    void with_task_started() {
-        solve_button.set_label(SOLVE_BUTTON_RUNNING);
-        solve_button.set_sensitive(false);
-        clear_button.set_sensitive(false);
-        for (auto &i : buttons_map) for (auto &j : i) j.set_sensitive(false);
+    void sudoku_solve_finish() {
+        if (success) {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    buttons_map[i][j].set_label(std::to_string(sudoku.get(i, j)));
+                }
+            }
+        }
+        else sudoku.clear();
+
+        widgets_sensetive(true);
     }
 
-    void with_task_finished() {
-        solve_button.set_label(SOLVE_BUTTON_DEFAULT);
-        solve_button.set_sensitive(true);
-        clear_button.set_sensitive(true);
-        for (auto &i : buttons_map) for (auto &j : i) j.set_sensitive(true);
+    void widgets_sensetive(bool value) {
+        if (value) solve_button.set_label(SOLVE_BUTTON_DEFAULT);
+        else solve_button.set_label(SOLVE_BUTTON_RUNNING);
+        solve_button.set_sensitive(value);
+        clear_button.set_sensitive(value);
+        for (auto &i : buttons_map) for (auto &j : i) j.set_sensitive(value);
     }
 
-    Sudoku* sudoku;
+    Sudoku sudoku;
+    bool success;
 
     std::vector<std::vector<Gtk::Button>> buttons_map;
     Gtk::Button solve_button;

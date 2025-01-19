@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <vector>
 #include <set>
 
@@ -10,8 +11,11 @@ public:
 
     Sudoku();
 
-    bool load(const map& data);
-    map data();
+    bool setdata(const map& data);
+    map getdata();
+
+    bool set(const int& row, const int& col, const int& val);
+    int get(const int& row, const int& col);
 
     bool solve();
     bool solve(map& table);

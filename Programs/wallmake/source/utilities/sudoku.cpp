@@ -1,5 +1,4 @@
-#include "test.hpp"
-#include <iostream>
+#include "sudoku.hpp"
 
 
 Sudoku::Sudoku() {
@@ -8,7 +7,7 @@ Sudoku::Sudoku() {
     for (auto &i : ddata) i = row(9, 0);
 }
 
-bool Sudoku::load(const map& data) {
+bool Sudoku::setdata(const map& data) {
     if (data.size() != 9) return false;
     for (auto &i : data) if (i.size() != 9) return false;
 
@@ -46,8 +45,28 @@ bool Sudoku::load(const map& data) {
     return true;
 }
 
-Sudoku::map Sudoku::data() {
+Sudoku::map Sudoku::getdata() {
     return ddata;
+}
+
+bool Sudoku::set(const int& row, const int& col, const int& val) {
+    if (row < 0 || row > 8 || col < 0 || col > 9) throw std::out_of_range("Range out of bounds");
+    if (val < 0 || val > 9) throw std::invalid_argument("Unsupported value for sudoku");
+
+    std::set<int> &set_r = needed_r[row], &set_c = needed_c[col], &set_q = needed_q[row / 3 * 3 + col / 3];
+
+    if (!set_r.count(val) || !set_c.count(val) || !set_q.count(val)) return false;
+    set_r.erase(val);
+    set_c.erase(val);
+    set_q.erase(val);
+    ddata[row][col] = val;
+
+    return true;
+}
+
+int Sudoku::get(const int& row, const int& col) {
+    if (row < 0 || row > 8 || col < 0 || col > 9) throw std::out_of_range("Range out of bounds");
+    return ddata[row][col];
 }
 
 bool Sudoku::solve() {
@@ -103,26 +122,3 @@ void Sudoku::clear() {
     needed_q = needed_c = needed_r = setmap(9, {1, 2, 3, 4, 5, 6, 7, 8, 9});
     for (auto &i : ddata) for (auto &j : i) j = 0;
 }
-
-/*
-int main(int argc, char* argv[]) {
-    std::cout << "Enter sudoku template. Print zero in empty places.\n\n";
-
-    Sudoku::map table(9, Sudoku::row(9));
-    for (auto& i : table) for (auto& j : i) { std::cin >> j; if (j < 0 || j > 9) return 1; }
-
-    Sudoku sudoku;
-    if (!sudoku.load(table)) return 2;
-    
-    std::cout << "\nStart calculating.\n\n";
-    if (!sudoku.solve(table)) return 3;
-
-    std::cout << "Result.\n\n";
-    for (auto& i : table) {
-        for (auto& j : i) std::cout << j << ' ';
-        std::cout << '\n';
-    }
-
-    return 0;
-}
-*/
