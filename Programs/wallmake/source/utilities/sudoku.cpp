@@ -75,10 +75,10 @@ bool Sudoku::solve() {
 
     for (int tile = 0; tile < 9; tile++) {
         for (auto &i : needed_q[tile]) {
-            for (int r = tile / 3; r < tile / 3 + 2; r++) {
+            for (int r = tile / 3; r < tile / 3 + 3; r++) {
                 if (needed_r[r].count(i)) rows.insert(r);
             }
-            for (int c = tile % 3 * 3; c < tile % 3 * 3 + 2; c++) {
+            for (int c = tile % 3 * 3; c < tile % 3 * 3 + 3; c++) {
                 if (needed_c[c].count(i)) cols.insert(c);
             }
 
