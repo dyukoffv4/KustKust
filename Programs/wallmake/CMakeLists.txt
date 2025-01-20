@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(Example VERSION 1.0.0 LANGUAGES C CXX)
+project(SudokuSolver VERSION 1.0.0 LANGUAGES C CXX)
 
 find_package(PkgConfig REQUIRED)
 
@@ -11,5 +11,5 @@ add_definitions(${GTKMM_CFLAGS_OTHER})
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_executable(example source/main.cpp source/utilities/sudoku.cpp source/widgets/mapcell.cpp)
-target_link_libraries(example ${GTKMM_LIBRARIES})
+add_executable(sudoku-solver source/main.cpp source/utilities/sudoku.cpp source/widgets/mapcell.cpp)
+target_link_libraries(sudoku-solver ${GTKMM_LIBRARIES})
