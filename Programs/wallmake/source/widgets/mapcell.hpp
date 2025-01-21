@@ -3,10 +3,8 @@
 
 class MapCell : public Gtk::Entry {
 public:
-    MapCell(int index = 0);
+    MapCell();
     int get_value() const;
-
-    int index;
 
 private:
     void on_text_changed();

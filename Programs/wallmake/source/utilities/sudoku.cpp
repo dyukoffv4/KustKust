@@ -55,10 +55,19 @@ bool Sudoku::set(const int& row, const int& col, const int& val) {
 
     std::set<int> &set_r = needed_r[row], &set_c = needed_c[col], &set_q = needed_q[row / 3 * 3 + col / 3];
 
-    if (!set_r.count(val) || !set_c.count(val) || !set_q.count(val)) return false;
-    set_r.erase(val);
-    set_c.erase(val);
-    set_q.erase(val);
+    if (ddata[row][col] != 0) {
+        set_r.insert(ddata[row][col]);
+        set_c.insert(ddata[row][col]);
+        set_q.insert(ddata[row][col]);
+    }
+
+    if (val != 0) {
+        if (!set_r.count(val) || !set_c.count(val) || !set_q.count(val)) return false;
+        set_r.erase(val);
+        set_c.erase(val);
+        set_q.erase(val);
+    }
+    
     ddata[row][col] = val;
 
     return true;
