@@ -1,3 +1,5 @@
+#pragma once
+
 #include <gtkmm/grid.h>
 #include "mapcell.hpp"
 #include "source/utilities/sudoku.hpp"
