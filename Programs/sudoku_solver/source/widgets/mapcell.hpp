@@ -8,6 +8,6 @@ public:
     MapCell();
     int get_value() const;
 
-private:
-    void on_text_changed();
+protected:
+    void on_changed() override;
 };
