@@ -11,5 +11,5 @@ add_definitions(${GTKMM_CFLAGS_OTHER})
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_executable(sudoku-solver source/main.cpp source/utilities/sudoku.cpp source/widgets/mapcell.cpp)
+add_executable(sudoku-solver source/main.cpp source/utilities/sudoku.cpp source/widgets/mapcell.cpp source/widgets/gamemap.cpp)
 target_link_libraries(sudoku-solver ${GTKMM_LIBRARIES})
