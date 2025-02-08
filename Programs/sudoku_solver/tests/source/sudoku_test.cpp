@@ -1,7 +1,11 @@
 #include <filesystem>
+
+#include <strstream>
 #include <iostream>
 #include <fstream>
+
 #include <vector>
+#include <set>
 
 using std::istream, std::ostream, std::cout, std::cin, std::ifstream, std::ofstream;
 namespace fs = std::filesystem;
@@ -10,57 +14,42 @@ namespace fs = std::filesystem;
 /// Start of defenition
 /// <--/-->
 
+template<class T>
+using refvector = std::vector<std::reference_wrapper<T>>;
+
+template<class T>
 class Table;
 
-istream& operator>>(istream& in, Table& data);
-ostream& operator<<(ostream& out, const Table& data);
+template<class T>
+istream& operator>>(istream& in, Table<T>& data);
 
-typedef std::vector<short*> pvector;
+template<class T>
+ostream& operator<<(ostream& out, const Table<T>& data);
 
+template<class T>
 class Table {
 public:
     Table() {
-        data.assign(9, std::vector<short>(9));
+        data.assign(9, std::vector<T>(9));
     }
 
-    short* get(const int& y, const int& x) {
+    T& get(const int& y, const int& x) {
         if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
-        return &data[y][x];
+        return data[y][x];
     }
 
-    pvector cget(const int& x) {
-        if (x < 0 || x > 8) throw std::out_of_range("Out of bounds!");
-        pvector result;
-        for (int y = 0; y < 9; y++) result.push_back(&data[y][x]);
-        return result;
-    }
+protected:
+    std::vector<std::vector<T>> data;
 
-    pvector rget(const int& y) {
-        if (y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
-        pvector result;
-        for (int x = 0; x < 9; x++) result.push_back(&data[y][x]);
-        return result;
-    }
+    template<class U>
+    friend istream& operator>>(istream&, Table<U>&);
 
-    pvector qget(const int& y, const int& x) {
-        if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
-        pvector result;
-        for (int i = y - y % 3; i < y - y % 3 + 3; i++) {
-            for (int j = x - x % 3; j < x - x % 3 + 3; j++) {
-                result.push_back(&data[i][j]);
-            }
-        }
-        return result;
-    }
-
-private:
-    std::vector<std::vector<short>> data;
-
-    friend istream& operator>>(istream&, Table&);
-    friend ostream& operator<<(ostream&, const Table&);
+    template<class U>
+    friend ostream& operator<<(ostream&, const Table<U>&);
 };
 
-istream& operator>>(istream& in, Table& data) {
+template<class T>
+istream& operator>>(istream& in, Table<T>& data) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             if (in.eof()) throw "Not enough data to initialize table!";
@@ -70,7 +59,8 @@ istream& operator>>(istream& in, Table& data) {
     return in;
 }
 
-ostream& operator<<(ostream& out, const Table& data) {
+template<class T>
+ostream& operator<<(ostream& out, const Table<T>& data) {
     for (int i = 0; i < 9; i++) {
         out << data.data[i][0];
         for (int j = 1; j < 9; j++) out << (j % 3 == 0 ? '\t' : ' ') << data.data[i][j];
@@ -79,55 +69,105 @@ ostream& operator<<(ostream& out, const Table& data) {
     return out;
 }
 
+/// @class SudokuTable
+/// @class SetSudokuTable
+/// Start of defenition
+/// <--/-->
+
+class SudokuTable : public Table<short> {
+public:
+    refvector<short> cget(const int& x) {
+        if (x < 0 || x > 8) throw std::out_of_range("Out of bounds!");
+        refvector<short> result;
+        for (int y = 0; y < 9; y++) result.push_back(data[y][x]);
+        return result;
+    }
+
+    refvector<short> rget(const int& y) {
+        if (y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        refvector<short> result;
+        for (int x = 0; x < 9; x++) result.push_back(data[y][x]);
+        return result;
+    }
+
+    refvector<short> qget(const int& y, const int& x) {
+        if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        refvector<short> result;
+        for (int i = y - y % 3; i < y - y % 3 + 3; i++) {
+            for (int j = x - x % 3; j < x - x % 3 + 3; j++) {
+                result.push_back(data[i][j]);
+            }
+        }
+        return result;
+    }
+};
+
+class SetSudokuTable : public Table<std::set<short>> {
+public:
+    void clear() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                data[i][j].clear();
+            }
+        }
+    }
+};
+
 /// @def check_sudoku
+/// @def init_sudoku_set
 /// @def solve_sudoku
 /// Start fo defenition
 /// <--/-->
 
-bool check_sudoku(Table& data) {
-    Table new_data;
+bool check_sudoku(SudokuTable& data) {
+    SudokuTable new_data;
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            short tile = *data.get(i, j);
+            short tile = data.get(i, j);
             if (tile) {
-                for (auto& e : new_data.rget(i)) if (*e == tile) return false;
-                for (auto& e : new_data.cget(j)) if (*e == tile) return false;
-                for (auto& e : new_data.qget(i, j)) if (*e == tile) return false;
-                *new_data.get(i, j) = tile;
+                for (auto& e : new_data.rget(i)) if (e == tile) return false;
+                for (auto& e : new_data.cget(j)) if (e == tile) return false;
+                for (auto& e : new_data.qget(i, j)) if (e == tile) return false;
+                new_data.get(i, j) = tile;
             }
         }
     }
     return true;
 }
 
-bool solve_sudoku(Table& data) {
-    std::vector<std::vector<std::vector<int>>> value_row_col(9);
-    for (int i = 0; i < 9; i++) value_row_col[i] = std::vector<std::vector<int>>(9);
+bool init_sudoku_set(SetSudokuTable& set_data, SudokuTable& data) {
+    std::set<short> not_allowed;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (!data.get(i, j)) {
+                for (auto& e : data.rget(i)) not_allowed.insert(e);
+                for (auto& e : data.cget(j)) not_allowed.insert(e);
+                for (auto& e : data.qget(i, j)) not_allowed.insert(e);
+                if (not_allowed.size() == 10) return false;
+
+                for (int k = 1; k < 10; k++) if (!not_allowed.count(k)) set_data.get(i, j).insert(k);
+                not_allowed.clear();
+            }
+        }
+    }
+    return true;
+}
+
+bool solve_sudoku(SudokuTable& data, SetSudokuTable& set_data) {
+    SetSudokuTable value_row_col;
 
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            short tile = *data.get(i, j);
-            if (!tile) {
-                bool not_inserted = true;
-                for (int k = 1; k < 10; k++) {
-                    bool forbidden = false;
-                    for (auto &l : data.rget(i)) if (k == *l) forbidden = true;
-                    if (forbidden) continue;
-                    for (auto &l : data.cget(j)) if (k == *l) forbidden = true;
-                    if (forbidden) continue;
-                    for (auto &l : data.qget(i, j)) if (k == *l) forbidden = true;
-                    if (forbidden) continue;
-                    not_inserted = false;
-                    value_row_col[k - 1][i].push_back(j);
+            auto tile_set = set_data.get(i, j);
+            for (int k = 1; k < 10; k++) {
+                if (tile_set.count(k)) {
+                    value_row_col.get(k - 1, i).insert(j);
                 }
-                if (not_inserted) return false;
             }
         }
     }
 
-    // ---
-
-    
+    // Algorithms for sudoku solve. Solve for squares, methods by queue. Annalyze, and optimize process from queue to targeting.
 
     return true;
 }
@@ -137,7 +177,8 @@ bool solve_sudoku(Table& data) {
 /// <--/-->
 
 int main(int argc, char* argv[]) {
-    Table sudoku;
+    SudokuTable sudoku;
+    SetSudokuTable sudoku_set;
 
     for (auto& entry : fs::directory_iterator(fs::path("./data").lexically_normal())) {
         ifstream file(entry.path());
@@ -148,13 +189,21 @@ int main(int argc, char* argv[]) {
         cout << "@ Test " << entry.path().filename() << "\n\n";
 
         if (!check_sudoku(sudoku)) {
-            cout << "Invalid sudoku format!\n\n";
+            cout << "Number intersection error!\n\n";
             continue;
         }
 
-        if (solve_sudoku(sudoku)) cout << "Success!\n\n";
+        if (!init_sudoku_set(sudoku_set, sudoku)) {
+            sudoku_set.clear();
+            cout << "Unsolvable problem error!\n\n";
+            continue;
+        }
+
+        if (solve_sudoku(sudoku, sudoku_set)) cout << "Success!\n\n";
         else cout << "Not success!\n\n";
         cout << sudoku;
+
+        sudoku_set.clear();
     }
 
     return 0;
