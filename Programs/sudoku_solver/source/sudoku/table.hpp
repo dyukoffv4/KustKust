@@ -4,6 +4,9 @@
 #include <vector>
 
 template<class T>
+using refvector = std::vector<std::reference_wrapper<T>>;
+
+template<class T>
 class Table;
 
 template<class T>
@@ -22,6 +25,31 @@ public:
     T& get(const int& y, const int& x) {
         if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
         return data[y][x];
+    }
+
+    refvector<T> cget(const int& x) {
+        if (x < 0 || x > 8) throw std::out_of_range("Out of bounds!");
+        refvector<T> result;
+        for (int y = 0; y < 9; y++) result.push_back(data[y][x]);
+        return result;
+    }
+
+    refvector<T> rget(const int& y) {
+        if (y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        refvector<T> result;
+        for (int x = 0; x < 9; x++) result.push_back(data[y][x]);
+        return result;
+    }
+
+    refvector<T> qget(const int& y, const int& x) {
+        if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        refvector<T> result;
+        for (int i = y - y % 3; i < y - y % 3 + 3; i++) {
+            for (int j = x - x % 3; j < x - x % 3 + 3; j++) {
+                result.push_back(data[i][j]);
+            }
+        }
+        return result;
     }
 
 protected:

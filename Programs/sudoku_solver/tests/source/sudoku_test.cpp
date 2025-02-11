@@ -6,8 +6,8 @@
 namespace fs = std::filesystem;
 
 int main(int argc, char* argv[]) {
-    SudokuTable sudoku;
-    SetSudokuTable sudoku_set;
+    ShortTable sudoku;
+    SetTable sudoku_set;
 
     for (auto& entry : fs::directory_iterator(fs::path("./data").lexically_normal())) {
         std::ifstream file(entry.path());
