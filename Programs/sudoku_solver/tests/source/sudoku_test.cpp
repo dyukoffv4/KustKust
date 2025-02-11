@@ -6,33 +6,25 @@
 namespace fs = std::filesystem;
 
 int main(int argc, char* argv[]) {
-    ShortTable sudoku;
-    SetTable sudoku_set;
+    Solver sudoku;
 
     for (auto& entry : fs::directory_iterator(fs::path("./data").lexically_normal())) {
         std::ifstream file(entry.path());
         if (!file.is_open()) continue;
-        file >> sudoku;
-        file.close();
 
         std::cout << "@ Test " << entry.path().filename() << "\n\n";
-
-        if (!check_sudoku(sudoku)) {
-            std::cout << "Number intersection error!\n\n";
-            continue;
+        try {
+            sudoku.load(file);
+            if (sudoku.solve()) std::cout << "Success!\n\n";
+            else std::cout << "Not success!\n\n";
+            sudoku.print(std::cout);
         }
-
-        if (!init_sudoku_set(sudoku_set, sudoku)) {
-            sudoku_set.clear();
-            std::cout << "Unsolvable problem error!\n\n";
-            continue;
+        catch (std::runtime_error error) {
+            std::cout << error.what() << "\n\n";
         }
+        sudoku.clear();
 
-        if (solve_sudoku(sudoku, sudoku_set)) std::cout << "Success!\n\n";
-        else std::cout << "Not success!\n\n";
-        std::cout << sudoku;
-
-        sudoku_set.clear();
+        file.close();
     }
 
     return 0;

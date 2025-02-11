@@ -1,8 +1,7 @@
 #pragma once
 
-#include "source/sudoku/settable.hpp"
-
-typedef Table<short> ShortTable;
+#include "source/sudoku/table.hpp"
+#include <set>
 
 struct point {
     int y;
@@ -10,10 +9,19 @@ struct point {
     int v;
 };
 
-bool check_sudoku(ShortTable& data);
+class Solver {
+public:
+    Solver();
 
-bool init_sudoku_set(SetTable& set_data, ShortTable& data);
+    void load(std::istream& stream);
+    void print(std::ostream& stream);
+    void clear();
 
-point last_hero_square(SetTable& set_data, int qcol, int qrow);
+    bool solve();
 
-bool solve_sudoku(ShortTable& data, SetTable& set_data);
+protected:
+    Table<short> data;
+    Table<std::set<short>> set_data;
+
+    point last_hero_square(int index);
+};

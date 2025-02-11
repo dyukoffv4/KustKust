@@ -5,4 +5,4 @@ set(SUDOKU ${CMAKE_SOURCE_DIR}/../source/sudoku)
 
 include_directories(${CMAKE_SOURCE_DIR}/..)
 
-add_executable(sudoku_test source/sudoku_test ${SUDOKU}/settable.cpp ${SUDOKU}/algs.cpp)
+add_executable(sudoku_test source/sudoku_test ${SUDOKU}/algs.cpp)

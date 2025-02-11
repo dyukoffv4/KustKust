@@ -41,14 +41,11 @@ public:
         return result;
     }
 
-    refvector<T> qget(const int& y, const int& x) {
-        if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+    refvector<T> qget(const int& q) {
+        if (q < 0 || q > 8) throw std::out_of_range("Out of bounds!");
+        int x = (q % 3) * 3, y = q - q % 3;
         refvector<T> result;
-        for (int i = y - y % 3; i < y - y % 3 + 3; i++) {
-            for (int j = x - x % 3; j < x - x % 3 + 3; j++) {
-                result.push_back(data[i][j]);
-            }
-        }
+        for (int i = y; i < y + 3; i++) for (int j = x; j < x + 3; j++) result.push_back(data[i][j]);
         return result;
     }
 
