@@ -3,7 +3,7 @@
 Solver::Solver() {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            set_data.get(i, j) = {1, 2, 3, 4, 5, 6, 7, 8};
+            set_data.get(i, j) = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         }
     }
 }
@@ -12,43 +12,23 @@ void Solver::load(std::istream& stream) {
     Table<short> temp_data;
     stream >> temp_data;
 
-    std::set<short> block_set;
+    if (!check_data(temp_data)) throw std::runtime_error("Number intersection error!");
+
+    Table<std::set<short>> temp_set_data;
+
+    std::vector<std::set<short>> c_allowed(9), r_allowed(9), q_allowed(9);
     for (int i = 0; i < 9; i++) {
-        for (auto& item : temp_data.rget(i)) {
-            if (block_set.count(item)) throw std::runtime_error("Number intersection error!");
-            else if (item) block_set.insert(item);
-        }
-        block_set.clear();
-        for (auto& item : temp_data.cget(i)) {
-            if (block_set.count(item)) throw std::runtime_error("Number intersection error!");
-            else if (item) block_set.insert(item);
-        }
-        block_set.clear();
-        for (auto& item : temp_data.qget(i)) {
-            if (block_set.count(item)) throw std::runtime_error("Number intersection error!");
-            else if (item) block_set.insert(item);
-        }
-        block_set.clear();
+        q_allowed[i] = r_allowed[i] = c_allowed[i] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        for (auto &j : temp_data.column_get(i)) c_allowed[i].erase(*j);
+        for (auto &j : temp_data.string_get(i)) r_allowed[i].erase(*j);
+        for (auto &j : temp_data.square_get(i)) q_allowed[i].erase(*j);
     }
 
-    // SetTable temp_set_data;
-    // std::set<short> not_allowed;
-    // for (int i = 0; i < 9; i++) {
-    //     for (int j = 0; j < 9; j++) {
-    //         if (!data.get(i, j)) {
-    //             for (auto& e : data.rget(i)) not_allowed.insert(e);
-    //             for (auto& e : data.cget(j)) not_allowed.insert(e);
-    //             for (auto& e : data.qget(i, j)) not_allowed.insert(e);
-    //             if (not_allowed.size() == 10) return false;
+    // Нужно в трех циклах от 0 до 9 сделать сначала заполнение строк строками. Потом все остальное ...
 
-    //             for (int k = 1; k < 10; k++) if (!not_allowed.count(k)) set_data.get(i, j).insert(k);
-    //             not_allowed.clear();
-    //         }
-    //     }
-    // }
-    // 
     // "Unsolvable problem error!"
 
+    set_data = temp_set_data;
     data = temp_data;
 }
 
@@ -60,7 +40,7 @@ void Solver::clear() {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             set_data.get(i, j) = {1, 2, 3, 4, 5, 6, 7, 8};
-            data.get(i, j) = 0;
+            data.set(i, j, 0);
         }
     }
 }
@@ -68,47 +48,63 @@ void Solver::clear() {
 bool Solver::solve() {
     int index = 0;
     while (index < 9) {
-        point p = last_hero_square(index);
-        if (p.v != 0) {
-            data.get(p.y, p.x) = p.v;
-            for (auto &i : set_data.cget(p.x)) i.get().erase(p.v);
-            for (auto &i : set_data.rget(p.y)) i.get().erase(p.v);
-            for (auto &i : set_data.qget(p.y - p.y % 3 + p.x % 3)) i.get().erase(p.v);
-            index = 0;
-        }
+        if (last_hero_square(index)) index = 0;
         else index++;
     }
 
     // ...
 
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            if (data.get(i, j) == 0) return false;
-        }
-    }
+    for (int i = 0; i < 9; i++) for (int j = 0; j < 9; j++) if (!data.get(i, j)) return false;
     return true;
 }
 
 // PROTECTED
 
-point Solver::last_hero_square(int index) {
-    point result = {0, 0, 0};
-    int count = 0;
-    for (int v = 1; v < 10; v++) {
-        for (int i = index - index % 3; i < index - index % 3 + 3; i++) {
-            for (int j = (index % 3) * 3; j < (index % 3) * 3 + 3; j++) {
-                if (set_data.get(i, j).count(v)) {
-                    result = {i, j, v};
-                    count++;
-                }
-                if (count > 1) break;
-            }
-            if (count > 1) break;
+bool Solver::check_data(Table<short>& t_data) {
+    std::set<short> block_set;
+    for (int i = 0; i < 9; i++) {
+        for (auto& item : t_data.string_get(i)) {
+            if (block_set.count(*item)) return false;
+            else if (item) block_set.insert(*item);
         }
-        if (count == 0) throw std::runtime_error("Unsolvable task at square " + std::to_string(index) + "!");
-        if (count == 1) return result;
-        count = 0;
-        result = {0, 0, 0};
+        block_set.clear();
+        for (auto& item : t_data.column_get(i)) {
+            if (block_set.count(*item)) return false;
+            else if (item) block_set.insert(*item);
+        }
+        block_set.clear();
+        for (auto& item : t_data.square_get(i)) {
+            if (block_set.count(*item)) return false;
+            else if (item) block_set.insert(*item);
+        }
+        block_set.clear();
+    }
+    return true;
+}
+
+bool Solver::last_hero_square(const int& index) {
+    std::map<int, std::pair<int, int>> counts;
+    for (int value = 1; value < 10; value++) counts[value] = {0, 0};
+
+    auto sets_iter = set_data.square_get(index).begin();
+    for (int i = 0; i < 9; i++) {
+        for (auto &value : **(sets_iter + i)) {
+            if (counts[value].first++ == 0) counts[value].second = i;
+        }
+    }
+
+    bool result = false;
+    for (auto &i : counts) {
+        if (i.second.first == 1) {
+            result = true;
+
+            int x = (index % 3) * 3 + i.second.second % 3;
+            int y = (index / 3) * 3 + i.second.second / 3;
+
+            data.set(y, x, i.first);
+            for (auto &a : set_data.column_get(x)) a->erase(i.first);
+            for (auto &a : set_data.string_get(y)) a->erase(i.first);
+        }
     }
     return result;
 }

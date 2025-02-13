@@ -3,8 +3,7 @@
 #include <iostream>
 #include <vector>
 
-template<class T>
-using refvector = std::vector<std::reference_wrapper<T>>;
+// DEFENITIONS
 
 template<class T>
 class Table;
@@ -15,6 +14,8 @@ std::istream& operator>>(std::istream& in, Table<T>& data);
 template<class T>
 std::ostream& operator<<(std::ostream& out, const Table<T>& data);
 
+// DECLARATIONS
+
 template<class T>
 class Table {
 public:
@@ -22,31 +23,55 @@ public:
         data.assign(9, std::vector<T>(9));
     }
 
-    T& get(const int& y, const int& x) {
+    T get(const int& y, const int& x) const {
         if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
         return data[y][x];
     }
 
-    refvector<T> cget(const int& x) {
+    void set(const int& y, const int& x, const T& value) {
+        if (x < 0 || x > 8 || y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        data[y][x] = value;
+    }
+
+    std::vector<T*> column_get(const int& x) {
         if (x < 0 || x > 8) throw std::out_of_range("Out of bounds!");
-        refvector<T> result;
-        for (int y = 0; y < 9; y++) result.push_back(data[y][x]);
+        std::vector<T> result;
+        for (int y = 0; y < 9; y++) result.push_back(&data[y][x]);
         return result;
     }
 
-    refvector<T> rget(const int& y) {
+    void column_set(const int& x, const std::vector<T>& vec) {
+        if (x < 0 || x > 8) throw std::out_of_range("Out of bounds!");
+        if (vec.size() != 9) throw std::invalid_argument("Wrong size of entered vector!");
+        for (int y = 0; y < 9; y++) data[y][x] = vec[y];
+    }
+
+    std::vector<T*> string_get(const int& y) {
         if (y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
-        refvector<T> result;
-        for (int x = 0; x < 9; x++) result.push_back(data[y][x]);
+        std::vector<T> result;
+        for (int x = 0; x < 9; x++) result.push_back(&data[y][x]);
         return result;
     }
 
-    refvector<T> qget(const int& q) {
+    void string_set(const int& y, const std::vector<T>& vec) {
+        if (y < 0 || y > 8) throw std::out_of_range("Out of bounds!");
+        if (vec.size() != 9) throw std::invalid_argument("Wrong size of entered vector!");
+        for (int x = 0; x < 9; x++) data[y][x] = vec[x];
+    }
+
+    std::vector<T*> square_get(const int& q) {
         if (q < 0 || q > 8) throw std::out_of_range("Out of bounds!");
         int x = (q % 3) * 3, y = q - q % 3;
-        refvector<T> result;
-        for (int i = y; i < y + 3; i++) for (int j = x; j < x + 3; j++) result.push_back(data[i][j]);
+        std::vector<T> result;
+        for (int i = y; i < y + 3; i++) for (int j = x; j < x + 3; j++) result.push_back(&data[i][j]);
         return result;
+    }
+
+    void square_set(const int& q, const std::vector<T>& vec) {
+        if (q < 0 || q > 8) throw std::out_of_range("Out of bounds!");
+        if (vec.size() != 9) throw std::invalid_argument("Wrong size of entered vector!");
+        int x = (q % 3) * 3, y = q - q % 3;
+        for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) data[y + i][x + j] = vec[i * 3 + j];
     }
 
 protected:

@@ -2,6 +2,7 @@
 
 #include "source/sudoku/table.hpp"
 #include <set>
+#include <map>
 
 struct point {
     int y;
@@ -23,5 +24,7 @@ protected:
     Table<short> data;
     Table<std::set<short>> set_data;
 
-    point last_hero_square(int index);
+    bool check_data(Table<short>& t_data);
+
+    bool last_hero_square(const int& index);
 };
