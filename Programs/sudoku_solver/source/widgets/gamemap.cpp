@@ -1,6 +1,5 @@
 #include "gamemap.hpp"
 
-
 GameMap::GameMap() {
     set_column_spacing(5);
     set_row_spacing(5);
@@ -28,8 +27,8 @@ GameMap::GameMap() {
 bool GameMap::setup() {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            if (!sudoku.set(i, j, cells[i][j].get_value())) {
-                sudoku.clear();
+            if (!sudoku_solver.set(i, j, cells[i][j].get_value())) {
+                sudoku_solver.clear();
                 return false;
             }
         }
@@ -38,20 +37,20 @@ bool GameMap::setup() {
 }
 
 bool GameMap::solve() {
-    if (!(success = sudoku.solve())) sudoku.clear();
+    if (!(success = sudoku_solver.solve())) sudoku_solver.clear();
     return success;
 }
 
 void GameMap::print() {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            cells[i][j].set_text(std::to_string(sudoku.get(i, j)));
+            cells[i][j].set_text(std::to_string(sudoku_solver.get(i, j)));
         }
     }
 }
 
 void GameMap::clear() {
-    sudoku.clear();
+    sudoku_solver.clear();
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             cells[i][j].set_text("");

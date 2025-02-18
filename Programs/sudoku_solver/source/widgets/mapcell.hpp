@@ -2,7 +2,6 @@
 
 #include <gtkmm/entry.h>
 
-
 class MapCell : public Gtk::Entry {
 public:
     MapCell();
