@@ -4,27 +4,24 @@
 #include <set>
 #include <map>
 
-struct point {
-    int y;
-    int x;
-    int v;
-};
-
 class Solver {
 public:
     Solver();
 
-    void load(std::istream& stream);
+    void enter(std::istream& stream);
     void print(std::ostream& stream);
     void clear();
-
     bool solve();
 
+    typedef std::map<int, std::set<short>> tsa;
+
 protected:
-    Table<short> data;
-    Table<std::set<short>> set_data;
+    Table<short> table;
+    std::vector<std::set<short>> column_sets;
+    std::vector<std::set<short>> string_sets;
+    std::vector<std::set<short>> square_sets;
 
-    bool check_data(Table<short>& t_data);
-
-    bool last_hero_square(const int& index);
+    void square_allowed_create(tsa& allowed, const int& x, const int& y);
+    bool square_solve_1(tsa& allowed, const int& x, const int& y);
+    bool square_solve_2(tsa& allowed, const int& x, const int& y);
 };

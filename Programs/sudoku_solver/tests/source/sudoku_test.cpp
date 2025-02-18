@@ -14,15 +14,20 @@ int main(int argc, char* argv[]) {
 
         std::cout << "@ Test " << entry.path().filename() << "\n\n";
         try {
-            sudoku.load(file);
+            sudoku.enter(file);
+            std::cout << "Entered:\n\n";
+            sudoku.print(std::cout);
             if (sudoku.solve()) std::cout << "Success!\n\n";
             else std::cout << "Not success!\n\n";
             sudoku.print(std::cout);
+            sudoku.clear();
         }
         catch (std::runtime_error error) {
             std::cout << error.what() << "\n\n";
         }
-        sudoku.clear();
+        catch (std::logic_error error) {
+            std::cout << error.what() << "\n\n";
+        }
 
         file.close();
     }
