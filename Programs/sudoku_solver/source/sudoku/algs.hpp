@@ -10,13 +10,17 @@ public:
 
     void enter(std::istream& stream);
     void print(std::ostream& stream);
+
+    short get(const int& x, const int& y) const;
+    bool set(const int& x, const int& y, const short& v);
+
     void clear();
     bool solve();
 
     typedef std::map<int, std::set<short>> tsa;
 
 protected:
-    Table<short> table;
+    Table table;
     std::vector<std::set<short>> column_sets;
     std::vector<std::set<short>> string_sets;
     std::vector<std::set<short>> square_sets;

@@ -50,12 +50,39 @@ void Solver::print(std::ostream& stream) {
     stream << table;
 }
 
+short Solver::get(const int& x, const int& y) const {
+    return table.get(x, y);
+}
+
+bool Solver::set(const int& x, const int& y, const short& v) {
+    if (v < 0 || v > 9) throw std::invalid_argument("Wrong sudoku value!");
+
+    short& old_v = table.rget(x, y), q = y - y % 3 + x / 3;
+
+    if (v != 0) {
+        if (!column_sets[x].count(v)) return false;
+        if (!string_sets[y].count(v)) return false;
+        if (!square_sets[q].count(v)) return false;
+        column_sets[x].erase(v);
+        string_sets[y].erase(v);
+        square_sets[q].erase(v);
+    }
+    if (old_v != 0) {
+        column_sets[x].insert(old_v);
+        string_sets[y].insert(old_v);
+        square_sets[q].insert(old_v);
+    }
+    old_v = v;
+
+    return true;
+}
+
 void Solver::clear() {
     for (int i = 0; i < 9; i++) {
         column_sets[i] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         string_sets[i] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         square_sets[i] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        for (int j = 0; j < 9; j++) table.get(i, j) = 0;
+        for (int j = 0; j < 9; j++) table.rget(i, j) = 0;
     }
 }
 
@@ -124,7 +151,7 @@ bool Solver::square_solve_1(tsa& allowed, const int& x, const int& y) {
         if (i->second.size() == 1) {
             value = *i->second.begin();
 
-            table.get(y + i->first / 3, x + i->first % 3) = value;
+            table.rget(y + i->first / 3, x + i->first % 3) = value;
             string_sets[y + i->first / 3].erase(value);
             column_sets[x + i->first % 3].erase(value);
             square_sets[index].erase(value);
@@ -149,7 +176,7 @@ bool Solver::square_solve_2(tsa& allowed, const int& x, const int& y) {
         result = 1;
         for (auto &j : allowed) {
             if (j.second.count(i)) {
-                table.get(y + j.first / 3, x + j.first % 3) = i;
+                table.rget(y + j.first / 3, x + j.first % 3) = i;
                 string_sets[y + j.first / 3].erase(i);
                 column_sets[x + j.first % 3].erase(i);
                 square_sets[index].erase(i);

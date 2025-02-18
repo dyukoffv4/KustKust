@@ -1,6 +1,5 @@
 #include "mapcell.hpp"
 
-
 MapCell::MapCell() {
     set_max_length(1);
     set_size_request(50, 50);
