@@ -25,7 +25,10 @@ protected:
     std::vector<std::set<short>> string_sets;
     std::vector<std::set<short>> square_sets;
 
+    /// @brief Create map of allowed numbers at each tiles on square
     void square_allowed_create(tsa& allowed, const int& x, const int& y);
+    /// @brief Find and fill all tiles where can be only one number
     bool square_solve_1(tsa& allowed, const int& x, const int& y);
+    /// @brief Find and fill all tiles where can be only one number
     bool square_solve_2(tsa& allowed, const int& x, const int& y);
 };

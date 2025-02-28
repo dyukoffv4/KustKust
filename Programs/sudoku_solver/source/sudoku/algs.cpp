@@ -87,36 +87,23 @@ void Solver::clear() {
 }
 
 bool Solver::solve() {
-    std::set<int> open;
-    for (int i = 0; i < 9; i++) if (square_sets[i].size()) open.insert(i);
-
     tsa allowed;
-    int x, y, success = 0;
+    int x, y;
+    bool success = false;
 
-    for (auto i = open.begin(); i != open.end(); i) {
-        x = (*i % 3) * 3;
-        y = (*i / 3) * 3;
+    for (int i = 0; i < 9; i++) {
+        if (square_sets[i].empty()) continue;
+
+        x = (i % 3) * 3;
+        y = (i / 3) * 3;
         square_allowed_create(allowed, x, y);
 
-        if (square_solve_1(allowed, x, y)) {
-            success = 1;
-            if (square_sets[*i].empty()) {
-                open.erase(i);
-                i = open.begin();
-            }
-        }
-        if (square_solve_2(allowed, x, y)) {
-            success = 1;
-            if (square_sets[*i].empty()) {
-                open.erase(i);
-                i = open.begin();
-            }
-        }
-
-        if (success == 0) i++;
+        success = false;
+        if (square_solve_1(allowed, x, y)) success = true;
+        if (square_solve_2(allowed, x, y)) success = true;
+        if (success) i = -1;
 
         allowed.clear();
-        success = 0;
     }
 
     // ...
@@ -128,64 +115,72 @@ bool Solver::solve() {
 // PROTECTED
 
 void Solver::square_allowed_create(tsa& allowed, const int& x, const int& y) {
-    int dx, dy, index = y + x / 3;
+    int xi, yi, qi = y + x / 3;
 
     for (int i = 0; i < 9; i++) {
-        dx = x + i % 3;
-        dy = y + i / 3;
-        if (!table.get(dy, dx)) {
+        xi = x + i % 3;
+        yi = y + i / 3;
+
+        if (table.rget(yi, xi) == 0) {
             allowed[i] = {};
-            for (auto &j : square_sets[index]) {
-                if (string_sets[dy].count(j) && column_sets[dx].count(j)) {
-                    allowed[i].insert(j);
-                }
+            for (auto &j : square_sets[qi]) {
+                if (string_sets[yi].count(j) && column_sets[xi].count(j)) allowed[i].insert(j);
             }
         }
     }
 }
 
 bool Solver::square_solve_1(tsa& allowed, const int& x, const int& y) {
-    short value = 0, index = x + y / 3;
+    short value = 0;
+    int xi, yi, qi = y + x / 3;
 
-    for (auto i = allowed.begin(); i != allowed.end();) {
+    auto i = allowed.begin();
+    while (i != allowed.end()) {
         if (i->second.size() == 1) {
-            value = *i->second.begin();
+            xi = x + i->first % 3;
+            yi = y + i->first / 3;
 
-            table.rget(y + i->first / 3, x + i->first % 3) = value;
-            string_sets[y + i->first / 3].erase(value);
-            column_sets[x + i->first % 3].erase(value);
-            square_sets[index].erase(value);
+            table.rget(yi, xi) = value = *(i->second.begin());
+            string_sets[yi].erase(value);
+            column_sets[xi].erase(value);
+            square_sets[qi].erase(value);
 
             allowed.erase(i);
             for (auto &j : allowed) j.second.erase(value);
+
             i = allowed.begin();
         }
         else i++;
     }
 
-    return value != 0;
+    return value;
 }
 
 bool Solver::square_solve_2(tsa& allowed, const int& x, const int& y) {
-    short index = x + y / 3, result = 0;
+    bool result = false;
+    int xi, yi, qi = y + x / 3;
 
-    std::multiset<short> mset;
-    for (auto &i : allowed) mset.insert(i.second.begin(), i.second.end());
+    std::map<short, std::pair<int, int>> counts;
+    for (short i = 1; i < 10; i++) counts[i] = {0, 0};
+    for (auto& i : allowed) for (auto& j : i.second) {
+        counts[j].first++;
+        counts[j].second = i.first;
+    }
 
-    for (int i = 1; i < 10; i++) if (mset.count(i) == 1) {
-        result = 1;
-        for (auto &j : allowed) {
-            if (j.second.count(i)) {
-                table.rget(y + j.first / 3, x + j.first % 3) = i;
-                string_sets[y + j.first / 3].erase(i);
-                column_sets[x + j.first % 3].erase(i);
-                square_sets[index].erase(i);
+    for (int i = 1; i < 10; i++) {
+        if (counts[i].first == 1) {
+            result = true;
+            xi = x + counts[i].second % 3;
+            yi = y + counts[i].second / 3;
 
-                allowed.erase(j.first);
-                break;
-            }
+            table.rget(yi, xi) = i;
+            string_sets[yi].erase(i);
+            column_sets[xi].erase(i);
+            square_sets[qi].erase(i);
+
+            allowed.erase(counts[i].second);
         }
     }
 
-    return result != 0;
+    return result;
 }
