@@ -1,11 +1,9 @@
 #include "mapcell.hpp"
 
-
-MapCell::MapCell(int index) : index(index) {
+MapCell::MapCell() {
     set_max_length(1);
     set_size_request(50, 50);
     set_alignment(Gtk::Align::CENTER);
-    signal_changed().connect(sigc::mem_fun(*this, &MapCell::on_text_changed));
 }
 
 int MapCell::get_value() const {
@@ -16,8 +14,8 @@ int MapCell::get_value() const {
     }
 }
 
-void MapCell::on_text_changed() {
+void MapCell::on_changed() {
     auto text = get_text();
-
     if (!text.empty() && (text[0] < '1' || text[0] > '9')) set_text("");
+    Entry::on_changed();
 }
